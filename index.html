@@ -82,6 +82,14 @@
             }
         }
 
+        /* Transition pour le scroll du header */
+        header {
+            @apply transition-all duration-500 ease-in-out;
+        }
+        header img {
+            @apply transition-all duration-500 ease-in-out;
+        }
+
         /* Personnalisation du slider */
         input[type=range] {
             @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
@@ -94,14 +102,14 @@
 <body class="min-h-screen flex flex-col">
 
     <!-- HEADER INSTITUTIONNEL -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+    <header id="main-header" class="bg-white shadow-sm sticky top-0 z-50 py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
+            <div class="flex justify-between items-center">
                 
                 <!-- Logos Partenaires -->
                 <div class="flex items-center space-x-6">
-                    <img src="logo-ccmp.png" alt="Logo CCMP" class="h-12 w-auto object-contain">
-                    <img src="logo-inrae.png" alt="Logo INRAE" class="h-12 w-auto object-contain">
+                    <img src="logo-ccmp.png" id="logo-1" alt="Logo CCMP" class="h-16 w-auto object-contain">
+                    <img src="logo-inrae.png" id="logo-2" alt="Logo INRAE" class="h-16 w-auto object-contain">
                 </div>
 
                 <!-- Navigation principale -->
@@ -216,19 +224,19 @@
                             <label class="form-label mb-3">Équipements de stockage et de préparation disponibles</label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                                    <input type="checkbox" name="equipements" value="StockageSec" class="w-5 h-5 text-dixLight focus:ring-dixLight rounded">
+                                    <input type="checkbox" name="equipements" value="StockageSec" class="w-5 h-5 text-dixLight rounded">
                                     <span class="text-sm">Stockage sec</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                                    <input type="checkbox" name="equipements" value="FroidPositif" class="w-5 h-5 text-dixLight focus:ring-dixLight rounded">
+                                    <input type="checkbox" name="equipements" value="FroidPositif" class="w-5 h-5 text-dixLight rounded">
                                     <span class="text-sm">Froid positif (+)</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                                    <input type="checkbox" name="equipements" value="FroidNegatif" class="w-5 h-5 text-dixLight focus:ring-dixLight rounded">
+                                    <input type="checkbox" name="equipements" value="FroidNegatif" class="w-5 h-5 text-dixLight rounded">
                                     <span class="text-sm">Froid négatif (-)</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                                    <input type="checkbox" name="equipements" value="Legumerie" class="w-5 h-5 text-dixLight focus:ring-dixLight rounded">
+                                    <input type="checkbox" name="equipements" value="Legumerie" class="w-5 h-5 text-dixLight rounded">
                                     <span class="text-sm">Légumerie / Transfo</span>
                                 </label>
                             </div>
@@ -481,12 +489,12 @@
                     <div class="h-2 bg-dixLight"></div>
                     <div class="p-6">
                         <span class="inline-block px-3 py-1 bg-green-50 text-dixDark text-xs font-oswald uppercase rounded-full mb-4">Achat Coconstruit</span>
-                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal">Groupement d'achats avec la commune voisine</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia italic">
-                            "En nous associant avec l'école du village voisin, nous avons pu atteindre les volumes minimaux demandés par le maraîcher local. Une logistique partagée qui bénéficie aux deux établissements."
+                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal italic">Groupement d'achats inter-villages</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia">
+                            "En nous associant avec l'école du Val-Fleuri, nous avons pu atteindre les volumes minimaux demandés par le maraîcher local. Une logistique partagée qui bénéficie aux deux établissements."
                         </p>
                         <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
-                            <i class="ph ph-map-pin mr-1 text-dixLight"></i> École Primaire des Cimes
+                            <i class="ph ph-map-pin mr-1 text-dixLight"></i> École du Val-Fleuri (Nom fictif)
                         </div>
                     </div>
                 </div>
@@ -496,12 +504,12 @@
                     <div class="h-2 bg-dixDark"></div>
                     <div class="p-6">
                         <span class="inline-block px-3 py-1 bg-gray-100 text-dixDark text-xs font-oswald uppercase rounded-full mb-4">Mutualisation Technique</span>
-                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal">Atelier épluchage partagé</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia italic">
-                            "Nous n'avions pas de légumerie. Nous avons mis en place une convention avec l'EHPAD qui dispose du matériel. Nos légumes bruts y sont préparés avant livraison chez nous."
+                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal italic">Épluchage partagé en réseau</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia">
+                            "Nous n'avions pas de légumerie. Nous avons mis en place une convention avec l'EHPAD Les Magnolias qui dispose du matériel. Nos légumes bruts y sont préparés avant livraison chez nous."
                         </p>
                         <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
-                            <i class="ph ph-users mr-1 text-dixDark"></i> Équipe cuisine de l'EHPAD & Crèche
+                            <i class="ph ph-users mr-1 text-dixDark"></i> EHPAD Les Magnolias & Crèche Les P'tits Loups (Noms fictifs)
                         </div>
                     </div>
                 </div>
@@ -511,12 +519,12 @@
                     <div class="h-2 bg-yellow-400"></div>
                     <div class="p-6">
                         <span class="inline-block px-3 py-1 bg-yellow-50 text-yellow-800 text-xs font-oswald uppercase rounded-full mb-4">Pédagogie & Gastronomie</span>
-                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal">Menus végétariens coconstruits avec les convives</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia italic">
-                            "Pour faciliter l'acceptation des plats à base de légumineuses, nous avons organisé des ateliers de dégustation avec les délégué·e·s des élèves. Leurs retours ont permis d'adapter nos recettes de dahl de lentilles."
+                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal italic">Dégustation participative des convives</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia">
+                            "Pour faciliter l'acceptation des plats à base de légumineuses, nous avons organisé des ateliers de dégustation avec les délégué·e·s des élèves. Leurs retours ont permis d'adapter nos recettes de dahl."
                         </p>
                         <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
-                            <i class="ph ph-graduation-cap mr-1 text-yellow-600"></i> Collège Le Pilat
+                            <i class="ph ph-graduation-cap mr-1 text-yellow-600"></i> Collège des Monts (Nom fictif)
                         </div>
                     </div>
                 </div>
@@ -573,9 +581,14 @@
                         <span>&copy; 2026 réalisé par <a href="https://www.dix-autrement.fr" target="_blank" class="text-dixDark hover:text-dixLight font-bold">www.dix-autrement.fr</a></span>
                     </div>
                 </div>
+                <!-- Liens vers contact email et site web (Placeholders) -->
                 <div class="flex space-x-6 justify-center">
-                    <a href="#" class="text-gray-400 hover:text-dixLight"><i class="ph ph-envelope-simple text-2xl"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-dixLight"><i class="ph ph-globe text-2xl"></i></a>
+                    <a href="mailto:contact@exemple.fr" title="Nous contacter par email" class="text-gray-400 hover:text-dixLight transition-colors">
+                        <i class="ph ph-envelope-simple text-3xl"></i>
+                    </a>
+                    <a href="https://www.cc-monts-du-pilat.fr" target="_blank" title="Visiter le site web institutionnel" class="text-gray-400 hover:text-dixLight transition-colors">
+                        <i class="ph ph-globe text-3xl"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -583,6 +596,23 @@
 
     <!-- LOGIQUE JAVASCRIPT -->
     <script>
+        // --- GESTION DU HEADER DYNAMIQUE (SHRINK ON SCROLL) ---
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            const logo1 = document.getElementById('logo-1');
+            const logo2 = document.getElementById('logo-2');
+
+            if (window.scrollY > 50) {
+                header.classList.replace('py-6', 'py-2');
+                logo1.classList.replace('h-16', 'h-10');
+                logo2.classList.replace('h-16', 'h-10');
+            } else {
+                header.classList.replace('py-2', 'py-6');
+                logo1.classList.replace('h-10', 'h-16');
+                logo2.classList.replace('h-10', 'h-16');
+            }
+        });
+
         // --- GESTION DES ONGLETS ---
         function switchTab(tabId) {
             document.getElementById('section-enquete').classList.add('hidden');

@@ -54,7 +54,7 @@
                 @apply font-oswald uppercase text-gray-500 pb-2 border-b-2 border-transparent hover:text-dixDark transition-all cursor-pointer;
             }
             .nav-tab.active {
-                @apply text-dixDark border-dixLight;
+                @apply text-dixDark border-dixLight font-bold;
             }
             .form-input {
                 @apply w-full mt-1 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-dixLight focus:border-transparent outline-none font-georgia bg-white transition-all shadow-sm;
@@ -63,10 +63,22 @@
                 @apply block text-sm font-semibold text-dixDark mb-1;
             }
             .card {
-                @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 overflow-hidden;
+                @apply bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 overflow-hidden;
             }
             .section-container {
                 @apply bg-white rounded-2xl shadow-md p-6 md:p-8 mb-8 border border-gray-50;
+            }
+            
+            /* Masonry Layout */
+            .masonry {
+                column-count: 1;
+                column-gap: 1.5rem;
+            }
+            @media (min-width: 768px) { .masonry { column-count: 2; } }
+            @media (min-width: 1024px) { .masonry { column-count: 3; } }
+            .masonry-item {
+                break-inside: avoid;
+                margin-bottom: 1.5rem;
             }
         }
 
@@ -81,41 +93,6 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- 
-    ========================================================================
-    EXPLICATION POUR LE DÉPLOIEMENT GOOGLE APPS SCRIPT (GAS)
-    ========================================================================
-    Pour réceptionner les données de l'Enquête Flash, crée un nouveau projet 
-    Google Apps Script lié à un Google Sheets et utilise ce code :
-
-    function doPost(e) {
-      try {
-        const data = JSON.parse(e.postData.contents);
-        const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-        
-        // Adapte l'ordre des colonnes selon ton Google Sheet
-        sheet.appendRow([
-          new Date(),
-          data.nomEtablissement,
-          data.modeGestion,
-          data.repasJour,
-          data.repasAn,
-          data.reussitePartagee
-          // ... ajoute les autres champs
-        ]);
-
-        return ContentService.createTextOutput(JSON.stringify({"status": "success", "message": "Données intégrées avec succès."}))
-          .setMimeType(ContentService.MimeType.JSON);
-      } catch(error) {
-        return ContentService.createTextOutput(JSON.stringify({"status": "error", "message": error.message}))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-    }
-    // N'oublie pas de déployer en tant qu'"Application Web" avec accès "Tous".
-    // Puis de remplacer la constante SCRIPT_URL en bas de ce fichier.
-    ========================================================================
-    -->
-
     <!-- HEADER INSTITUTIONNEL -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -123,26 +100,24 @@
                 
                 <!-- Logos Partenaires -->
                 <div class="flex items-center space-x-6">
-                    <!-- Assure-toi que ces 3 images sont dans le même dossier que index.html -->
-                    <img src="logo-ccmp.png" alt="Logo CCMP" class="h-12 w-auto object-contain fallback-bg">
-                    <img src="logo-inrae.png" alt="Logo INRAE" class="h-12 w-auto object-contain fallback-bg">
-                    <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-12 w-auto object-contain fallback-bg">
+                    <img src="logo-ccmp.png" alt="Logo CCMP" class="h-12 w-auto object-contain">
+                    <img src="logo-inrae.png" alt="Logo INRAE" class="h-12 w-auto object-contain">
                 </div>
 
                 <!-- Navigation principale -->
                 <nav class="hidden md:flex space-x-8">
                     <button onclick="switchTab('enquete')" id="tab-enquete" class="nav-tab active text-lg flex items-center gap-2">
-                        <i class="ph ph-clipboard-text text-xl"></i> Enquête Flash
+                        <i class="ph ph-clipboard-text text-xl"></i> L'Enquête Flash
                     </button>
                     <button onclick="switchTab('vitrine')" id="tab-vitrine" class="nav-tab text-lg flex items-center gap-2">
-                        <i class="ph ph-plant text-xl"></i> Le Carnet d'initiatives
+                        <i class="ph ph-book-open text-xl"></i> Le Carnet d'initiatives
                     </button>
                     <button onclick="switchTab('pro')" id="tab-pro" class="nav-tab text-lg flex items-center gap-2">
-                        <i class="ph ph-lock-key text-xl"></i> Espace Pro
+                        <i class="ph ph-users text-xl"></i> Espace Pro
                     </button>
                 </nav>
 
-                <!-- Menu Mobile (Simplifié pour la démo) -->
+                <!-- Menu Mobile (Simplifié) -->
                 <div class="md:hidden flex items-center">
                     <button class="text-dixDark hover:text-dixLight"><i class="ph ph-list text-3xl"></i></button>
                 </div>
@@ -246,11 +221,11 @@
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                                     <input type="checkbox" name="equipements" value="FroidPositif" class="w-5 h-5 text-dixLight focus:ring-dixLight rounded">
-                                    <span class="text-sm">Chambre froide (+)</span>
+                                    <span class="text-sm">Froid positif (+)</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                                     <input type="checkbox" name="equipements" value="FroidNegatif" class="w-5 h-5 text-dixLight focus:ring-dixLight rounded">
-                                    <span class="text-sm">Chambre froide (-)</span>
+                                    <span class="text-sm">Froid négatif (-)</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                                     <input type="checkbox" name="equipements" value="Legumerie" class="w-5 h-5 text-dixLight focus:ring-dixLight rounded">
@@ -258,7 +233,6 @@
                                 </label>
                             </div>
 
-                            <!-- Ajout des curseurs pour les surfaces en m2 -->
                             <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div>
                                     <label class="form-label text-xs flex justify-between" for="surfStockageSec">
@@ -292,7 +266,7 @@
                         </div>
 
                         <div>
-                            <label class="form-label" for="coutRepas">Coût de revient moyen par repas (matières premières en € HT)</label>
+                            <label class="form-label" for="coutRepas">Coût de revient moyen / repas (Matières premières en € HT)</label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold">€</span>
                                 <input type="number" step="0.01" id="coutRepas" name="coutRepas" class="form-input pl-10" placeholder="0.00">
@@ -318,13 +292,13 @@
                             <label class="form-label mb-3">Inscription sur la plateforme "Ma Cantine" ?</label>
                             <div class="flex flex-col gap-3">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="maCantine" value="Oui" class="w-5 h-5 text-dixLight focus:ring-dixLight"> <span>Oui</span>
+                                    <input type="radio" name="maCantine" value="Oui" class="w-5 h-5 text-dixLight"> <span>Oui</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="maCantine" value="EnCours" class="w-5 h-5 text-dixLight focus:ring-dixLight"> <span>En cours</span>
+                                    <input type="radio" name="maCantine" value="EnCours" class="w-5 h-5 text-dixLight"> <span>En cours</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="maCantine" value="Non" class="w-5 h-5 text-dixLight focus:ring-dixLight"> <span>Non</span>
+                                    <input type="radio" name="maCantine" value="Non" class="w-5 h-5 text-dixLight"> <span>Non</span>
                                 </label>
                             </div>
                         </div>
@@ -333,13 +307,13 @@
                             <label class="form-label mb-3">Régularité des télédéclarations</label>
                             <div class="flex flex-col gap-3">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Regulier" class="w-5 h-5 text-dixLight focus:ring-dixLight"> <span>Régulier (Annuel)</span>
+                                    <input type="radio" name="teledeclaration" value="Regulier" class="w-5 h-5 text-dixLight"> <span>Régulière</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Irregulier" class="w-5 h-5 text-dixLight focus:ring-dixLight"> <span>Irrégulier</span>
+                                    <input type="radio" name="teledeclaration" value="Irregulier" class="w-5 h-5 text-dixLight"> <span>Irrégulière</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Jamais" class="w-5 h-5 text-dixLight focus:ring-dixLight"> <span>Jamais effectué</span>
+                                    <input type="radio" name="teledeclaration" value="Jamais" class="w-5 h-5 text-dixLight"> <span>Jamais effectuée</span>
                                 </label>
                             </div>
                         </div>
@@ -356,7 +330,7 @@
                     </div>
                 </section>
 
-                <!-- Section D : Dynamique RH & Synergies -->
+                <!-- Section D : Partage d'expériences -->
                 <section class="section-container border-2 border-dixLight">
                     <h2 class="text-2xl mb-6 flex items-center gap-3 border-b border-gray-100 pb-3 text-dixLight">
                         <span class="bg-dixLight text-white p-2 rounded-lg"><i class="ph ph-users-three text-xl"></i></span>
@@ -440,10 +414,10 @@
                             <label class="form-label mb-3">Accepteriez-vous d'être sollicité·e pour un court entretien afin d'approfondir ces éléments ?</label>
                             <div class="flex flex-col sm:flex-row gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="entretien" value="Oui" class="w-5 h-5 text-dixLight focus:ring-dixLight" onchange="toggleDispo(true)"> <span>Oui, avec plaisir</span>
+                                    <input type="radio" name="entretien" value="Oui" class="w-5 h-5 text-dixLight" onchange="toggleDispo(true)"> <span>Oui, avec plaisir</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="entretien" value="Non" class="w-5 h-5 text-dixLight focus:ring-dixLight" onchange="toggleDispo(false)" checked> <span>Non, pas pour le moment</span>
+                                    <input type="radio" name="entretien" value="Non" class="w-5 h-5 text-dixLight" onchange="toggleDispo(false)" checked> <span>Non, pas pour le moment</span>
                                 </label>
                             </div>
                         </div>
@@ -468,7 +442,7 @@
 
                         <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-6">
                             <label class="flex items-start gap-3 cursor-pointer">
-                                <input type="checkbox" name="consentement" required class="mt-1 w-5 h-5 text-dixLight focus:ring-dixLight rounded">
+                                <input type="checkbox" name="consentement" required class="mt-1 w-5 h-5 text-dixLight rounded">
                                 <span class="text-sm text-gray-700 font-georgia leading-relaxed">
                                     <strong>Confidentialité des données (RGPD) :</strong> Je comprends que les informations renseignées dans ce formulaire (y compris mes coordonnées de contact) seront utilisées exclusivement dans le cadre de cette étude par les personnes mandatées par la CCMP, et ne seront en aucun cas cédées à des tiers. 
                                     Seul le récit de l'expérience innovante (Section D) a vocation à être publié sur le Carnet d'initiatives.
@@ -480,90 +454,86 @@
 
                 <div class="flex flex-col items-center justify-center mt-8 space-y-4">
                     <button type="submit" class="btn-primary w-full md:w-auto text-xl flex items-center justify-center gap-2" id="submitBtn">
-                        <i class="ph ph-paper-plane-tilt text-2xl"></i> Contribuer au diagnostic
+                        <i class="ph ph-paper-plane-tilt text-2xl"></i> Transmettre mes informations
                     </button>
                     <p id="formMessage" class="hidden text-sm font-bold text-center"></p>
                 </div>
             </form>
         </div>
 
-        <!-- ONGLET 2 : LA VITRINE DES SYNERGIES -->
+        <!-- ONGLET 2 : LE CARNET D'INITIATIVES -->
         <div id="section-vitrine" class="hidden animate-fade-in">
             <div class="mb-10 text-center max-w-3xl mx-auto">
-                <h1 class="text-4xl mb-4">Le Carnet d'initiatives</h1>
-                <p class="text-lg text-gray-600">
-                    Découvrez les initiatives portées par les acteur·rice·s du Projet Alimentaire Territorial. De la mutualisation logistique aux nouveaux approvisionnements, créons des liens et travaillons ensemble !
+                <h2 class="text-3xl text-dixDark mb-4 flex items-center justify-center gap-3">
+                    <i class="ph ph-book-open text-3xl text-dixLight"></i>
+                    Carnet d'initiatives partagées
+                </h2>
+                <p class="text-lg text-gray-600 font-georgia">
+                    Découvrez les réussites et les savoir-faire coconstruits par les chef·fe·s et les équipes de notre territoire. Une source d'inspiration pour créer des liens et travailler ensemble vers une alimentation durable.
                 </p>
             </div>
 
-            <!-- Grille de Cartes (Masonry look) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Grille Masonry -->
+            <div class="masonry">
                 
                 <!-- Carte 1 -->
-                <article class="card flex flex-col h-full relative overflow-hidden group">
-                    <div class="h-48 bg-dixDark relative flex items-center justify-center">
-                        <i class="ph ph-cow text-6xl text-white opacity-20 absolute"></i>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <h3 class="relative text-white text-xl z-10 px-4 text-center">Viande de bœuf locale</h3>
-                    </div>
-                    <div class="p-6 flex-grow flex flex-col">
-                        <div class="flex gap-2 mb-3">
-                            <span class="text-xs bg-green-100 text-dixLight px-2 py-1 rounded-full font-bold uppercase tracking-wider">Mutualisation</span>
-                            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Achats</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-dixDark mb-2 font-georgia normal-case">Groupement d'achat intercommunal</h4>
-                        <p class="text-gray-600 text-sm flex-grow mb-4">
-                            Mise en place d'un groupement de commandes réunissant 3 communes voisines. Cela a permis d'assurer un volume suffisant pour contractualiser directement avec deux éleveur·euse·s du Pilat.
+                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-2 bg-dixLight"></div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-green-50 text-dixDark text-xs font-oswald uppercase rounded-full mb-4">Achat Coconstruit</span>
+                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal">Groupement d'achats avec la commune voisine</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia italic">
+                            "En nous associant avec l'école du village voisin, nous avons pu atteindre les volumes minimaux demandés par le maraîcher local. Une logistique partagée qui bénéficie aux deux établissements."
                         </p>
-                        <div class="flex items-center text-sm text-gray-500 border-t pt-4 border-gray-100 mt-auto">
-                            <i class="ph ph-map-pin mr-2"></i> Secteur Nord Pilat
+                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+                            <i class="ph ph-map-pin mr-1 text-dixLight"></i> École Primaire des Cimes
                         </div>
                     </div>
-                </article>
+                </div>
 
                 <!-- Carte 2 -->
-                <article class="card flex flex-col h-full relative overflow-hidden group">
-                    <div class="h-48 bg-dixLight relative flex items-center justify-center">
-                        <i class="ph ph-carrot text-6xl text-white opacity-20 absolute"></i>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <h3 class="relative text-white text-xl z-10 px-4 text-center">Atelier Légumerie</h3>
-                    </div>
-                    <div class="p-6 flex-grow flex flex-col">
-                        <div class="flex gap-2 mb-3">
-                            <span class="text-xs bg-green-100 text-dixLight px-2 py-1 rounded-full font-bold uppercase tracking-wider">Infrastructure</span>
-                            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Produits Bruts</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-dixDark mb-2 font-georgia normal-case">Légumerie partagée avec l'EHPAD</h4>
-                        <p class="text-gray-600 text-sm flex-grow mb-4">
-                            Coconstruction d'un espace de transformation des légumes bruts en partenariat avec les cuisines de l'hôpital local. Permet l'embauche d'un·e salarié·e à temps plein et l'intégration de légumes bio de saison.
+                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-2 bg-dixDark"></div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-gray-100 text-dixDark text-xs font-oswald uppercase rounded-full mb-4">Mutualisation Technique</span>
+                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal">Atelier épluchage partagé</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia italic">
+                            "Nous n'avions pas de légumerie. Nous avons mis en place une convention avec l'EHPAD qui dispose du matériel. Nos légumes bruts y sont préparés avant livraison chez nous."
                         </p>
-                        <div class="flex items-center text-sm text-gray-500 border-t pt-4 border-gray-100 mt-auto">
-                            <i class="ph ph-map-pin mr-2"></i> Commune de Bourg-Argental
+                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+                            <i class="ph ph-users mr-1 text-dixDark"></i> Équipe cuisine de l'EHPAD & Crèche
                         </div>
                     </div>
-                </article>
+                </div>
 
                 <!-- Carte 3 -->
-                <article class="card flex flex-col h-full relative overflow-hidden group">
-                    <div class="h-48 bg-blue-800 relative flex items-center justify-center">
-                        <i class="ph ph-chalkboard-teacher text-6xl text-white opacity-20 absolute"></i>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <h3 class="relative text-white text-xl z-10 px-4 text-center">Sensibilisation</h3>
-                    </div>
-                    <div class="p-6 flex-grow flex flex-col">
-                        <div class="flex gap-2 mb-3">
-                            <span class="text-xs bg-green-100 text-dixLight px-2 py-1 rounded-full font-bold uppercase tracking-wider">Pédagogie</span>
-                            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Déchets</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-dixDark mb-2 font-georgia normal-case">Les "Chef·fe·s" en classe</h4>
-                        <p class="text-gray-600 text-sm flex-grow mb-4">
-                            Intervention mensuelle du personnel de restauration dans les classes pour expliquer le menu et l'origine des produits. Résultat : une diminution de 30% du gaspillage alimentaire observé au réfectoire.
+                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-2 bg-yellow-400"></div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-yellow-50 text-yellow-800 text-xs font-oswald uppercase rounded-full mb-4">Pédagogie & Gastronomie</span>
+                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal">Menus végétariens coconstruits avec les convives</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia italic">
+                            "Pour faciliter l'acceptation des plats à base de légumineuses, nous avons organisé des ateliers de dégustation avec les délégué·e·s des élèves. Leurs retours ont permis d'adapter nos recettes de dahl de lentilles."
                         </p>
-                        <div class="flex items-center text-sm text-gray-500 border-t pt-4 border-gray-100 mt-auto">
-                            <i class="ph ph-map-pin mr-2"></i> Réseau écoles primaires
+                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+                            <i class="ph ph-graduation-cap mr-1 text-yellow-600"></i> Collège Le Pilat
                         </div>
                     </div>
-                </article>
+                </div>
+
+                <!-- Carte 4 : Appel à l'action -->
+                <div class="masonry-item bg-dixDark text-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-all transform hover:-translate-y-1">
+                    <div class="p-8 text-center flex flex-col items-center justify-center min-h-[250px]">
+                        <i class="ph ph-plus-circle text-5xl text-dixLight mb-4"></i>
+                        <h3 class="font-oswald text-2xl mb-3 text-white">Partagez votre expérience</h3>
+                        <p class="text-gray-200 text-sm mb-6 font-georgia">
+                            Transmettez vos informations via l'Enquête Flash pour voir votre initiative valorisée ici et inspirer d'autres acteur·rice·s du réseau.
+                        </p>
+                        <button onclick="switchTab('enquete')" class="font-oswald uppercase bg-dixLight text-white px-6 py-2 rounded-full hover:bg-white hover:text-dixDark transition-colors shadow-sm">
+                            Rejoindre la dynamique
+                        </button>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -572,11 +542,16 @@
         <div id="section-pro" class="hidden animate-fade-in flex flex-col items-center justify-center py-20">
             <div class="bg-white p-12 rounded-3xl shadow-xl text-center max-w-2xl border border-gray-100 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-2 bg-dixDark"></div>
-                <i class="ph ph-chart-line-up text-8xl text-dixLight mb-6 mx-auto"></i>
-                <h1 class="text-3xl mb-4 text-dixDark">Espace Pro (En construction)</h1>
-                <p class="text-lg text-gray-600 mb-8 font-georgia">
-                    Cet espace de consolidation des données filières et des calculateurs de volumes est actuellement en cours de <strong>développement partagé</strong>. 
-                    Il permettra de visualiser les besoins globaux du territoire.
+                <div class="bg-white p-6 rounded-full shadow-sm mb-6 inline-block border-4 border-dixLight/20">
+                    <i class="ph ph-hard-hat text-7xl text-dixDark"></i>
+                </div>
+                <h2 class="text-4xl mb-4 text-dixDark">Espace Pro</h2>
+                <div class="h-1 w-20 bg-dixLight mx-auto mb-6"></div>
+                <p class="text-xl text-gray-600 mb-8 font-georgia italic leading-relaxed">
+                    "Espace de mutualisation des données en cours de développement partagé."
+                </p>
+                <p class="text-gray-500 text-sm font-georgia mb-8">
+                    Cet espace sécurisé permettra aux décideur·euse·s et chef·fe·s de visualiser la cartographie des approvisionnements locaux et de croiser les besoins du territoire.
                 </p>
                 <div class="inline-block bg-green-50 text-dixDark font-oswald uppercase tracking-wider px-6 py-2 rounded-full border border-green-200">
                     Bientôt disponible
@@ -589,11 +564,16 @@
     <!-- FOOTER -->
     <footer class="bg-white border-t border-gray-200 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="text-sm text-gray-500 font-georgia">
-                    &copy; 2026 Projet Alimentaire Territorial - CCMP. Accompagné par <strong class="text-dixDark">DIX Autrement</strong>.
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-6">
+                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-sm text-gray-500 font-georgia text-center sm:text-left">
+                    <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-12 w-auto object-contain shrink-0 sm:mt-1">
+                    <div class="flex flex-col gap-1">
+                        <strong class="text-dixDark">Projet Alimentaire Territorial - Communauté de Communes des Monts du Pilat</strong>
+                        <span>Accompagnement technique et méthodologique par le Cabinet DIX Autrement.</span>
+                        <span>&copy; 2026 réalisé par <a href="https://www.dix-autrement.fr" target="_blank" class="text-dixDark hover:text-dixLight font-bold">www.dix-autrement.fr</a></span>
+                    </div>
                 </div>
-                <div class="flex space-x-6">
+                <div class="flex space-x-6 justify-center">
                     <a href="#" class="text-gray-400 hover:text-dixLight"><i class="ph ph-envelope-simple text-2xl"></i></a>
                     <a href="#" class="text-gray-400 hover:text-dixLight"><i class="ph ph-globe text-2xl"></i></a>
                 </div>
@@ -605,21 +585,20 @@
     <script>
         // --- GESTION DES ONGLETS ---
         function switchTab(tabId) {
-            // Cacher toutes les sections
             document.getElementById('section-enquete').classList.add('hidden');
             document.getElementById('section-vitrine').classList.add('hidden');
             document.getElementById('section-pro').classList.add('hidden');
             
-            // Enlever l'état actif de tous les boutons
             document.getElementById('tab-enquete').classList.remove('active');
             document.getElementById('tab-vitrine').classList.remove('active');
             document.getElementById('tab-pro').classList.remove('active');
             
-            // Afficher la section demandée et activer le bouton
-            document.getElementById('section-' + tabId).classList.remove('hidden');
-            document.getElementById('tab-' + tabId).classList.add('active');
+            const targetSection = (tabId === 'vitrine' || tabId === 'carnet') ? 'section-vitrine' : 'section-' + tabId;
+            const targetTab = (tabId === 'vitrine' || tabId === 'carnet') ? 'tab-vitrine' : 'tab-' + tabId;
+
+            document.getElementById(targetSection).classList.remove('hidden');
+            document.getElementById(targetTab).classList.add('active');
             
-            // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -630,7 +609,7 @@
                 bloc.classList.remove('hidden');
             } else {
                 bloc.classList.add('hidden');
-                document.getElementById('disponibilites').value = ''; // Réinitialise le champ si "Non"
+                document.getElementById('disponibilites').value = '';
                 document.getElementById('nomContact').value = '';
                 document.getElementById('telephoneContact').value = '';
             }
@@ -658,57 +637,50 @@
         });
 
         // --- SOUMISSION DU FORMULAIRE (FETCH) ---
-        // Remplacer l'URL ci-dessous par celle générée par Google Apps Script
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXhBokCPfGxMJX5DXF7OKSWfpgU0JL0zeBKydWSYMt0EgkJA3Oy36ylZ-CzgMhkptv_A/exec";
 
         async function submitData(event) {
-            event.preventDefault(); // Empêche le rechargement de la page
+            event.preventDefault();
             
             const btn = document.getElementById('submitBtn');
             const msg = document.getElementById('formMessage');
             
-            // État de chargement
             btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin text-2xl"></i> Envoi en cours...';
+            btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             msg.classList.add('hidden');
 
-            // Récupération des données du formulaire
             const form = event.target;
             const formData = new FormData(form);
             const dataObj = Object.fromEntries(formData.entries());
             
-            // Gestion spécifique pour les checkboxes (équipements) qui peuvent être multiples
             const equipements = formData.getAll('equipements');
             dataObj.equipements = equipements.join(', ');
 
             try {
-                // Envoi réel des données vers ton Google Apps Script
-                // ASTUCE : On force le Content-Type en text/plain pour éviter le blocage CORS preflight
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8'
-                    },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dataObj)
                 });
 
-                // Succès
                 form.reset();
                 champResultat.value = '';
-                document.getElementById('sliderValue').innerText = 'Niveau 3'; // Reset slider text
-                toggleDispo(false); // Cache le bloc dispo si ouvert
+                document.getElementById('sliderValue').innerText = 'Niveau 3';
+                toggleDispo(false);
                 
-                msg.innerHTML = '<i class="ph ph-check-circle text-lg"></i> Merci pour votre contribution au réseau !';
-                msg.className = "text-green-600 text-sm font-bold text-center mt-4 animate-pulse";
+                msg.innerHTML = '<i class="ph ph-check-circle text-lg"></i> Vos informations ont été transmises avec succès. Merci !';
+                msg.className = "text-dixLight text-sm font-bold text-center mt-4 animate-pulse p-3 bg-green-50 rounded-lg border border-dixLight/30";
+                msg.classList.remove('hidden');
                 
             } catch (error) {
-                // Erreur
-                msg.innerHTML = '<i class="ph ph-warning-circle text-lg"></i> Une erreur est survenue lors de l\'envoi.';
-                msg.className = "text-red-500 text-sm font-bold text-center mt-4";
+                msg.innerHTML = '<i class="ph ph-warning-circle text-lg"></i> Une erreur est survenue lors de l\'envoi. Veuillez réessayer.';
+                msg.className = "text-red-500 text-sm font-bold text-center mt-4 p-3 bg-red-50 rounded-lg border border-red-200";
+                msg.classList.remove('hidden');
                 console.error("Erreur de soumission:", error);
             } finally {
-                // Rétablir le bouton
-                btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-2xl"></i> Contribuer au diagnostic';
+                btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-2xl"></i> Transmettre mes informations';
+                btn.disabled = false;
                 btn.classList.remove('opacity-75', 'cursor-not-allowed');
             }
         }

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Réseau des cantines du Pilat - CCMP</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500&family=Georgia&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#405F59',  // Vert Foncé institutionnel
+                            light: '#549e39', // Vert Clair accent/action
+                            bg: '#f3f3f3'     // Fond Gris/Blanc cassé
+                        }
+                    },
+                    fontFamily: {
+                        oswald: ['Oswald', 'sans-serif'],
+                        georgia: ['Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles to enforce specific UI rules */
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f3f3f3;
+            color: #333;
+        }
+        h1, h2, h3, h4, h5, h6, .font-oswald {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+        .tab-btn.active {
+            border-bottom: 4px solid #549e39;
+            color: #405F59;
+            font-weight: bold;
+        }
+        .tab-btn {
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        /* Masonry Layout for the Initiative Cards */
+        .masonry {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 768px) { .masonry { column-count: 2; } }
+        @media (min-width: 1024px) { .masonry { column-count: 3; } }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #549e39;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-brand-dark text-white py-8 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-4 md:mb-0">
+                <i data-lucide="sprout" class="w-10 h-10 mr-4 text-brand-light"></i>
+                <div>
+                    <h1 class="text-3xl md:text-4xl text-white mb-1 tracking-wider">Le Réseau des cantines du Pilat</h1>
+                    <p class="font-georgia text-sm text-gray-200 italic normal-case tracking-normal">Une initiative de la CCMP accompagnée par DIX Autrement</p>
+                </div>
+            </div>
+            <div class="bg-white/10 rounded-lg p-3 inline-flex items-center border border-white/20">
+                <i data-lucide="handshake" class="w-5 h-5 mr-2 text-brand-light"></i>
+                <span class="font-georgia text-sm">Espace de coconstruction</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <div class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <button onclick="switchTab('enquete')" id="tab-enquete" class="tab-btn active text-brand-dark py-4 px-1 text-base md:text-lg font-oswald flex items-center gap-2">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                    L'Enquête Flash
+                </button>
+                <button onclick="switchTab('carnet')" id="tab-carnet" class="tab-btn text-gray-500 hover:text-brand-dark py-4 px-1 text-base md:text-lg font-oswald flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    Carnet d'initiatives
+                </button>
+                <button onclick="switchTab('pro')" id="tab-pro" class="tab-btn text-gray-500 hover:text-brand-dark py-4 px-1 text-base md:text-lg font-oswald flex items-center gap-2">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    Espace Pro
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- ==================== TAB 1 : L'ENQUÊTE FLASH ==================== -->
+        <section id="content-enquete" class="block">
+            <div class="mb-8">
+                <h2 class="text-2xl text-brand-dark mb-2 flex items-center gap-2">
+                    <i data-lucide="messages-square" class="w-6 h-6 text-brand-light"></i>
+                    Coconstruire notre réseau de professionnel·le·s
+                </h2>
+                <p class="text-gray-600">
+                    Ce formulaire a pour but de mieux connaître la réalité de vos établissements afin de développer des synergies adaptées. Il ne s'agit en aucun cas d'un contrôle, mais d'un outil partagé pour faciliter le quotidien des acteur·rice·s de la restauration collective.
+                </p>
+            </div>
+
+            <form id="flash-form" class="space-y-8">
+                
+                <!-- Bloc 1 : Identité -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+                    <h3 class="text-xl text-brand-dark border-b border-brand-light/30 pb-2 mb-6 flex items-center gap-2">
+                        <i data-lucide="home" class="w-5 h-5"></i>
+                        1. Identité et Volume d'activité
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 mb-2" for="nomEtablissement">Nom de l'établissement *</label>
+                            <input type="text" id="nomEtablissement" name="nomEtablissement" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light focus:border-brand-light outline-none transition-shadow">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="typologiePublic">Typologie du public</label>
+                            <select id="typologiePublic" name="typologiePublic" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none bg-white">
+                                <option value="">Sélectionner une option...</option>
+                                <option value="Scolaire">Scolaire</option>
+                                <option value="Crèche">Crèche</option>
+                                <option value="EHPAD">EHPAD</option>
+                                <option value="Médico-Social">Médico-Social</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="modeGestion">Mode de gestion</label>
+                            <select id="modeGestion" name="modeGestion" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none bg-white">
+                                <option value="">Sélectionner une option...</option>
+                                <option value="Directe">Directe</option>
+                                <option value="Concédée">Concédée</option>
+                                <option value="Mixte">Mixte</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="repasJour">Nombre de repas servis par jour</label>
+                            <input type="number" id="repasJour" name="repasJour" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 mb-2 text-sm" for="servicesSemaine">Services/semaine</label>
+                                <input type="number" id="servicesSemaine" name="servicesSemaine" min="0" max="21" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2 text-sm" for="semainesAn">Semaines/an</label>
+                                <input type="number" id="semainesAn" name="semainesAn" min="0" max="52" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloc 2 : Configuration -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+                    <h3 class="text-xl text-brand-dark border-b border-brand-light/30 pb-2 mb-6 flex items-center gap-2">
+                        <i data-lucide="chef-hat" class="w-5 h-5"></i>
+                        2. Configuration Technique et Économique
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Radios -->
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-gray-700 mb-3 font-semibold">Type de production</label>
+                                <div class="flex gap-6">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="production" value="Cuisine sur place" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                        <span>Cuisine sur place</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="production" value="Livraison" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                        <span>Livraison</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 mb-3 font-semibold">Type de liaison</label>
+                                <div class="flex flex-wrap gap-4">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="liaison" value="Chaude" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                        <span>Chaude</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="liaison" value="Froide" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                        <span>Froide</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="liaison" value="Non applicable" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                        <span>Non applicable</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Checkboxes & Inputs -->
+                        <div>
+                            <label class="block text-gray-700 mb-3 font-semibold">Équipements disponibles</label>
+                            <div class="space-y-2 mb-6">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="equipements" value="Stockage sec" class="rounded text-brand-light focus:ring-brand-light w-4 h-4">
+                                    <span>Stockage sec</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="equipements" value="Froid positif" class="rounded text-brand-light focus:ring-brand-light w-4 h-4">
+                                    <span>Froid positif (réfrigérateurs/chambres froides)</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="equipements" value="Froid négatif" class="rounded text-brand-light focus:ring-brand-light w-4 h-4">
+                                    <span>Froid négatif (congélateurs)</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="equipements" value="Légumerie/Transformation" class="rounded text-brand-light focus:ring-brand-light w-4 h-4">
+                                    <span>Légumerie ou espace de transformation</span>
+                                </label>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-2" for="coutRepas">Coût de revient moyen / repas (Matières premières en €)</label>
+                                    <div class="relative">
+                                        <input type="number" id="coutRepas" name="coutRepas" step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none pl-8">
+                                        <span class="absolute left-3 top-2 text-gray-500">€</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2" for="logiciels">Logiciels utilisés (menus, achats...)</label>
+                                    <input type="text" id="logiciels" name="logiciels" placeholder="Ex: Easilys, pronote, Excel..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloc 3 : EGAlim -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+                    <h3 class="text-xl text-brand-dark border-b border-brand-light/30 pb-2 mb-6 flex items-center gap-2">
+                        <i data-lucide="leaf" class="w-5 h-5"></i>
+                        3. Déterminants Réglementaires (Loi EGAlim)
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-gray-700 mb-3 font-semibold">Inscription plateforme « Ma Cantine »</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="maCantine" value="Oui" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                    <span>Oui</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="maCantine" value="Non" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                    <span>Non</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="maCantine" value="En cours" class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                    <span>En cours</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold" for="teledeclarations">Télédéclarations</label>
+                            <select id="teledeclarations" name="teledeclarations" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none bg-white">
+                                <option value="">Sélectionner...</option>
+                                <option value="Régulière">Régulière</option>
+                                <option value="Irrégulière">Irrégulière</option>
+                                <option value="Jamais">Jamais</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 mb-2 font-semibold" for="suiviEgalim">Suivi des indicateurs</label>
+                            <select id="suiviEgalim" name="suiviEgalim" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none bg-white">
+                                <option value="">Sélectionner...</option>
+                                <option value="Précis">Connaissance précise</option>
+                                <option value="Approximatif">Approximatif</option>
+                                <option value="Inexistant">Pas de suivi actuel</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloc 4 : Dynamique d'équipe -->
+                <div class="bg-brand-light/10 rounded-xl shadow-sm border border-brand-light/30 p-6 md:p-8">
+                    <h3 class="text-xl text-brand-dark border-b border-brand-light/40 pb-2 mb-6 flex items-center gap-2">
+                        <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                        4. Dynamique d'équipe et Partage (Carnet d'initiatives)
+                    </h3>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-gray-800 mb-4 font-semibold">Envie de travailler davantage de produits bruts et locaux au sein de l'équipe :</label>
+                            <div class="px-2">
+                                <input type="range" id="motivationLocal" name="motivationLocal" min="1" max="5" value="3" class="w-full">
+                                <div class="flex justify-between text-sm text-gray-600 mt-2 font-medium">
+                                    <span>Difficile actuellement (1)</span>
+                                    <span>En réflexion (3)</span>
+                                    <span>Très motivé·e·s (5)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-800 mb-2 font-semibold" for="partageInitiative">
+                                Avez-vous mis en place une organisation, une méthode ou un partenariat innovant qui a facilité vos approvisionnements locaux et que vous accepteriez de partager dans notre Carnet d'initiatives ?
+                            </label>
+                            <p class="text-sm text-gray-600 mb-3 italic">Exemple : organisation des plannings, achat groupé, astuce anti-gaspi, menu coconstruit...</p>
+                            <textarea id="partageInitiative" name="partageInitiative" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none resize-y" placeholder="Décrivez brièvement votre réussite partagée..."></textarea>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h4 class="font-oswald text-lg text-brand-dark mb-4">Vos coordonnées de contact</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-1 text-sm" for="contactNom">Nom et Prénom *</label>
+                                    <input type="text" id="contactNom" name="contactNom" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-1 text-sm" for="contactFonction">Fonction</label>
+                                    <input type="text" id="contactFonction" name="contactFonction" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-gray-700 mb-1 text-sm" for="contactEmail">Courriel *</label>
+                                    <input type="email" id="contactEmail" name="contactEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-light outline-none">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <label class="block text-gray-800 mb-3 font-semibold">Accord de valorisation</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="accordCitation" value="Oui" required class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                        <span class="text-sm">Oui, vous pouvez citer notre établissement pour inspirer le réseau.</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="accordCitation" value="Non" required class="text-brand-light focus:ring-brand-light w-4 h-4">
+                                        <span class="text-sm">Non, je préfère partager cette expérience de manière anonyme.</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Area -->
+                <div class="flex flex-col items-center justify-center pt-4 pb-8">
+                    <button type="submit" id="submitBtn" class="bg-brand-dark hover:bg-brand-light text-white font-oswald text-xl py-4 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 flex items-center gap-3">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                        Transmettre nos informations
+                    </button>
+                    <p id="formMessage" class="mt-4 text-center font-medium hidden"></p>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- ==================== TAB 2 : CARNET D'INITIATIVES ==================== -->
+        <section id="content-carnet" class="hidden">
+            <div class="mb-8 text-center md:text-left">
+                <h2 class="text-3xl text-brand-dark mb-4 flex items-center justify-center md:justify-start gap-3">
+                    <i data-lucide="book-heart" class="w-8 h-8 text-brand-light"></i>
+                    Carnet d'initiatives partagées
+                </h2>
+                <p class="text-gray-600 max-w-3xl">
+                    Découvrez les réussites et les savoir-faire coconstruits par les chef·fe·s et les équipes de notre territoire. Une source d'inspiration pour travailler ensemble vers une alimentation plus durable.
+                </p>
+            </div>
+
+            <!-- Masonry Grid -->
+            <div class="masonry">
+                <!-- Card 1 -->
+                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-2 bg-brand-light"></div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-brand-light/10 text-brand-dark text-xs font-oswald rounded-full mb-4">Achat Coconstruit</span>
+                        <h3 class="font-oswald text-xl text-brand-dark mb-3">Groupement d'achats avec la commune voisine</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                            "En nous associant avec l'école du village voisin, nous avons pu atteindre les volumes minimaux demandés par le maraîcher local. Une logistique partagée qui bénéficie aux deux établissements."
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> École Primaire des Cimes
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-2 bg-brand-dark"></div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-brand-dark/10 text-brand-dark text-xs font-oswald rounded-full mb-4">Mutualisation Technique</span>
+                        <h3 class="font-oswald text-xl text-brand-dark mb-3">Atelier épluchage partagé</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                            "Nous n'avions pas de légumerie. Nous avons mis en place une convention avec l'EHPAD qui dispose du matériel. Nos légumes bruts y sont préparés avant livraison chez nous."
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+                            <i data-lucide="user" class="w-4 h-4 mr-1"></i> Équipe cuisine de l'EHPAD & Crèche
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="h-2 bg-yellow-400"></div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-yellow-400/20 text-yellow-800 text-xs font-oswald rounded-full mb-4">Pédagogie & Gastronomie</span>
+                        <h3 class="font-oswald text-xl text-brand-dark mb-3">Menus végétariens coconstruits avec les convives</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                            "Pour faciliter l'acceptation des plats à base de légumineuses, nous avons organisé des ateliers de dégustation avec les délégué·e·s des élèves. Leurs retours ont permis d'adapter nos recettes de dahl de lentilles."
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> Collège Le Pilat
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- Card 4 -->
+                 <div class="masonry-item bg-brand-dark text-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-6 text-center flex flex-col items-center justify-center h-full min-h-[200px]">
+                        <i data-lucide="plus-circle" class="w-10 h-10 text-brand-light mb-3"></i>
+                        <h3 class="font-oswald text-xl mb-2">Partagez votre expérience</h3>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Remplissez l'Enquête Flash pour voir votre initiative valorisée ici et inspirer d'autres acteur·rice·s du réseau.
+                        </p>
+                        <button onclick="switchTab('enquete')" class="text-sm font-oswald bg-brand-light px-4 py-2 rounded-full hover:bg-white hover:text-brand-dark transition-colors">Rejoindre la dynamique</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3 : ESPACE PRO ==================== -->
+        <section id="content-pro" class="hidden">
+            <div class="flex flex-col items-center justify-center py-20 px-4 text-center">
+                <div class="bg-white p-6 rounded-full shadow-sm mb-6 inline-block border-4 border-brand-light/20">
+                    <i data-lucide="hard-hat" class="w-16 h-16 text-brand-dark"></i>
+                </div>
+                <h2 class="font-oswald text-3xl md:text-4xl text-brand-dark mb-4">Espace Pro</h2>
+                <div class="h-1 w-20 bg-brand-light mx-auto mb-6"></div>
+                <p class="text-xl text-gray-600 max-w-2xl font-georgia italic">
+                    "Espace de mutualisation des données en cours de développement partagé."
+                </p>
+                <p class="mt-6 text-gray-500 text-sm">
+                    Cet espace sécurisé permettra aux décideur·euse·s et chef·fe·s de visualiser la cartographie des approvisionnements locaux et de croiser les besoins du territoire.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-white mt-auto py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm font-georgia text-gray-300">
+            <p>Projet Alimentaire Territorial - Communauté de Communes des Monts du Pilat</p>
+            <p class="mt-2 text-xs text-gray-400">Accompagnement méthodologique par le Cabinet DIX Autrement.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- TAB LOGIC ---
+        function switchTab(tabId) {
+            // Hide all contents
+            ['content-enquete', 'content-carnet', 'content-pro'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            // Show target content
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+
+            // Reset tab styles
+            ['tab-enquete', 'tab-carnet', 'tab-pro'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('active', 'text-brand-dark', 'font-bold');
+                el.classList.add('text-gray-500');
+                el.style.borderBottomColor = 'transparent';
+            });
+            
+            // Set active tab styles
+            const activeTab = document.getElementById('tab-' + tabId);
+            activeTab.classList.remove('text-gray-500');
+            activeTab.classList.add('active', 'text-brand-dark', 'font-bold');
+            activeTab.style.borderBottomColor = '#549e39'; // brand-light
+        }
+
+        // --- FORM SUBMISSION LOGIC ---
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrz4LEsWzxCkKcYsDU0u0wkzYbCl-gPF_ghn3_jdfND68MY8dWovuGY4kJ3ZMVYP1u/exec';
+
+        const form = document.getElementById('flash-form');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageBox = document.getElementById('formMessage');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Check if URL is replaced
+            if(SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                showMessage('Veuillez configurer le lien Google Apps Script dans le code (SCRIPT_URL).', 'error');
+                return;
+            }
+
+            // UI Loading state
+            const originalBtnContent = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Traitement en cours...';
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            lucide.createIcons();
+            messageBox.classList.add('hidden');
+
+            // Collect Data
+            const formData = new FormData(form);
+            
+            // Handling multiple checkboxes for "equipements"
+            const equipements = [];
+            document.querySelectorAll('input[name="equipements"]:checked').forEach(cb => {
+                equipements.push(cb.value);
+            });
+            
+            // Create data object payload
+            const dataObj = Object.fromEntries(formData.entries());
+            dataObj.equipements = equipements.join(', '); // Override with array string
+            
+            // Send data to Google Apps Script
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                // Using text/plain avoids CORS preflight issues with GAS
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(dataObj)
+            })
+            .then(response => {
+                if(response.ok) {
+                    showMessage('Vos informations ont été partagées avec succès. Merci pour votre coopération !', 'success');
+                    form.reset();
+                    // Reset slider manually if needed
+                    document.getElementById('motivationLocal').value = 3;
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                showMessage('Une erreur est survenue lors du partage. Veuillez réessayer ultérieurement.', 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.innerHTML = originalBtnContent;
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                lucide.createIcons();
+            });
+        });
+
+        function showMessage(text, type) {
+            messageBox.textContent = text;
+            messageBox.classList.remove('hidden', 'text-red-600', 'text-brand-dark');
+            if (type === 'success') {
+                messageBox.classList.add('text-brand-dark', 'bg-brand-light/20', 'p-3', 'rounded-lg', 'border', 'border-brand-light/40');
+            } else {
+                messageBox.classList.add('text-red-600', 'bg-red-50', 'p-3', 'rounded-lg', 'border', 'border-red-200');
+            }
+        }
+    </script>
+</body>
+</html>

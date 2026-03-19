@@ -26,6 +26,7 @@
                         dixLight: '#549e39', // Vert Clair (Action/Accent)
                         dixBg: '#f9fafb',   // Gris très clair
                         dixText: '#1f2937', // Gris foncé
+                        dixMuted: '#e5edeb', // Fond bandeau partenaires
                     },
                     fontFamily: {
                         oswald: ['Oswald', 'sans-serif'],
@@ -51,7 +52,7 @@
                 @apply bg-dixLight text-white font-oswald uppercase px-6 py-3 rounded-xl shadow-md hover:bg-green-600 hover:shadow-lg transition-all duration-300;
             }
             .nav-tab {
-                @apply font-oswald uppercase text-gray-500 pb-2 border-b-2 border-transparent hover:text-dixDark transition-all cursor-pointer;
+                @apply font-oswald uppercase text-gray-500 pb-2 border-b-4 border-transparent hover:text-dixDark transition-all cursor-pointer;
             }
             .nav-tab.active {
                 @apply text-dixDark border-dixLight font-bold;
@@ -82,12 +83,9 @@
             }
         }
 
-        /* Transition pour le scroll du header */
-        header {
-            @apply transition-all duration-500 ease-in-out;
-        }
-        header img {
-            @apply transition-all duration-500 ease-in-out;
+        /* Animation de disparition du titre au scroll */
+        #top-title-area {
+            @apply transition-all duration-500 ease-in-out origin-top overflow-hidden;
         }
 
         /* Personnalisation du slider */
@@ -101,19 +99,23 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- HEADER INSTITUTIONNEL -->
-    <header id="main-header" class="bg-white shadow-sm sticky top-0 z-50 py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center">
-                
-                <!-- Logos Partenaires -->
-                <div class="flex items-center space-x-6">
-                    <img src="logo-ccmp.png" id="logo-1" alt="Logo CCMP" class="h-16 w-auto object-contain">
-                    <img src="logo-inrae.png" id="logo-2" alt="Logo INRAE" class="h-16 w-auto object-contain">
+    <!-- HEADER / NAVIGATION -->
+    <header id="main-header" class="bg-white shadow-sm sticky top-0 z-50">
+        <!-- Bandeau Titre (Disparaît au scroll) -->
+        <div id="top-title-area" class="bg-dixDark text-white py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4">
+                <i class="ph ph-plant text-4xl text-dixLight"></i>
+                <div>
+                    <h1 class="text-2xl md:text-3xl text-white tracking-widest leading-none">Le Réseau des cantines des monts du pilat</h1>
+                    <p class="text-xs text-green-100/70 font-georgia italic mt-1">Accompagnement méthodologique par DIX Autrement</p>
                 </div>
+            </div>
+        </div>
 
-                <!-- Navigation principale -->
-                <nav class="hidden md:flex space-x-8">
+        <!-- Navigation principale (Alignée à gauche sur le bloc formulaire) -->
+        <div class="border-t border-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <nav class="flex space-x-8 pt-4">
                     <button onclick="switchTab('enquete')" id="tab-enquete" class="nav-tab active text-lg flex items-center gap-2">
                         <i class="ph ph-clipboard-text text-xl"></i> L'Enquête Flash
                     </button>
@@ -124,11 +126,6 @@
                         <i class="ph ph-users text-xl"></i> Espace Pro
                     </button>
                 </nav>
-
-                <!-- Menu Mobile (Simplifié) -->
-                <div class="md:hidden flex items-center">
-                    <button class="text-dixDark hover:text-dixLight"><i class="ph ph-list text-3xl"></i></button>
-                </div>
             </div>
         </div>
     </header>
@@ -138,9 +135,9 @@
 
         <!-- ONGLET 1 : L'ENQUÊTE FLASH -->
         <div id="section-enquete" class="block animate-fade-in">
-            <div class="mb-8 text-center max-w-3xl mx-auto">
-                <h1 class="text-4xl mb-4">Dynamique de réseau & Développement partagé</h1>
-                <p class="text-lg text-gray-600">
+            <div class="mb-8 text-left max-w-4xl mx-auto">
+                <h2 class="text-3xl mb-4">Dynamique de réseau & Développement partagé</h2>
+                <p class="text-lg text-gray-600 max-w-3xl">
                     Afin de coconstruire un diagnostic précis et d'identifier les leviers d'approvisionnement local, nous invitons l'ensemble des acteur·rice·s de la restauration collective à partager leurs pratiques.
                 </p>
             </div>
@@ -225,19 +222,19 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                                     <input type="checkbox" name="equipements" value="StockageSec" class="w-5 h-5 text-dixLight rounded">
-                                    <span class="text-sm">Stockage sec</span>
+                                    <span class="text-sm text-dixDark font-bold">Stockage sec</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                                     <input type="checkbox" name="equipements" value="FroidPositif" class="w-5 h-5 text-dixLight rounded">
-                                    <span class="text-sm">Froid positif (+)</span>
+                                    <span class="text-sm text-dixDark font-bold">Froid positif (+)</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                                     <input type="checkbox" name="equipements" value="FroidNegatif" class="w-5 h-5 text-dixLight rounded">
-                                    <span class="text-sm">Froid négatif (-)</span>
+                                    <span class="text-sm text-dixDark font-bold">Froid négatif (-)</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                                     <input type="checkbox" name="equipements" value="Legumerie" class="w-5 h-5 text-dixLight rounded">
-                                    <span class="text-sm">Légumerie / Transfo</span>
+                                    <span class="text-sm text-dixDark font-bold">Légumerie / Transfo</span>
                                 </label>
                             </div>
 
@@ -422,10 +419,10 @@
                             <label class="form-label mb-3">Accepteriez-vous d'être sollicité·e pour un court entretien afin d'approfondir ces éléments ?</label>
                             <div class="flex flex-col sm:flex-row gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="entretien" value="Oui" class="w-5 h-5 text-dixLight" onchange="toggleDispo(true)"> <span>Oui, avec plaisir</span>
+                                    <input type="radio" name="entretien" value="Oui" class="w-5 h-5 text-dixLight"> <span>Oui, avec plaisir</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="entretien" value="Non" class="w-5 h-5 text-dixLight" onchange="toggleDispo(false)" checked> <span>Non, pas pour le moment</span>
+                                    <input type="radio" name="entretien" value="Non" class="w-5 h-5 text-dixLight" checked> <span>Non, pas pour le moment</span>
                                 </label>
                             </div>
                         </div>
@@ -471,8 +468,8 @@
 
         <!-- ONGLET 2 : LE CARNET D'INITIATIVES -->
         <div id="section-vitrine" class="hidden animate-fade-in">
-            <div class="mb-10 text-center max-w-3xl mx-auto">
-                <h2 class="text-3xl text-dixDark mb-4 flex items-center justify-center gap-3">
+            <div class="mb-10 text-left max-w-4xl mx-auto">
+                <h2 class="text-3xl text-dixDark mb-4 flex items-center gap-3">
                     <i class="ph ph-book-open text-3xl text-dixLight"></i>
                     Carnet d'initiatives partagées
                 </h2>
@@ -482,7 +479,7 @@
             </div>
 
             <!-- Grille Masonry -->
-            <div class="masonry">
+            <div class="masonry max-w-4xl mx-auto">
                 
                 <!-- Carte 1 -->
                 <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
@@ -553,12 +550,12 @@
                 <div class="bg-white p-6 rounded-full shadow-sm mb-6 inline-block border-4 border-dixLight/20">
                     <i class="ph ph-hard-hat text-7xl text-dixDark"></i>
                 </div>
-                <h2 class="text-4xl mb-4 text-dixDark">Espace Pro</h2>
+                <h2 class="text-4xl mb-4 text-dixDark text-center">Espace Pro</h2>
                 <div class="h-1 w-20 bg-dixLight mx-auto mb-6"></div>
-                <p class="text-xl text-gray-600 mb-8 font-georgia italic leading-relaxed">
+                <p class="text-xl text-gray-600 mb-8 font-georgia italic leading-relaxed text-center">
                     "Espace de mutualisation des données en cours de développement partagé."
                 </p>
-                <p class="text-gray-500 text-sm font-georgia mb-8">
+                <p class="text-gray-500 text-sm font-georgia mb-8 text-center">
                     Cet espace sécurisé permettra aux décideur·euse·s et chef·fe·s de visualiser la cartographie des approvisionnements locaux et de croiser les besoins du territoire.
                 </p>
                 <div class="inline-block bg-green-50 text-dixDark font-oswald uppercase tracking-wider px-6 py-2 rounded-full border border-green-200">
@@ -569,27 +566,53 @@
 
     </main>
 
+    <!-- BANDEAU PARTENAIRES -->
+    <section class="bg-dixMuted py-10 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-80">
+                <img src="logo-ccmp.png" alt="Logo CCMP" class="h-14 w-auto object-contain">
+                <img src="logo-inrae.png" alt="Logo INRAE" class="h-14 w-auto object-contain">
+                <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-12 w-auto object-contain">
+            </div>
+        </div>
+    </section>
+
     <!-- FOOTER -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-6">
-                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-sm text-gray-500 font-georgia text-center sm:text-left">
-                    <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-12 w-auto object-contain shrink-0 sm:mt-1">
-                    <div class="flex flex-col gap-1">
-                        <strong class="text-dixDark">Projet Alimentaire Territorial - Communauté de Communes des Monts du Pilat</strong>
-                        <span>Accompagnement technique et méthodologique par le Cabinet DIX Autrement.</span>
-                        <span>&copy; 2026 réalisé par <a href="https://www.dix-autrement.fr" target="_blank" class="text-dixDark hover:text-dixLight font-bold">www.dix-autrement.fr</a></span>
+    <footer class="bg-white border-t border-gray-100 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <!-- Contact 1 : Email -->
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <div class="flex items-center gap-3 text-dixDark font-bold font-oswald uppercase">
+                        <i class="ph ph-envelope-simple text-2xl text-dixLight"></i>
+                        <span>Courriel</span>
                     </div>
+                    <a href="mailto:pierre.alain.mory@dix-autrement.fr" class="text-sm text-gray-600 hover:text-dixLight transition-colors">pierre.alain.mory@dix-autrement.fr</a>
                 </div>
-                <!-- Liens vers contact email et site web (Placeholders) -->
-                <div class="flex space-x-6 justify-center">
-                    <a href="mailto:contact@exemple.fr" title="Nous contacter par email" class="text-gray-400 hover:text-dixLight transition-colors">
-                        <i class="ph ph-envelope-simple text-3xl"></i>
-                    </a>
-                    <a href="https://www.cc-monts-du-pilat.fr" target="_blank" title="Visiter le site web institutionnel" class="text-gray-400 hover:text-dixLight transition-colors">
-                        <i class="ph ph-globe text-3xl"></i>
-                    </a>
+
+                <!-- Contact 2 : Web -->
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <div class="flex items-center gap-3 text-dixDark font-bold font-oswald uppercase">
+                        <i class="ph ph-globe text-2xl text-dixLight"></i>
+                        <span>Site internet</span>
+                    </div>
+                    <a href="https://www.dix-autrement.fr" target="_blank" class="text-sm text-gray-600 hover:text-dixLight transition-colors">www.dix-autrement.fr</a>
                 </div>
+
+                <!-- Contact 3 : Assistance -->
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <div class="flex items-center gap-3 text-dixDark font-bold font-oswald uppercase">
+                        <i class="ph ph-phone-call text-2xl text-dixLight"></i>
+                        <span>Assistance technique</span>
+                    </div>
+                    <p class="text-sm text-gray-600">07 83 00 09 56 / Pierre-Alain Mory</p>
+                </div>
+            </div>
+
+            <!-- Mentions Légales Compactes -->
+            <div class="mt-10 pt-6 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-gray-400 font-georgia uppercase tracking-widest">
+                <p>Projet Alimentaire Territorial - CC Monts du Pilat</p>
+                <p>&copy; 2026 Réalisé par Cabinet DIX Autrement</p>
             </div>
         </div>
     </footer>
@@ -598,18 +621,19 @@
     <script>
         // --- GESTION DU HEADER DYNAMIQUE (SHRINK ON SCROLL) ---
         window.addEventListener('scroll', () => {
-            const header = document.getElementById('main-header');
-            const logo1 = document.getElementById('logo-1');
-            const logo2 = document.getElementById('logo-2');
+            const titleArea = document.getElementById('top-title-area');
+            const navTabs = document.querySelector('nav');
 
-            if (window.scrollY > 50) {
-                header.classList.replace('py-6', 'py-2');
-                logo1.classList.replace('h-16', 'h-10');
-                logo2.classList.replace('h-16', 'h-10');
+            if (window.scrollY > 100) {
+                titleArea.style.maxHeight = '0px';
+                titleArea.style.paddingTop = '0px';
+                titleArea.style.paddingBottom = '0px';
+                titleArea.style.opacity = '0';
             } else {
-                header.classList.replace('py-2', 'py-6');
-                logo1.classList.replace('h-10', 'h-16');
-                logo2.classList.replace('h-10', 'h-16');
+                titleArea.style.maxHeight = '150px';
+                titleArea.style.paddingTop = '1.5rem';
+                titleArea.style.paddingBottom = '1.5rem';
+                titleArea.style.opacity = '1';
             }
         });
 
@@ -633,6 +657,13 @@
         }
 
         // --- GESTION DE L'AFFICHAGE DES DISPONIBILITÉS ---
+        const radioEntretien = document.getElementsByName('entretien');
+        radioEntretien.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                toggleDispo(e.target.value === 'Oui');
+            });
+        });
+
         function toggleDispo(show) {
             const bloc = document.getElementById('blocDispo');
             if(show) {
@@ -675,7 +706,7 @@
             const btn = document.getElementById('submitBtn');
             const msg = document.getElementById('formMessage');
             
-            btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin text-2xl"></i> Envoi en cours...';
+            btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin text-2xl text-white"></i> Envoi en cours...';
             btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             msg.classList.add('hidden');

@@ -592,8 +592,9 @@
 
     <!-- LOGIQUE JAVASCRIPT -->
     <script>
-        // URL du Google Apps Script (Sert pour l'envoi ET la réception de données)
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXhBokCPfGxMJX5DXF7OKSWfpgU0JL0zeBKydWSYMt0EgkJA3Oy36ylZ-CzgMhkptv_A/exec";
+        // URL du Google Apps Script
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwoay44Z96DJqqcqcMBMOtDvSz_9cHt-1QEfiEBE42SPv68-Y43dJUzLKdfOH7IDClbzg/exec";
+        
         let initiativesLoaded = false;
 
         // --- GESTION DU HEADER DYNAMIQUE (SHRINK ON SCROLL) ---
@@ -736,7 +737,7 @@
         // --- SOUMISSION DU FORMULAIRE (FETCH POST) ---
         async function submitData(event) {
             event.preventDefault();
-            
+
             const btn = document.getElementById('submitBtn');
             const msg = document.getElementById('formMessage');
             
@@ -759,8 +760,7 @@
             }
 
             try {
-                // IMPORTANT : Le blocage CORS est réglé ici, nous avons retiré 'mode: no-cors'
-                // qui causait la fausse erreur sur le site internet. 
+                // Utilisation propre et sans no-cors pour lire le retour de Google proprement
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },

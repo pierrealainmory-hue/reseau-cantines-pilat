@@ -38,7 +38,7 @@
         body { font-family: 'Georgia', serif; background-color: #f3f3f3; color: #333; }
         h1, h2, h3, h4, .font-oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; font-weight: 400; letter-spacing: 0.05em; }
         .form-section { background: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .section-title { color: #405F59; border-bottom: 2px solid #549e39; padding-bottom: 0.5rem; margin-bottom: 1.5rem; display: flex; items-center: center; gap: 0.5rem; }
+        .section-title { color: #405F59; border-bottom: 2px solid #549e39; padding-bottom: 0.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
         label { display: block; font-weight: 600; color: #374151; margin-bottom: 0.25rem; font-size: 0.95rem; }
         input[type="text"], input[type="number"], input[type="date"], select, textarea { 
             width: 100%; padding: 0.6rem 0.8rem; border: 1px solid #d1d5db; border-radius: 0.4rem; outline: none; transition: ring 0.2s;
@@ -46,22 +46,25 @@
         input:focus, textarea:focus { ring: 2px solid #549e39; border-color: #549e39; }
         .hint { font-size: 0.85rem; color: #6b7280; font-style: italic; margin-bottom: 0.5rem; display: block; }
         .radio-group, .check-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; }
-        .radio-item, .check-item { display: flex; items-center: center; gap: 0.5rem; cursor: pointer; }
+        .radio-item, .check-item { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #549e39; cursor: pointer; margin-top: -8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #d1d5db; border-radius: 4px; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-24">
 
     <!-- Header / Logos -->
     <header class="bg-white border-b border-gray-200 py-6 mb-8">
         <div class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-8">
-                <img src="logo-ccmp.png" alt="Logo CCMP" class="h-16 object-contain">
-                <img src="logo-inrae.png" alt="Logo INRAE" class="h-16 object-contain">
+            <div class="flex items-center gap-6">
+                <img src="logo-ccmp.png" alt="Logo CCMP" class="h-16 object-contain" onerror="this.src='https://placehold.co/100x60?text=CCMP'">
+                <img src="logo-inrae.png" alt="Logo INRAE" class="h-16 object-contain" onerror="this.src='https://placehold.co/100x60?text=INRAE'">
+                <img src="logo-dix.png" alt="Logo DIX" class="h-12 object-contain" onerror="this.src='https://placehold.co/100x60?text=DIX'">
             </div>
             <div class="text-right flex flex-col items-center md:items-end">
-                <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-10 object-contain mb-2">
                 <h1 class="text-brand-dark text-xl font-oswald tracking-widest">Guide d'échange PAT 2026</h1>
-                <p class="text-xs text-gray-500 font-georgia italic">Document de saisie réservé à l'animateur·rice</p>
+                <p class="text-xs text-gray-500 font-georgia italic mt-1">Saisie animateur·rice (MAJ)</p>
             </div>
         </div>
     </header>
@@ -72,7 +75,7 @@
         <div class="bg-brand-dark text-white p-6 rounded-xl mb-8 shadow-lg">
             <h3 class="font-oswald text-lg mb-3 flex items-center gap-2 text-brand-light">
                 <i data-lucide="mic" class="w-5 h-5"></i>
-                MOT D'INTRODUCTION (À LIRE)
+                MOT D'INTRODUCTION (Brief)
             </h3>
             <p class="font-georgia italic text-sm leading-relaxed">
                 "Bonjour et merci beaucoup de nous recevoir. Dans le cadre de son Projet Alimentaire Territorial, la Communauté de Communes des Monts du Pilat lance une mission d'étude pour accompagner la restauration collective dans la facilitation de ses approvisionnements locaux. Notre objectif aujourd'hui n'est pas de vous évaluer. Nous savons que votre quotidien est complexe. Nous sommes ici pour comprendre votre réalité de terrain, valoriser les initiatives que vous menez déjà, et identifier avec vous les solutions (logistiques, financières, RH) qui pourraient vous faciliter l’achat de produits locaux. C'est un échange ouvert pour réfléchir aux solutions d’améliorations des logiques d’approvisionnement locaux du territoire."
@@ -83,7 +86,7 @@
             
             <!-- SECTION EN-TÊTE -->
             <div class="form-section">
-                <h3 class="section-title font-oswald text-xl"><i data-lucide="info" class="w-6 h-6"></i> Identification</h3>
+                <h3 class="section-title font-oswald text-xl"><i data-lucide="info" class="w-6 h-6"></i> Identification de l'Entretien</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
                         <label>Établissement visité *</label>
@@ -104,33 +107,14 @@
                 </div>
             </div>
 
-            <!-- PARTIE 0 : DONNÉES DE BASE -->
-            <div class="form-section bg-gray-50">
+            <!-- PARTIE 0 : IDENTITÉ ET DONNÉES DE BASE -->
+            <div class="form-section bg-gray-50 border-gray-300">
                 <h3 class="section-title font-oswald text-xl text-gray-600 border-gray-400">
-                    <i data-lucide="database" class="w-6 h-6"></i> PARTIE 0 : IDENTITÉ ET DONNÉES DE BASE
+                    <i data-lucide="database" class="w-6 h-6"></i> PARTIE 0 : DONNÉES DE BASE (L'Enquête Flash)
                 </h3>
-                <span class="hint mb-6">(À remplir UNIQUEMENT si l'établissement n'a pas répondu à l'Enquête Flash)</span>
+                <span class="hint mb-6">(À remplir UNIQUEMENT si l'établissement n'a pas répondu à l'Enquête Flash en ligne)</span>
                 
                 <div class="space-y-8">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="col-span-2 md:col-span-1">
-                            <label>Repas/jour (moy)</label>
-                            <input type="number" name="repasJour">
-                        </div>
-                        <div class="col-span-2 md:col-span-1">
-                            <label>Repas/an (total)</label>
-                            <input type="number" name="repasAn">
-                        </div>
-                        <div>
-                            <label>Services/sem</label>
-                            <input type="number" name="servicesSemaine">
-                        </div>
-                        <div>
-                            <label>Semaines/an</label>
-                            <input type="number" name="semainesAn">
-                        </div>
-                    </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label>Mode de gestion</label>
@@ -139,17 +123,27 @@
                                 <label class="radio-item"><input type="radio" name="modeGestion" value="Concédée"> Concédée</label>
                                 <label class="radio-item"><input type="radio" name="modeGestion" value="Mixte"> Mixte</label>
                             </div>
-                            <input type="text" name="prestataire" placeholder="Si concédée, quel prestataire ?" class="mt-2 text-sm">
                         </div>
                         <div>
-                            <label>Configuration</label>
+                            <label>Nombre de repas servis par an</label>
+                            <input type="number" name="repasAn" min="0">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
+                        <div>
+                            <label>Lieu de production</label>
                             <div class="radio-group">
-                                <label class="radio-item"><input type="radio" name="production" value="Sur place"> Cuisine sur place</label>
-                                <label class="radio-item"><input type="radio" name="production" value="Livraison"> Livraison extérieur</label>
+                                <label class="radio-item"><input type="radio" name="production" value="Cuisine sur place"> Sur place</label>
+                                <label class="radio-item"><input type="radio" name="production" value="Repas livrés"> Repas livrés</label>
                             </div>
-                            <div class="radio-group mt-2">
-                                <label class="radio-item"><input type="radio" name="liaison" value="Chaude"> Chaude</label>
-                                <label class="radio-item"><input type="radio" name="liaison" value="Froide"> Froide</label>
+                        </div>
+                        <div>
+                            <label>Type de liaison</label>
+                            <div class="check-group">
+                                <label class="check-item"><input type="checkbox" name="liaison" value="Chaude"> Chaude</label>
+                                <label class="check-item"><input type="checkbox" name="liaison" value="Froide"> Froide</label>
+                                <label class="check-item"><input type="checkbox" name="liaison" value="NA"> Non applicable</label>
                             </div>
                         </div>
                     </div>
@@ -158,15 +152,22 @@
                         <label>Équipements disponibles</label>
                         <div class="check-group">
                             <label class="check-item"><input type="checkbox" name="equipements" value="Stockage sec"> Stockage sec</label>
-                            <label class="check-item"><input type="checkbox" name="equipements" value="Froid positif"> Froid positif</label>
-                            <label class="check-item"><input type="checkbox" name="equipements" value="Froid négatif"> Froid négatif</label>
-                            <label class="check-item"><input type="checkbox" name="equipements" value="Légumerie"> Légumerie/Transformation</label>
+                            <label class="check-item"><input type="checkbox" name="equipements" value="Froid positif"> Froid positif (+)</label>
+                            <label class="check-item"><input type="checkbox" name="equipements" value="Froid négatif"> Froid négatif (-)</label>
+                            <label class="check-item"><input type="checkbox" name="equipements" value="Légumerie"> Légumerie/Transfo</label>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div><label class="text-sm">Surf. Sec (m²)</label><input type="number" name="surfSec" min="0" placeholder="0"></div>
+                        <div><label class="text-sm">Surf. Froid + (m²)</label><input type="number" name="surfFroidPlus" min="0" placeholder="0"></div>
+                        <div><label class="text-sm">Surf. Froid - (m²)</label><input type="number" name="surfFroidMoins" min="0" placeholder="0"></div>
+                        <div><label class="text-sm">Surf. Légumerie (m²)</label><input type="number" name="surfLegumerie" min="0" placeholder="0"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
                         <div>
-                            <label>Coût de revient denrées (€ HT/repas)</label>
+                            <label>Coût de revient moyen / repas (Matières 1ères € HT)</label>
                             <input type="number" name="coutRepas" step="0.01">
                         </div>
                         <div>
@@ -175,23 +176,23 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t pt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
                         <div>
                             <label class="text-sm">Inscription « Ma Cantine »</label>
                             <select name="maCantine" class="text-sm">
                                 <option value="">Choisir...</option>
                                 <option value="Oui">Oui</option>
-                                <option value="Non">Non</option>
                                 <option value="En cours">En cours</option>
+                                <option value="Non">Non</option>
                             </select>
                         </div>
                         <div>
-                            <label class="text-sm">Régularité télédéclarations</label>
+                            <label class="text-sm">Télédéclaration</label>
                             <select name="teledeclarations" class="text-sm">
                                 <option value="">Choisir...</option>
-                                <option value="Régulier">Régulier</option>
-                                <option value="Irrégulier">Irrégulier</option>
-                                <option value="Jamais">Jamais</option>
+                                <option value="Oui">Oui</option>
+                                <option value="Non">Non</option>
+                                <option value="En cours">En cours</option>
                             </select>
                         </div>
                         <div>
@@ -200,9 +201,70 @@
                                 <option value="">Choisir...</option>
                                 <option value="Précis">Précis</option>
                                 <option value="Approximatif">Approximatif</option>
-                                <option value="Inexistant">Inexistant</option>
+                                <option value="Inexistant">Inexistant à ce jour</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="space-y-6 pt-4 border-t border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label>Intérêt des équipes pour l'approvisionnement local</label>
+                                <div class="px-2 mt-2">
+                                    <input type="range" name="interetEquipes" min="1" max="5" value="3" oninput="document.getElementById('valInt').textContent = this.value">
+                                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>Réticent (1)</span>
+                                        <span class="font-bold text-brand-dark text-base" id="valInt">3</span>
+                                        <span>Engagé (5)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label>Autonomie achats de la cuisine</label>
+                                <div class="px-2 mt-2">
+                                    <input type="range" name="autonomieAchats" min="0" max="10" value="5" oninput="document.getElementById('valAuto').textContent = this.value">
+                                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>Aucune (0)</span>
+                                        <span class="font-bold text-brand-dark text-base" id="valAuto">5</span>
+                                        <span>Totale (10)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Volonté et capacité actuelle à travailler des produits locaux</label>
+                            <textarea name="volonteCapacite" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200">
+                        <label class="text-brand-dark font-oswald text-lg mb-4">Carnet d'initiatives (RETEX Flash)</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="text-sm">Thématique</label>
+                                <select name="retexThematique" class="text-sm">
+                                    <option value="">Choisir...</option>
+                                    <option value="Achats">Achats</option>
+                                    <option value="Logistique">Logistique</option>
+                                    <option value="Transformation">Transformation</option>
+                                    <option value="Sensibilisation">Sensibilisation</option>
+                                    <option value="Autre">Autre</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-sm">Temps de mise en œuvre</label>
+                                <select name="retexTemps" class="text-sm">
+                                    <option value="">Choisir...</option>
+                                    <option value="Rapide">Rapide</option>
+                                    <option value="Moyen">Moyen</option>
+                                    <option value="Long">Long</option>
+                                </select>
+                            </div>
+                            <div><label class="text-sm">Nb d'acteur·rice·s impliqué·e·s</label><input type="number" name="retexActeurs" min="0"></div>
+                            <div><label class="text-sm">Compétences spécifiques requises ?</label><input type="text" name="retexCompetences"></div>
+                        </div>
+                        <label class="text-sm">Le récit de la réussite :</label>
+                        <textarea name="retexRecit" rows="2"></textarea>
                     </div>
                 </div>
             </div>
@@ -212,23 +274,13 @@
                 <h3 class="section-title font-oswald text-xl"><i data-lucide="users" class="w-6 h-6"></i> PARTIE A : DYNAMIQUE RH & IMPLICATION</h3>
                 <div class="space-y-6">
                     <div>
-                        <label class="italic">🗣️ « Comment se passe le quotidien avec votre équipe en cuisine, et qu'est-ce qui est important pour vous ? »</label>
+                        <label class="italic">🗣️ « Comment se passe le quotidien avec votre équipe en cuisine, et qu'est-ce qui est important pour vous lorsque vous préparez les repas pour vos convives ? »</label>
                         <textarea name="quotidienEquipe" rows="4"></textarea>
                     </div>
                     <div>
-                        <label>1. Niveau d'implication & Changement</label>
-                        <span class="hint">🗣️ Volonté ou capacité de travailler davantage de produits bruts ?</span>
-                        <div class="radio-group">
-                            <label class="radio-item"><input type="radio" name="implication" value="Très motivé·e·s"> Très motivé·e·s</label>
-                            <label class="radio-item"><input type="radio" name="implication" value="Volonté mais manque de moyens"> Volonté/Manque moyens</label>
-                            <label class="radio-item"><input type="radio" name="implication" value="Difficile actuellement"> Difficile actuellement</label>
-                        </div>
-                        <textarea name="notesChangement" rows="3" class="mt-4" placeholder="Notes sur l'ouverture au changement..."></textarea>
-                    </div>
-                    <div>
-                        <label>2. Valorisation du métier</label>
-                        <span class="hint">🗣️ Est-ce que le local participe à la motivation / rétention des agent·e·s ?</span>
-                        <textarea name="valorisationMetier" rows="3"></textarea>
+                        <label>1. Valorisation du métier</label>
+                        <span class="hint">🗣️ La cuisine à base de produits frais locaux participe-t-elle à la valorisation des postes, à la motivation et à la rétention des agent·e·s ?</span>
+                        <textarea name="valorisationMetier" rows="4"></textarea>
                     </div>
                 </div>
             </div>
@@ -236,40 +288,42 @@
             <!-- PARTIE B : PRATIQUES D'APPROVISIONNEMENT -->
             <div class="form-section">
                 <h3 class="section-title font-oswald text-xl"><i data-lucide="shopping-cart" class="w-6 h-6"></i> PARTIE B : PRATIQUES D'APPROVISIONNEMENT</h3>
-                <div class="space-y-8">
+                <div class="space-y-6">
                     <div>
-                        <label class="italic">🗣️ « Quelle est votre philosophie d'achat aujourd'hui ? »</label>
+                        <label class="italic">🗣️ « Quelle est votre philosophie d'achat aujourd'hui et comment choisissez-vous vos partenaires habituels ? »</label>
                         <textarea name="philosophieAchat" rows="3"></textarea>
                     </div>
                     <div>
-                        <label>3. Sourcing & Critères</label>
-                        <textarea name="fournisseursActuels" rows="3" placeholder="Lister fournisseur·euse·s actuel·le·s (Producteur·rice·s, Grossistes...)"></textarea>
+                        <label>2. Sourcing & Critères</label>
+                        <textarea name="fournisseursActuels" rows="3" placeholder="Lister fournisseur·euse·s actuel·le·s (avec adresses éventuelles / types de produits)"></textarea>
                         <div class="check-group mt-3">
-                            <span class="w-full text-sm font-semibold text-gray-600">Critères :</span>
+                            <span class="w-full text-sm font-semibold text-gray-600">Critères de choix :</span>
                             <label class="check-item"><input type="checkbox" name="criteresChoix" value="Prix"> Prix</label>
                             <label class="check-item"><input type="checkbox" name="criteresChoix" value="Proximité"> Proximité</label>
                             <label class="check-item"><input type="checkbox" name="criteresChoix" value="Qualité"> Qualité</label>
-                            <label class="check-item"><input type="checkbox" name="criteresChoix" value="Service"> Service livraison</label>
+                            <label class="check-item"><input type="checkbox" name="criteresChoix" value="Service livraison"> Service livraison</label>
+                            <label class="check-item"><input type="checkbox" name="criteresChoix" value="Autre"> Autre</label>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label>4. Contractualisation & Logistique</label>
+                            <label>3. Contractualisation & Logistique</label>
                             <div class="check-group mb-3">
-                                <label class="check-item"><input type="checkbox" name="contractualisation" value="Marchés"> Marchés formalisés</label>
+                                <label class="check-item"><input type="checkbox" name="contractualisation" value="Marchés publics formalisés"> Marchés publics</label>
                                 <label class="check-item"><input type="checkbox" name="contractualisation" value="Gré à gré"> Gré à gré</label>
                                 <label class="check-item"><input type="checkbox" name="contractualisation" value="Conventions"> Conventions</label>
+                                <label class="check-item"><input type="checkbox" name="contractualisation" value="Autre"> Autre</label>
                             </div>
-                            <label class="text-sm">Fréquence des livraisons :</label>
-                            <input type="text" name="frequenceLivraison" placeholder="Ex: 3 fois / semaine">
+                            <label class="text-sm">Fréquence des livraisons (réceptions par sem/mois) :</label>
+                            <input type="text" name="frequenceLivraison">
                         </div>
                         <div class="bg-brand-light/5 p-4 rounded-lg border border-brand-light/20">
-                            <label>5. Analyse de la valeur (Estimations %)</label>
-                            <div class="grid grid-cols-2 gap-4 mt-2">
-                                <div><label class="text-xs">Produits Locaux</label><input type="number" name="percentLocaux" placeholder="%"></div>
-                                <div><label class="text-xs">Bio LOCAUX</label><input type="number" name="percentBioLocaux" placeholder="%"></div>
-                                <div><label class="text-xs">Bio NON-LOCAUX</label><input type="number" name="percentBioNonLocaux" placeholder="%"></div>
-                                <div><label class="text-xs">SIQO (AOP, Label...)</label><input type="number" name="percentSIQO" placeholder="%"></div>
+                            <label>4. Analyse de la valeur (Estimations %)</label>
+                            <div class="grid grid-cols-2 gap-4 mt-2 text-sm">
+                                <div><label>Produits Locaux</label><input type="number" name="percentLocaux" placeholder="%"></div>
+                                <div><label>Bio LOCAUX</label><input type="number" name="percentBioLocaux" placeholder="%"></div>
+                                <div><label>Bio NON-LOCAUX</label><input type="number" name="percentBioNonLocaux" placeholder="%"></div>
+                                <div><label>SIQO (AOP, IGP...)</label><input type="number" name="percentSIQO" placeholder="%"></div>
                             </div>
                         </div>
                     </div>
@@ -278,37 +332,38 @@
 
             <!-- PARTIE C : DÉTERMINANTS & FACILITATEURS -->
             <div class="form-section">
-                <h3 class="section-title font-oswald text-xl text-brand-light border-brand-dark"><i data-lucide="lightbulb" class="w-6 h-6"></i> PARTIE C : DÉTERMINANTS & FACILITATEURS</h3>
+                <h3 class="section-title font-oswald text-xl text-brand-dark"><i data-lucide="lightbulb" class="w-6 h-6"></i> PARTIE C : DÉTERMINANTS & FACILITATEURS</h3>
                 <div class="space-y-6">
                     <div>
-                        <label class="italic text-brand-dark">🗣️ « Si nous pouvions coconstruire une solution pour résoudre l'une de vos contraintes, par quoi commencer ? »</label>
-                        <textarea name="axePrioritaire" rows="2"></textarea>
+                        <label class="italic">🗣️ « Si nous pouvions coconstruire une solution pour résoudre l'une de vos contraintes quotidiennes, par quel axe devrions-nous commencer ? »</label>
+                        <textarea name="axePrioritaire" rows="3"></textarea>
                     </div>
                     
-                    <div class="grid grid-cols-1 gap-6">
+                    <div class="space-y-4">
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Identifier les facilitateurs pour dépasser les défis suivants :</p>
                         <div class="border-l-4 border-brand-light pl-4">
-                            <label>6. Logistique (Défis & Facilitateurs)</label>
-                            <span class="hint">Stockage, accès, relief, camion frigo...</span>
+                            <label>5. Logistique</label>
+                            <span class="hint">Stockage insuffisant, accès difficile/relief, absence de camion frigo...</span>
                             <textarea name="solutionsLogistique" rows="2"></textarea>
                         </div>
                         <div class="border-l-4 border-brand-light pl-4">
-                            <label>7. Réglementaire (Défis & Facilitateurs)</label>
-                            <span class="hint">Marchés publics, critères EGAlim...</span>
+                            <label>6. Réglementaire</label>
+                            <span class="hint">Complexité des marchés publics, critères EGAlim difficiles à atteindre...</span>
                             <textarea name="solutionsReglementaire" rows="2"></textarea>
                         </div>
                         <div class="border-l-4 border-brand-light pl-4">
-                            <label>8. Économique (Défis & Facilitateurs)</label>
-                            <span class="hint">Budgets, facturation multi-partenaires...</span>
+                            <label>7. Économique</label>
+                            <span class="hint">Contraintes budgétaires, facturation complexe multi-partenaires...</span>
                             <textarea name="solutionsEconomique" rows="2"></textarea>
                         </div>
                         <div class="border-l-4 border-brand-light pl-4">
-                            <label>9. Organisation & RH (Défis & Facilitateurs)</label>
-                            <span class="hint">Temps recherche, épluchage, administratif...</span>
+                            <label>8. Organisation & RH</label>
+                            <span class="hint">Manque de temps (recherche), manque de personnel (épluchage/transfo), administratif...</span>
                             <textarea name="solutionsRH" rows="2"></textarea>
                         </div>
                         <div class="border-l-4 border-brand-light pl-4">
-                            <label>10. Technique (Défis & Facilitateurs)</label>
-                            <span class="hint">Cuisine sous-équipée, normes sanitaires...</span>
+                            <label>9. Technique</label>
+                            <span class="hint">Cuisine sous-équipée, normes sanitaires contraignantes...</span>
                             <textarea name="solutionsTechnique" rows="2"></textarea>
                         </div>
                     </div>
@@ -320,43 +375,49 @@
                 <h3 class="section-title font-oswald text-xl"><i data-lucide="target" class="w-6 h-6"></i> PARTIE D : BESOINS ET ATTENTES EXPRIMÉS</h3>
                 <div class="space-y-6">
                     <div>
-                        <label>11. Typologie et Volumes manquants</label>
-                        <textarea name="denreesManquantes" rows="2" placeholder="Quels produits locaux manquent à vos menus ?"></textarea>
-                        <input type="text" name="volumesSouhaites" placeholder="Quantités annuelles estimées..." class="mt-2">
+                        <label class="italic">🗣️ « Quels sont les produits locaux que vous aimeriez mettre à vos menus mais qui vous manquent aujourd'hui pour répondre à vos objectifs ? »</label>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 gap-4">
                         <div>
-                            <label>12. Exigences de service</label>
-                            <input type="text" name="livraisonImperatifs" placeholder="Créneaux, jours, fréquence..." class="mb-2">
-                            <input type="text" name="conditionnement" placeholder="Vrac, 4ème gamme, poches...">
+                            <label>10. Typologie et Volumes</label>
+                            <input type="text" name="denreesManquantes" placeholder="Denrées manquantes en local..." class="mb-2">
+                            <input type="text" name="volumesSouhaites" placeholder="Quantités annuelles souhaitées (estimation)...">
                         </div>
-                        <div>
-                            <label>13. Accompagnement & Formations</label>
-                            <select name="formationsConnues" class="mb-2">
-                                <option value="">Connaissance formations 42/SEM ?</option>
+                        <div class="mt-2">
+                            <label>11. Exigences de service (Impératifs)</label>
+                            <input type="text" name="livraisonImperatifs" placeholder="Livraison (Créneaux, jours précis, fréquence)..." class="mb-2">
+                            <input type="text" name="conditionnement" placeholder="Conditionnement attendu (Vrac, 4ème gamme/prêt à l'emploi)...">
+                        </div>
+                        <div class="mt-2 border-t pt-4">
+                            <label>12. Accompagnement & Formations</label>
+                            <select name="formationsConnues" class="mb-2 w-full md:w-1/2">
+                                <option value="">Connaissez-vous les formations proposées par Saint-Étienne Métropole ou le Département ?</option>
                                 <option value="Oui">Oui</option>
                                 <option value="Non">Non</option>
-                                <option value="Entendu parler">En ai entendu parler</option>
+                                <option value="Entendu parler">J’en ai entendu parlé</option>
                             </select>
-                            <div class="check-group">
-                                <label class="check-item"><input type="checkbox" name="besoinsFormations" value="Logiciels"> Logiciels</label>
-                                <label class="check-item"><input type="checkbox" name="besoinsFormations" value="Cuisine alt"> Cuisine alternative</label>
-                                <label class="check-item"><input type="checkbox" name="besoinsFormations" value="Coûts"> Coûts</label>
+                            <div class="check-group mt-2">
+                                <span class="w-full text-sm font-semibold text-gray-600">De quoi auriez-vous besoin ?</span>
+                                <label class="check-item"><input type="checkbox" name="besoinsFormations" value="Logiciels/Achats"> Logiciels/Achats</label>
+                                <label class="check-item"><input type="checkbox" name="besoinsFormations" value="Cuisine alternative"> Techniques cuisine alternative/végétarienne</label>
+                                <label class="check-item"><input type="checkbox" name="besoinsFormations" value="Gestion des coûts"> Gestion des coûts</label>
                             </div>
-                            <input type="text" name="autresBesoins" placeholder="Autres besoins..." class="mt-2">
+                            <input type="text" name="autresBesoins" placeholder="Autres besoins..." class="mt-3">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- PARTIE E : RETEX -->
-            <div class="form-section border-2 border-brand-light">
+            <div class="form-section border-2 border-brand-light/40">
                 <h3 class="section-title font-oswald text-xl text-brand-light"><i data-lucide="award" class="w-6 h-6"></i> PARTIE E : RECUEIL DES INITIATIVES & VALORISATION</h3>
                 <div class="space-y-4">
-                    <label class="italic">🗣️ « Avez-vous mis en place une organisation innovante que vous accepteriez de partager ? »</label>
-                    <textarea name="partageInitiative" rows="4"></textarea>
-                    <label>Quelle a été la clé pour convaincre ? Comment diffuser cette synergie ?</label>
-                    <textarea name="cleSucces" rows="3"></textarea>
+                    <span class="hint">(Si le RETEX complet a été saisi dans le Flash, se concentrer ici sur la méthode d'essaimage)</span>
+                    <label class="italic mt-2">🗣️ « Avez-vous mis en place une organisation, une méthode ou un partenariat innovant qui a facilité vos approvisionnements locaux et que vous accepteriez de partager ? »</label>
+                    <textarea name="partageInitiative" rows="3"></textarea>
+                    
+                    <label class="font-bold mt-4 text-brand-dark">Quelle a été la clé pour convaincre votre équipe ou votre hiérarchie ? Comment pourrions-nous diffuser cette synergie au reste du réseau ?</label>
+                    <textarea name="cleSucces" rows="4"></textarea>
                 </div>
             </div>
 
@@ -364,28 +425,30 @@
             <div class="form-section bg-gray-100">
                 <h3 class="section-title font-oswald text-xl text-gray-500 border-gray-400"><i data-lucide="file-check" class="w-6 h-6"></i> PARTIE F : COLLECTE DES DONNÉES QUANTITATIVES</h3>
                 <div class="space-y-4">
+                    <span class="hint">L'offre de mutualisation : Rappel du service rendu ("Ne calculez rien, nous croisons les données pour vous").</span>
                     <label class="flex items-center gap-3 p-4 bg-white rounded border border-gray-200 cursor-pointer shadow-sm">
                         <input type="checkbox" name="actionQuantitative" value="Oui" class="w-6 h-6 text-brand-light">
-                        <span class="font-semibold">Action réalisée : Export du logiciel d'achat ou factures annuelles.</span>
+                        <span class="font-semibold text-brand-dark">Action réalisée : Export du logiciel d'achat ou récupération des factures annuelles.</span>
                     </label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label>Format récupéré</label><input type="text" name="formatRecupere" placeholder="PDF, Excel, Photos..."></div>
-                        <div><label>À transmettre avant le :</label><input type="date" name="deadlineDonnees" value="2026-12-31"></div>
+                        <div><label>À transmettre par courriel avant le :</label><input type="date" name="deadlineDonnees" value="2026-12-31"></div>
                     </div>
                 </div>
             </div>
 
             <!-- Submit -->
-            <div class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur border-t border-gray-200 p-4 shadow-lg flex justify-center z-50">
+            <div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur border-t border-gray-200 p-4 shadow-2xl flex justify-center z-50">
                 <button type="submit" id="submitBtn" class="bg-brand-dark hover:bg-brand-light text-white font-oswald text-lg py-3 px-12 rounded-full shadow-xl transition-all flex items-center gap-3 active:scale-95">
                     <i data-lucide="save" class="w-5 h-5"></i>
-                    Enregistrer l'entretien (Onglet Entretiens)
+                    Enregistrer l'entretien
                 </button>
             </div>
 
         </form>
     </main>
 
+    <!-- Modal Notification -->
     <div id="modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-[60]">
         <div class="bg-white p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl">
             <div id="modalIcon" class="mb-4 inline-block p-4 rounded-full"></div>
@@ -398,7 +461,9 @@
     <script>
         lucide.createIcons();
 
+        // NOUVELLE URL À REMPLACER SI BESOIN
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrz4LEsWzxCkKcYsDU0u0wkzYbCl-gPF_ghn3_jdfND68MY8dWovuGY4kJ3ZMVYP1u/exec';
+        
         const form = document.getElementById('guide-form');
         const submitBtn = document.getElementById('submitBtn');
 
@@ -406,17 +471,18 @@
             e.preventDefault();
             
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Traitement...';
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Enregistrement...';
             lucide.createIcons();
 
             const formData = new FormData(form);
             const dataObj = Object.fromEntries(formData.entries());
 
-            // Handle multi-values (checkboxes)
+            // Fonction pour gérer les Checkboxes multiples
             const getCheckValues = (name) => {
                 return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value).join(', ');
             };
 
+            dataObj.liaison = getCheckValues('liaison');
             dataObj.equipements = getCheckValues('equipements');
             dataObj.criteresChoix = getCheckValues('criteresChoix');
             dataObj.contractualisation = getCheckValues('contractualisation');
@@ -431,14 +497,16 @@
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    showModal('Succès', 'L\'entretien a été enregistré correctement.', 'success');
+                    showModal('Données Transmises', 'L\'entretien a été enregistré avec succès dans la base de données.', 'success');
                     form.reset();
+                    document.getElementById('valInt').textContent = '3';
+                    document.getElementById('valAuto').textContent = '5';
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
-                showModal('Erreur', 'Impossible de transmettre les données. Vérifiez l\'URL du script.', 'error');
+                showModal('Erreur de transmission', 'Vérifiez votre connexion internet ou le déploiement du script Google.', 'error');
                 console.error(error);
             } finally {
                 submitBtn.disabled = false;

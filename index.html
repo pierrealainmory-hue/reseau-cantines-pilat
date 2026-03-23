@@ -658,6 +658,27 @@
             }
         }
 
+        // --- CALCUL AUTOMATIQUE DU VOLUME DE REPAS ---
+        const inputsCalc = document.querySelectorAll('.calc-field');
+        const champResultat = document.getElementById('repasAn');
+
+        function calculerRepasAn() {
+            const jour = parseFloat(document.getElementById('repasJour').value) || 0;
+            const semaine = parseFloat(document.getElementById('servicesSemaine').value) || 0;
+            const annee = parseFloat(document.getElementById('semainesAn').value) || 0;
+
+            if (jour > 0 && semaine > 0 && annee > 0) {
+                const total = Math.round(jour * semaine * annee);
+                champResultat.value = total;
+            } else {
+                champResultat.value = '';
+            }
+        }
+
+        inputsCalc.forEach(input => {
+            input.addEventListener('input', calculerRepasAn);
+        });
+
         // --- GÉNÉRATION DYNAMIQUE DES CARTES (CARNET D'INITIATIVES) ---
         function getThemeStyles(theme) {
             const lowerTheme = (theme || '').toLowerCase();
@@ -765,7 +786,8 @@
             try {
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    mode: 'no-cors', // Ajout crucial pour éviter l'erreur CORS bloquante de Google Apps Script
+                    headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(dataObj)
                 });
 

@@ -153,12 +153,12 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <label class="form-label" for="nomEtablissement">Nom de l'établissement</label>
+                            <label class="form-label" for="nomEtablissement">Nom de l'établissement *</label>
                             <input type="text" id="nomEtablissement" name="nomEtablissement" class="form-input" placeholder="Ex: Cantine de l'école Jules Ferry" required>
                         </div>
                         
                         <div>
-                            <label class="form-label" for="modeGestion">Mode de gestion</label>
+                            <label class="form-label" for="modeGestion">Mode de gestion *</label>
                             <select id="modeGestion" name="modeGestion" class="form-input" required>
                                 <option value="" disabled selected>Sélectionnez une option</option>
                                 <option value="Directe">Gestion Directe</option>
@@ -168,7 +168,7 @@
                         </div>
 
                         <div class="bg-dixBg p-4 rounded-xl border border-gray-200">
-                            <label class="form-label text-dixLight" for="repasAn">Nombre de repas servis par an</label>
+                            <label class="form-label text-dixLight" for="repasAn">Nombre de repas servis par an *</label>
                             <input type="number" id="repasAn" name="repasAn" class="form-input font-bold text-lg" placeholder="Ex: 25000" min="0" required>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="form-label" for="production">Lieu de production</label>
+                            <label class="form-label" for="production">Lieu de production *</label>
                             <select id="production" name="production" class="form-input" required>
                                 <option value="" disabled selected>Sélectionnez une option</option>
                                 <option value="SurPlace">Cuisine sur place</option>
@@ -286,38 +286,38 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <label class="form-label mb-3">Inscription sur la plateforme "Ma Cantine" ?</label>
+                            <label class="form-label mb-3">Inscription sur la plateforme "Ma Cantine" ? *</label>
                             <div class="flex flex-col gap-3">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="maCantine" value="Oui" class="w-5 h-5 text-dixLight"> <span>Oui</span>
+                                    <input type="radio" name="maCantine" value="Oui" class="w-5 h-5 text-dixLight" required> <span>Oui</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="maCantine" value="EnCours" class="w-5 h-5 text-dixLight"> <span>En cours</span>
+                                    <input type="radio" name="maCantine" value="EnCours" class="w-5 h-5 text-dixLight" required> <span>En cours</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="maCantine" value="Non" class="w-5 h-5 text-dixLight"> <span>Non</span>
+                                    <input type="radio" name="maCantine" value="Non" class="w-5 h-5 text-dixLight" required> <span>Non</span>
                                 </label>
                             </div>
                         </div>
 
                         <div>
-                            <label class="form-label mb-3">Télédéclaration</label>
+                            <label class="form-label mb-3">Télédéclaration *</label>
                             <div class="flex flex-col gap-3">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Oui" class="w-5 h-5 text-dixLight"> <span>Oui</span>
+                                    <input type="radio" name="teledeclaration" value="Oui" class="w-5 h-5 text-dixLight" required> <span>Oui</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Non" class="w-5 h-5 text-dixLight"> <span>Non</span>
+                                    <input type="radio" name="teledeclaration" value="Non" class="w-5 h-5 text-dixLight" required> <span>Non</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="EnCours" class="w-5 h-5 text-dixLight"> <span>En cours</span>
+                                    <input type="radio" name="teledeclaration" value="EnCours" class="w-5 h-5 text-dixLight" required> <span>En cours</span>
                                 </label>
                             </div>
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="form-label" for="suiviEgalim">Niveau de suivi des indicateurs EGAlim en interne</label>
-                            <select id="suiviEgalim" name="suiviEgalim" class="form-input">
+                            <label class="form-label" for="suiviEgalim">Niveau de suivi des indicateurs EGAlim en interne *</label>
+                            <select id="suiviEgalim" name="suiviEgalim" class="form-input" required>
                                 <option value="" disabled selected>Sélectionnez le niveau de maturité</option>
                                 <option value="Precis">Précis (Outil dédié, tableaux de bord réguliers)</option>
                                 <option value="Approximatif">Approximatif (Estimations, suivi manuel ponctuel)</option>
@@ -348,8 +348,8 @@
                         </div>
 
                         <div>
-                            <label class="form-label" for="volonteProduitsLocaux">Volonté et capacité actuelle à travailler des produits locaux</label>
-                            <input type="text" id="volonteProduitsLocaux" name="volonteProduitsLocaux" class="form-input" placeholder="Ex: Équipe motivée mais manque de temps de préparation...">
+                            <label class="form-label" for="volonteProduitsLocaux">Volonté et capacité actuelle à travailler des produits locaux *</label>
+                            <input type="text" id="volonteProduitsLocaux" name="volonteProduitsLocaux" class="form-input" placeholder="Ex: Équipe motivée mais manque de temps de préparation..." required>
                         </div>
 
                         <div>
@@ -461,8 +461,8 @@
                             <label class="flex items-start gap-3 cursor-pointer">
                                 <input type="checkbox" name="consentement" required class="mt-1 w-5 h-5 text-dixLight rounded">
                                 <span class="text-sm text-gray-700 font-georgia leading-relaxed">
-                                    <strong>Confidentialité des données (RGPD) :</strong> Je comprends que les informations renseignées dans ce formulaire (y compris mes coordonnées de contact) seront utilisées exclusivement dans le cadre de cette étude par les personnes mandatées par la CCMP, et ne seront en aucun cas cédées à des tiers. 
-                                    Seul le récit de l'expérience innovante (Section D) a vocation à être publié sur le Carnet d'initiatives.
+                                    <strong>Confidentialité des données (RGPD) : *</strong> Je comprends que les informations renseignées dans ce formulaire (y compris mes coordonnées de contact) seront utilisées exclusivement dans le cadre de cette étude par les personnes mandatées par la CCMP, et ne seront en aucun cas cédées à des tiers. 
+                                    Seul le récit de l'expérience innovante (Section E) a vocation à être publié sur le Carnet d'initiatives.
                                 </span>
                             </label>
                         </div>
@@ -657,27 +657,6 @@
                 document.getElementById('telephoneContact').value = '';
             }
         }
-
-        // --- CALCUL AUTOMATIQUE DU VOLUME DE REPAS ---
-        const inputsCalc = document.querySelectorAll('.calc-field');
-        const champResultat = document.getElementById('repasAn');
-
-        function calculerRepasAn() {
-            const jour = parseFloat(document.getElementById('repasJour').value) || 0;
-            const semaine = parseFloat(document.getElementById('servicesSemaine').value) || 0;
-            const annee = parseFloat(document.getElementById('semainesAn').value) || 0;
-
-            if (jour > 0 && semaine > 0 && annee > 0) {
-                const total = Math.round(jour * semaine * annee);
-                champResultat.value = total;
-            } else {
-                champResultat.value = '';
-            }
-        }
-
-        inputsCalc.forEach(input => {
-            input.addEventListener('input', calculerRepasAn);
-        });
 
         // --- GÉNÉRATION DYNAMIQUE DES CARTES (CARNET D'INITIATIVES) ---
         function getThemeStyles(theme) {

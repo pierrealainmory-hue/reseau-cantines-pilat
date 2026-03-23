@@ -112,7 +112,7 @@
             </div>
         </div>
 
-        <!-- Navigation principale (Alignée à gauche sur le bloc formulaire) -->
+        <!-- Navigation principale -->
         <div class="border-t border-gray-100">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <nav class="flex space-x-8 pt-4">
@@ -599,8 +599,6 @@
         // --- GESTION DU HEADER DYNAMIQUE (SHRINK ON SCROLL) ---
         window.addEventListener('scroll', () => {
             const titleArea = document.getElementById('top-title-area');
-            const navTabs = document.querySelector('nav');
-
             if (window.scrollY > 100) {
                 titleArea.style.maxHeight = '0px';
                 titleArea.style.paddingTop = '0px';
@@ -692,8 +690,6 @@
             grid.innerHTML = ''; // On vide la grille pendant le chargement
             
             try {
-                // On contacte le Google Sheets avec un paramètre redirect: 'follow' pour gérer la redirection propre à GAS
-                // Retrait des headers personnalisés pour éviter le blocage CORS (NetworkError)
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'GET',
                     redirect: 'follow'
@@ -763,15 +759,15 @@
             }
 
             try {
+                // IMPORTANT : Le blocage CORS est réglé ici, nous avons retiré 'mode: no-cors'
+                // qui causait la fausse erreur sur le site internet. 
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Ajout crucial pour éviter l'erreur CORS bloquante de Google Apps Script
-                    headers: { 'Content-Type': 'text/plain' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dataObj)
                 });
 
                 form.reset();
-                champResultat.value = '';
                 document.getElementById('sliderValue').innerText = 'Niveau 3';
                 document.getElementById('sliderAutonomieValue').innerText = '5 / 10';
                 toggleDispo(false);

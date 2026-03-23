@@ -107,7 +107,7 @@
                 <i class="ph ph-plant text-4xl text-dixLight"></i>
                 <div>
                     <h1 class="text-2xl md:text-3xl text-white tracking-widest leading-none">Le Réseau des cantines des monts du pilat</h1>
-                    <p class="text-xs text-green-100/70 font-georgia italic mt-1">Projet Alimentaire Territorial</p>
+                    <p class="text-xs text-green-100/70 font-georgia italic mt-1">Accompagnement méthodologique par DIX Autrement</p>
                 </div>
             </div>
         </div>
@@ -167,25 +167,9 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="form-label" for="repasJour">Nombre de repas servis par jour</label>
-                            <input type="number" id="repasJour" name="repasJour" class="form-input calc-field" placeholder="0" min="0" required>
-                        </div>
-
-                        <div>
-                            <label class="form-label" for="servicesSemaine">Nombre de services par semaine</label>
-                            <input type="number" id="servicesSemaine" name="servicesSemaine" class="form-input calc-field" placeholder="Ex: 4" min="0" max="7" required>
-                        </div>
-
-                        <div>
-                            <label class="form-label" for="semainesAn">Nombre de semaines de service par an</label>
-                            <input type="number" id="semainesAn" name="semainesAn" class="form-input calc-field" placeholder="Ex: 36" min="0" max="52" required>
-                        </div>
-
-                        <div class="md:col-span-2 bg-dixBg p-4 rounded-xl border border-gray-200">
-                            <label class="form-label text-dixLight" for="repasAn">Volume estimé : Nombre de repas servis par an</label>
-                            <input type="number" id="repasAn" name="repasAn" class="form-input bg-gray-100 font-bold text-lg" readonly placeholder="Calcul automatique...">
-                            <p class="text-xs text-gray-500 mt-2 italic">Ce volume nous aide à évaluer les valeurs théoriques des quantités de produits consommés par an.</p>
+                        <div class="bg-dixBg p-4 rounded-xl border border-gray-200">
+                            <label class="form-label text-dixLight" for="repasAn">Nombre de repas servis par an</label>
+                            <input type="number" id="repasAn" name="repasAn" class="form-input font-bold text-lg" placeholder="Ex: 25000" min="0" required>
                         </div>
                     </div>
                 </section>
@@ -208,13 +192,21 @@
                         </div>
 
                         <div>
-                            <label class="form-label" for="liaison">Type de liaison</label>
-                            <select id="liaison" name="liaison" class="form-input">
-                                <option value="" disabled selected>Sélectionnez une option</option>
-                                <option value="Chaude">Liaison Chaude</option>
-                                <option value="Froide">Liaison Froide</option>
-                                <option value="NA">Non applicable</option>
-                            </select>
+                            <label class="form-label mb-3">Type de liaison</label>
+                            <div class="flex flex-col gap-3 mt-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="liaison" value="Chaude" class="w-5 h-5 text-dixLight rounded">
+                                    <span class="text-sm text-dixDark">Liaison Chaude</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="liaison" value="Froide" class="w-5 h-5 text-dixLight rounded">
+                                    <span class="text-sm text-dixDark">Liaison Froide</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="liaison" value="NA" class="w-5 h-5 text-dixLight rounded">
+                                    <span class="text-sm text-dixDark">Non applicable</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="md:col-span-2">
@@ -309,16 +301,16 @@
                         </div>
 
                         <div>
-                            <label class="form-label mb-3">Régularité des télédéclarations</label>
+                            <label class="form-label mb-3">Télédéclaration</label>
                             <div class="flex flex-col gap-3">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Regulier" class="w-5 h-5 text-dixLight"> <span>Régulière</span>
+                                    <input type="radio" name="teledeclaration" value="Oui" class="w-5 h-5 text-dixLight"> <span>Oui</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Irregulier" class="w-5 h-5 text-dixLight"> <span>Irrégulière</span>
+                                    <input type="radio" name="teledeclaration" value="Non" class="w-5 h-5 text-dixLight"> <span>Non</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="teledeclaration" value="Jamais" class="w-5 h-5 text-dixLight"> <span>Jamais effectuée</span>
+                                    <input type="radio" name="teledeclaration" value="EnCours" class="w-5 h-5 text-dixLight"> <span>En cours</span>
                                 </label>
                             </div>
                         </div>
@@ -335,11 +327,11 @@
                     </div>
                 </section>
 
-                <!-- Section D : Partage d'expériences -->
-                <section class="section-container border-2 border-dixLight">
-                    <h2 class="text-2xl mb-6 flex items-center gap-3 border-b border-gray-100 pb-3 text-dixLight">
-                        <span class="bg-dixLight text-white p-2 rounded-lg"><i class="ph ph-users-three text-xl"></i></span>
-                        D. Partage d'expériences (Le Carnet d'initiatives)
+                <!-- Section D : Positionnement de l'établissement -->
+                <section class="section-container">
+                    <h2 class="text-2xl mb-6 flex items-center gap-3 border-b border-gray-100 pb-3">
+                        <span class="bg-dixDark text-white p-2 rounded-lg"><i class="ph ph-compass text-xl"></i></span>
+                        D. Positionnement de l'établissement
                     </h2>
                     
                     <div class="space-y-8">
@@ -360,58 +352,78 @@
                             <input type="text" id="volonteProduitsLocaux" name="volonteProduitsLocaux" class="form-input" placeholder="Ex: Équipe motivée mais manque de temps de préparation...">
                         </div>
 
-                        <div class="bg-green-50 p-6 rounded-xl border border-dixLight/30">
-                            <h3 class="text-lg font-bold text-dixDark mb-2 flex items-center gap-2 font-oswald uppercase">
-                                <i class="ph ph-star-fill text-yellow-500 text-xl"></i> Partagez une expérience innovante
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-6 font-georgia">
-                                Racontez-nous une réussite ! Avez-vous mis en place une organisation, une méthode ou un partenariat innovant qui a facilité vos approvisionnements locaux et que vous accepteriez de partager ? Cette histoire a vocation à alimenter notre <strong>Carnet d'initiatives</strong> pour inspirer l'ensemble du réseau !
-                            </p>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="form-label text-xs" for="sujetReussite">Thématique principale</label>
-                                    <select id="sujetReussite" name="sujetReussite" class="form-input text-sm">
-                                        <option value="" disabled selected>Choisir une thématique...</option>
-                                        <option value="Achats">Achats & Mutualisation de commandes</option>
-                                        <option value="Logistique">Logistique & Transports</option>
-                                        <option value="Transformation">Transformation & Légumerie</option>
-                                        <option value="Sensibilisation">Sensibilisation & Lutte contre le gaspillage</option>
-                                        <option value="Autre">Autre coopération</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label text-xs" for="tempsMiseEnPlace">Temps de mise en œuvre</label>
-                                    <select id="tempsMiseEnPlace" name="tempsMiseEnPlace" class="form-input text-sm">
-                                        <option value="" disabled selected>Évaluer le délai...</option>
-                                        <option value="Rapide">Rapide (Moins d'un mois)</option>
-                                        <option value="Moyen">Moyen (Quelques mois)</option>
-                                        <option value="Long">Long (Plus d'un an / Projet structurant)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label text-xs" for="personnesImpliquees">Nombre d'acteur·rice·s impliqué·e·s</label>
-                                    <input type="text" id="personnesImpliquees" name="personnesImpliquees" class="form-input text-sm" placeholder="Ex: 3 communes, 2 producteur·rice·s...">
-                                </div>
-                                <div>
-                                    <label class="form-label text-xs" for="competencesRequises">Compétences spécifiques requises ?</label>
-                                    <input type="text" id="competencesRequises" name="competencesRequises" class="form-input text-sm" placeholder="Ex: Aucune, ou savoir-faire technique spécifique...">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="form-label text-xs" for="descriptionReussite">Le récit de votre réussite</label>
-                                <textarea id="descriptionReussite" name="descriptionReussite" rows="4" class="form-input text-sm" placeholder="Expliquez brièvement comment cela s'est passé, les freins levés et les bénéfices obtenus..."></textarea>
+                        <div>
+                            <label class="form-label flex justify-between" for="autonomieAchats">
+                                <span>Niveau d'autonomie du/de la responsable cuisine vis-à-vis des achats</span>
+                                <span id="sliderAutonomieValue" class="font-bold text-dixLight bg-green-50 px-3 py-1 rounded-full">5 / 10</span>
+                            </label>
+                            <input type="range" id="autonomieAchats" name="autonomieAchats" min="0" max="10" value="5" class="mt-4" oninput="document.getElementById('sliderAutonomieValue').innerText = this.value + ' / 10'">
+                            <div class="flex justify-between text-xs text-gray-500 mt-2">
+                                <span>Aucune autonomie (0)</span>
+                                <span>Totale autonomie (10)</span>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Section E : Poursuivre la démarche & Consentement -->
+                <!-- Section E : Partage d'expériences -->
+                <section class="section-container border-2 border-dixLight">
+                    <h2 class="text-2xl mb-6 flex items-center gap-3 border-b border-gray-100 pb-3 text-dixLight">
+                        <span class="bg-dixLight text-white p-2 rounded-lg"><i class="ph ph-users-three text-xl"></i></span>
+                        E. Partage d'expériences (Le Carnet d'initiatives)
+                    </h2>
+                    
+                    <div class="bg-green-50 p-6 rounded-xl border border-dixLight/30">
+                        <h3 class="text-lg font-bold text-dixDark mb-2 flex items-center gap-2 font-oswald uppercase">
+                            <i class="ph ph-star-fill text-yellow-500 text-xl"></i> Partagez une expérience innovante
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-6 font-georgia">
+                            Racontez-nous une réussite ! Avez-vous mis en place une organisation, une méthode ou un partenariat innovant qui a facilité vos approvisionnements locaux et que vous accepteriez de partager ? Cette histoire a vocation à alimenter notre <strong>Carnet d'initiatives</strong> pour inspirer l'ensemble du réseau !
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="form-label text-xs" for="sujetReussite">Thématique principale</label>
+                                <select id="sujetReussite" name="sujetReussite" class="form-input text-sm">
+                                    <option value="" disabled selected>Choisir une thématique...</option>
+                                    <option value="Achats">Achats & Mutualisation de commandes</option>
+                                    <option value="Logistique">Logistique & Transports</option>
+                                    <option value="Transformation">Transformation & Légumerie</option>
+                                    <option value="Sensibilisation">Sensibilisation & Lutte contre le gaspillage</option>
+                                    <option value="Autre">Autre coopération</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label text-xs" for="tempsMiseEnPlace">Temps de mise en œuvre</label>
+                                <select id="tempsMiseEnPlace" name="tempsMiseEnPlace" class="form-input text-sm">
+                                    <option value="" disabled selected>Évaluer le délai...</option>
+                                    <option value="Rapide">Rapide (Moins d'un mois)</option>
+                                    <option value="Moyen">Moyen (Quelques mois)</option>
+                                    <option value="Long">Long (Plus d'un an / Projet structurant)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label text-xs" for="personnesImpliquees">Nombre d'acteur·rice·s impliqué·e·s</label>
+                                <input type="text" id="personnesImpliquees" name="personnesImpliquees" class="form-input text-sm" placeholder="Ex: 3 communes, 2 producteur·rice·s...">
+                            </div>
+                            <div>
+                                <label class="form-label text-xs" for="competencesRequises">Compétences spécifiques requises ?</label>
+                                <input type="text" id="competencesRequises" name="competencesRequises" class="form-input text-sm" placeholder="Ex: Aucune, ou savoir-faire technique spécifique...">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label text-xs" for="descriptionReussite">Le récit de votre réussite</label>
+                            <textarea id="descriptionReussite" name="descriptionReussite" rows="4" class="form-input text-sm" placeholder="Expliquez brièvement comment cela s'est passé, les freins levés et les bénéfices obtenus..."></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section F : Poursuivre la démarche & Consentement -->
                 <section class="section-container">
                     <h2 class="text-2xl mb-6 flex items-center gap-3 border-b border-gray-100 pb-3">
                         <span class="bg-dixDark text-white p-2 rounded-lg"><i class="ph ph-handshake text-xl"></i></span>
-                        E. Poursuivre la démarche & Consentement
+                        F. Poursuivre la démarche & Consentement
                     </h2>
                     
                     <div class="space-y-6">
@@ -478,55 +490,17 @@
                 </p>
             </div>
 
-            <!-- Grille Masonry -->
-            <div class="masonry max-w-4xl mx-auto">
+            <!-- Loader affiché pendant la connexion à Google Sheets -->
+            <div id="vitrine-loader" class="text-center py-12 hidden">
+                <i class="ph ph-spinner-gap animate-spin text-5xl text-dixLight"></i>
+                <p class="mt-4 text-gray-500 font-georgia italic">Récupération des dernières initiatives partagées...</p>
+            </div>
+
+            <!-- Grille Masonry Dynamique -->
+            <div class="masonry max-w-4xl mx-auto" id="initiatives-grid">
+                <!-- Les cartes générées automatiquement par JS apparaîtront ici -->
                 
-                <!-- Carte 1 -->
-                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                    <div class="h-2 bg-dixLight"></div>
-                    <div class="p-6">
-                        <span class="inline-block px-3 py-1 bg-green-50 text-dixDark text-xs font-oswald uppercase rounded-full mb-4">Achat Coconstruit</span>
-                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal italic">Groupement d'achats inter-villages</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia">
-                            "En nous associant avec l'école du Val-Fleuri, nous avons pu atteindre les volumes minimaux demandés par le maraîcher local. Une logistique partagée qui bénéficie aux deux établissements."
-                        </p>
-                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
-                            <i class="ph ph-map-pin mr-1 text-dixLight"></i> École du Val-Fleuri (Nom fictif)
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Carte 2 -->
-                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                    <div class="h-2 bg-dixDark"></div>
-                    <div class="p-6">
-                        <span class="inline-block px-3 py-1 bg-gray-100 text-dixDark text-xs font-oswald uppercase rounded-full mb-4">Mutualisation Technique</span>
-                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal italic">Épluchage partagé en réseau</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia">
-                            "Nous n'avions pas de légumerie. Nous avons mis en place une convention avec l'EHPAD Les Magnolias qui dispose du matériel. Nos légumes bruts y sont préparés avant livraison chez nous."
-                        </p>
-                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
-                            <i class="ph ph-users mr-1 text-dixDark"></i> EHPAD Les Magnolias & Crèche Les P'tits Loups (Noms fictifs)
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Carte 3 -->
-                <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                    <div class="h-2 bg-yellow-400"></div>
-                    <div class="p-6">
-                        <span class="inline-block px-3 py-1 bg-yellow-50 text-yellow-800 text-xs font-oswald uppercase rounded-full mb-4">Pédagogie & Gastronomie</span>
-                        <h3 class="font-oswald text-xl text-dixDark mb-3 normal-case tracking-normal italic">Dégustation participative des convives</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia">
-                            "Pour faciliter l'acceptation des plats à base de légumineuses, nous avons organisé des ateliers de dégustation avec les délégué·e·s des élèves. Leurs retours ont permis d'adapter nos recettes de dahl."
-                        </p>
-                        <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
-                            <i class="ph ph-graduation-cap mr-1 text-yellow-600"></i> Collège des Monts (Nom fictif)
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Carte 4 : Appel à l'action -->
+                <!-- Carte par défaut (Appel à l'action) -->
                 <div class="masonry-item bg-dixDark text-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-all transform hover:-translate-y-1">
                     <div class="p-8 text-center flex flex-col items-center justify-center min-h-[250px]">
                         <i class="ph ph-plus-circle text-5xl text-dixLight mb-4"></i>
@@ -539,7 +513,6 @@
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -605,7 +578,7 @@
                         <i class="ph ph-phone-call text-2xl text-dixLight"></i>
                         <span>Assistance technique</span>
                     </div>
-                    <p class="text-sm text-gray-600">07 83 00 09 56 / Pierre-Alain Mory</p>
+                    <p class="text-sm text-gray-600 font-bold">07 83 00 09 56 / Pierre-Alain Mory</p>
                 </div>
             </div>
 
@@ -619,6 +592,10 @@
 
     <!-- LOGIQUE JAVASCRIPT -->
     <script>
+        // URL du Google Apps Script (Sert pour l'envoi ET la réception de données)
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXhBokCPfGxMJX5DXF7OKSWfpgU0JL0zeBKydWSYMt0EgkJA3Oy36ylZ-CzgMhkptv_A/exec";
+        let initiativesLoaded = false;
+
         // --- GESTION DU HEADER DYNAMIQUE (SHRINK ON SCROLL) ---
         window.addEventListener('scroll', () => {
             const titleArea = document.getElementById('top-title-area');
@@ -654,6 +631,11 @@
             document.getElementById(targetTab).classList.add('active');
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // On charge les initiatives uniquement quand on ouvre l'onglet et si elles ne sont pas déjà chargées
+            if(targetSection === 'section-vitrine' && !initiativesLoaded) {
+                loadInitiatives();
+            }
         }
 
         // --- GESTION DE L'AFFICHAGE DES DISPONIBILITÉS ---
@@ -676,30 +658,86 @@
             }
         }
 
-        // --- CALCUL AUTOMATIQUE DU VOLUME DE REPAS ---
-        const inputsCalc = document.querySelectorAll('.calc-field');
-        const champResultat = document.getElementById('repasAn');
+        // --- GÉNÉRATION DYNAMIQUE DES CARTES (CARNET D'INITIATIVES) ---
+        function getThemeStyles(theme) {
+            const lowerTheme = (theme || '').toLowerCase();
+            if (lowerTheme.includes('achat')) return { color: 'bg-green-50 text-dixDark', bar: 'bg-dixLight', icon: 'ph-shopping-cart text-dixLight' };
+            if (lowerTheme.includes('logistique')) return { color: 'bg-blue-50 text-blue-800', bar: 'bg-blue-500', icon: 'ph-truck text-blue-600' };
+            if (lowerTheme.includes('transformation')) return { color: 'bg-gray-100 text-dixDark', bar: 'bg-dixDark', icon: 'ph-cooking-pot text-dixDark' };
+            if (lowerTheme.includes('sensibilisation')) return { color: 'bg-yellow-50 text-yellow-800', bar: 'bg-yellow-400', icon: 'ph-graduation-cap text-yellow-600' };
+            return { color: 'bg-purple-50 text-purple-800', bar: 'bg-purple-400', icon: 'ph-star text-purple-600' };
+        }
 
-        function calculerRepasAn() {
-            const jour = parseFloat(document.getElementById('repasJour').value) || 0;
-            const semaine = parseFloat(document.getElementById('servicesSemaine').value) || 0;
-            const annee = parseFloat(document.getElementById('semainesAn').value) || 0;
+        function getCTACard() {
+            return `
+            <div class="masonry-item bg-dixDark text-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-all transform hover:-translate-y-1">
+                <div class="p-8 text-center flex flex-col items-center justify-center min-h-[250px]">
+                    <i class="ph ph-plus-circle text-5xl text-dixLight mb-4"></i>
+                    <h3 class="font-oswald text-2xl mb-3 text-white">Partagez votre expérience</h3>
+                    <p class="text-gray-200 text-sm mb-6 font-georgia">
+                        Transmettez vos informations via l'Enquête Flash pour voir votre initiative valorisée ici et inspirer d'autres acteur·rice·s du réseau.
+                    </p>
+                    <button onclick="switchTab('enquete')" class="font-oswald uppercase bg-dixLight text-white px-6 py-2 rounded-full hover:bg-white hover:text-dixDark transition-colors shadow-sm">
+                        Rejoindre la dynamique
+                    </button>
+                </div>
+            </div>`;
+        }
 
-            if (jour > 0 && semaine > 0 && annee > 0) {
-                const total = Math.round(jour * semaine * annee);
-                champResultat.value = total;
-            } else {
-                champResultat.value = '';
+        async function loadInitiatives() {
+            const loader = document.getElementById('vitrine-loader');
+            const grid = document.getElementById('initiatives-grid');
+            
+            loader.classList.remove('hidden');
+            grid.innerHTML = ''; // On vide la grille pendant le chargement
+            
+            try {
+                // On contacte le Google Sheets avec un paramètre redirect: 'follow' pour gérer la redirection propre à GAS
+                // Retrait des headers personnalisés pour éviter le blocage CORS (NetworkError)
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    let html = '';
+                    
+                    // On inverse l'ordre pour afficher les plus récentes en premier
+                    result.data.reverse().forEach(item => {
+                        const styles = getThemeStyles(item.theme);
+                        html += `
+                        <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow animate-fade-in">
+                            <div class="h-2 ${styles.bar}"></div>
+                            <div class="p-6">
+                                <span class="inline-block px-3 py-1 ${styles.color} text-xs font-oswald uppercase rounded-full mb-4">${item.theme}</span>
+                                <p class="text-gray-600 text-sm mb-4 leading-relaxed font-georgia italic">
+                                    "${item.recit}"
+                                </p>
+                                <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+                                    <i class="ph ${styles.icon} mr-2"></i> ${item.etablissement}
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    
+                    // On rajoute toujours la carte d'appel à l'action à la fin
+                    html += getCTACard();
+                    grid.innerHTML = html;
+                    initiativesLoaded = true;
+                } else {
+                    throw new Error('Erreur de chargement de Google Apps Script');
+                }
+            } catch(error) {
+                console.error("Erreur de récupération des initiatives:", error);
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-red-500"><p class="font-georgia">Impossible de charger les initiatives pour le moment. Vérifiez que les permissions du script sont bien sur "Tous" (Anyone).</p></div>` + getCTACard();
+            } finally {
+                loader.classList.add('hidden');
             }
         }
 
-        inputsCalc.forEach(input => {
-            input.addEventListener('input', calculerRepasAn);
-        });
-
-        // --- SOUMISSION DU FORMULAIRE (FETCH) ---
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXhBokCPfGxMJX5DXF7OKSWfpgU0JL0zeBKydWSYMt0EgkJA3Oy36ylZ-CzgMhkptv_A/exec";
-
+        // --- SOUMISSION DU FORMULAIRE (FETCH POST) ---
         async function submitData(event) {
             event.preventDefault();
             
@@ -718,6 +756,12 @@
             const equipements = formData.getAll('equipements');
             dataObj.equipements = equipements.join(', ');
 
+            // Gestion des cases à cocher pour la liaison (qui peuvent être multiples)
+            const liaison = formData.getAll('liaison');
+            if (liaison.length > 0) {
+                dataObj.liaison = liaison.join(', ');
+            }
+
             try {
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
@@ -728,7 +772,11 @@
                 form.reset();
                 champResultat.value = '';
                 document.getElementById('sliderValue').innerText = 'Niveau 3';
+                document.getElementById('sliderAutonomieValue').innerText = '5 / 10';
                 toggleDispo(false);
+                
+                // On réinitialise le Carnet d'initiatives pour qu'il se mette à jour au prochain clic !
+                initiativesLoaded = false; 
                 
                 msg.innerHTML = '<i class="ph ph-check-circle text-lg"></i> Vos informations ont été transmises avec succès. Merci !';
                 msg.className = "text-dixLight text-sm font-bold text-center mt-4 animate-pulse p-3 bg-green-50 rounded-lg border border-dixLight/30";

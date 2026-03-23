@@ -480,7 +480,7 @@
 
         <!-- ONGLET 2 : LE CARNET D'INITIATIVES -->
         <div id="section-vitrine" class="hidden animate-fade-in">
-            <div class="mb-10 text-left max-w-4xl mx-auto">
+            <div class="mb-8 text-left max-w-4xl mx-auto">
                 <h2 class="text-3xl text-dixDark mb-4 flex items-center gap-3">
                     <i class="ph ph-book-open text-3xl text-dixLight"></i>
                     Carnet d'initiatives partagées
@@ -488,6 +488,30 @@
                 <p class="text-lg text-gray-600 font-georgia">
                     Découvrez les réussites et les savoir-faire coconstruits par les chef·fe·s et les équipes de notre territoire. Une source d'inspiration pour créer des liens et travailler ensemble vers une alimentation durable.
                 </p>
+            </div>
+
+            <!-- NOUVEAU BLOC FILTRES -->
+            <div class="max-w-4xl mx-auto mb-8 flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <i class="ph ph-funnel text-xl text-dixLight"></i>
+                    <span class="font-oswald uppercase text-dixDark text-sm">Filtrer les initiatives :</span>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <select id="filter-theme" onchange="renderInitiatives()" class="form-input mt-0 py-2 px-3 text-sm min-w-[200px]">
+                        <option value="all">Toutes les thématiques</option>
+                        <option value="achat">Achats & Mutualisation</option>
+                        <option value="logistique">Logistique & Transports</option>
+                        <option value="transformation">Transformation & Légumerie</option>
+                        <option value="sensibilisation">Sensibilisation</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                    <select id="filter-temps" onchange="renderInitiatives()" class="form-input mt-0 py-2 px-3 text-sm min-w-[150px]">
+                        <option value="all">Tous les délais</option>
+                        <option value="rapide">Rapide</option>
+                        <option value="moyen">Moyen</option>
+                        <option value="long">Long</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Loader affiché pendant la connexion à Google Sheets -->
@@ -582,6 +606,7 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwoay44Z96DJqqcqcMBMOtDvSz_9cHt-1QEfiEBE42SPv68-Y43dJUzLKdfOH7IDClbzg/exec";
         
         let initiativesLoaded = false;
+        let allInitiatives = []; // Variable globale pour stocker toutes les initiatives pour le filtrage
 
         // --- GESTION DU HEADER DYNAMIQUE (SHRINK ON SCROLL) ---
         window.addEventListener('scroll', () => {
@@ -684,63 +709,10 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    let html = '';
+                    // On utilise uniquement les vraies données validées depuis Google Sheets
+                    allInitiatives = result.data.reverse();
                     
-                    // 2. On insère les vraies données validées
-                    if (result.data.length > 0) {
-                        // On inverse l'ordre pour afficher les plus récentes en premier
-                        result.data.reverse().forEach(item => {
-                            const styles = getThemeStyles(item.theme);
-                            
-                            // Construction des badges de métadonnées s'ils existent
-                            let metaTags = '';
-                            if (item.temps) metaTags += `<span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] uppercase font-oswald"><i class="ph ph-clock"></i> ${item.temps}</span>`;
-                            if (item.acteurs) metaTags += `<span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] uppercase font-oswald"><i class="ph ph-users"></i> ${item.acteurs}</span>`;
-                            if (item.competences) metaTags += `<span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] uppercase font-oswald"><i class="ph ph-wrench"></i> ${item.competences}</span>`;
-
-                            // Nettoyage du récit pour afficher les retours à la ligne correctement
-                            const safeRecit = item.recit.replace(/\n/g, '<br>');
-
-                            html += `
-                            <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 animate-fade-in relative">
-                                <div class="h-2 ${styles.bar}"></div>
-                                <div class="p-6">
-                                    <!-- Icône de citation en filigrane -->
-                                    <i class="ph ph-quotes text-4xl text-gray-100 absolute top-4 right-4 z-0"></i>
-                                    
-                                    <span class="inline-block px-3 py-1 ${styles.color} text-xs font-oswald uppercase rounded-full mb-4 relative z-10 shadow-sm">${item.theme}</span>
-                                    
-                                    <p class="text-gray-700 text-sm mb-5 leading-relaxed font-georgia italic relative z-10">
-                                        "${safeRecit}"
-                                    </p>
-                                    
-                                    ${metaTags ? `<div class="flex flex-wrap gap-2 mb-4 border-t border-gray-50 pt-4 relative z-10">${metaTags}</div>` : ''}
-
-                                    <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2 relative z-10">
-                                        <div class="bg-dixBg p-2 rounded-full mr-3 border border-gray-200">
-                                            <i class="ph ${styles.icon} text-lg"></i>
-                                        </div>
-                                        <span class="font-bold text-dixDark font-oswald tracking-wide">${item.etablissement}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-                        });
-                    } else {
-                        // Cas où il n'y a encore aucune initiative enregistrée
-                        html += `
-                        <div class="masonry-item bg-green-50 rounded-xl shadow-sm border border-green-100 overflow-hidden p-6 text-center animate-fade-in">
-                            <i class="ph ph-seedling text-5xl text-dixLight mb-3"></i>
-                            <h3 class="font-oswald text-xl text-dixDark mb-2">Le carnet est encore vide</h3>
-                            <p class="text-sm text-gray-600 font-georgia italic">Soyez le premier établissement à partager une initiative locale inspirante !</p>
-                        </div>
-                        `;
-                    }
-                    
-                    // 3. On rajoute toujours la carte d'appel à l'action à la fin
-                    html += getCTACard();
-                    
-                    grid.innerHTML = html;
+                    renderInitiatives();
                     initiativesLoaded = true;
                 } else {
                     throw new Error('Erreur de chargement de Google Apps Script');
@@ -748,13 +720,89 @@
             } catch(error) {
                 console.error("Erreur de récupération des initiatives:", error);
                 
-                let fallbackHtml = `<div class="masonry-item col-span-full text-center py-8 text-red-500"><p class="font-georgia">Impossible de charger les nouvelles initiatives pour le moment.</p></div>`;
-                fallbackHtml += getCTACard();
-                
-                grid.innerHTML = fallbackHtml;
+                // En cas de délai trop long ou d'erreur, on affiche un message propre et l'appel à l'action
+                grid.innerHTML = `
+                    <div class="masonry-item col-span-full text-center py-8 mb-4 text-red-500 bg-red-50 rounded-xl border border-red-100">
+                        <i class="ph ph-warning-circle text-4xl mb-2"></i>
+                        <p class="font-georgia text-sm">Le chargement des initiatives prend plus de temps que prévu.</p>
+                        <p class="font-georgia text-xs mt-2">Veuillez rafraîchir la page ou vérifier votre connexion.</p>
+                    </div>
+                    ${getCTACard()}
+                `;
             } finally {
                 loader.classList.add('hidden');
             }
+        }
+
+        // Fonction d'affichage gérant les filtres
+        function renderInitiatives() {
+            const grid = document.getElementById('initiatives-grid');
+            const themeFilter = document.getElementById('filter-theme').value.toLowerCase();
+            const tempsFilter = document.getElementById('filter-temps').value.toLowerCase();
+
+            let html = '';
+            let count = 0;
+
+            allInitiatives.forEach(item => {
+                const itemTheme = (item.theme || '').toLowerCase();
+                const itemTemps = (item.temps || '').toLowerCase();
+
+                let matchTheme = themeFilter === 'all' || itemTheme.includes(themeFilter);
+                let matchTemps = tempsFilter === 'all' || itemTemps.includes(tempsFilter);
+
+                if (matchTheme && matchTemps) {
+                    count++;
+                    const styles = getThemeStyles(item.theme);
+                    
+                    let metaTags = '';
+                    if (item.temps) metaTags += `<span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] uppercase font-oswald"><i class="ph ph-clock"></i> ${item.temps}</span>`;
+                    if (item.acteurs) metaTags += `<span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] uppercase font-oswald"><i class="ph ph-users"></i> ${item.acteurs}</span>`;
+                    if (item.competences) metaTags += `<span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] uppercase font-oswald"><i class="ph ph-wrench"></i> ${item.competences}</span>`;
+
+                    const safeRecit = (item.recit || '').replace(/\n/g, '<br>');
+
+                    html += `
+                    <div class="masonry-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 animate-fade-in relative">
+                        <div class="h-2 ${styles.bar}"></div>
+                        <div class="p-6">
+                            <i class="ph ph-quotes text-4xl text-gray-100 absolute top-4 right-4 z-0"></i>
+                            
+                            <span class="inline-block px-3 py-1 ${styles.color} text-xs font-oswald uppercase rounded-full mb-4 relative z-10 shadow-sm">${item.theme}</span>
+                            
+                            <p class="text-gray-700 text-sm mb-5 leading-relaxed font-georgia italic relative z-10">
+                                "${safeRecit}"
+                            </p>
+                            
+                            ${metaTags ? `<div class="flex flex-wrap gap-2 mb-4 border-t border-gray-50 pt-4 relative z-10">${metaTags}</div>` : ''}
+
+                            <div class="flex items-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2 relative z-10">
+                                <div class="bg-dixBg p-2 rounded-full mr-3 border border-gray-200">
+                                    <i class="ph ${styles.icon} text-lg"></i>
+                                </div>
+                                <span class="font-bold text-dixDark font-oswald tracking-wide">${item.etablissement}</span>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }
+            });
+
+            if (allInitiatives.length === 0) {
+                // Cas où il n'y a encore aucune initiative enregistrée/validée dans le Google Sheet
+                html += `
+                <div class="masonry-item col-span-full bg-green-50 rounded-xl shadow-sm border border-green-100 overflow-hidden p-6 text-center animate-fade-in">
+                    <i class="ph ph-seedling text-5xl text-dixLight mb-3"></i>
+                    <h3 class="font-oswald text-xl text-dixDark mb-2">Le carnet est encore vide</h3>
+                    <p class="text-sm text-gray-600 font-georgia italic">Soyez le premier établissement à partager une initiative locale inspirante !</p>
+                </div>
+                `;
+            } else if (count === 0) {
+                // Cas où les filtres masquent toutes les initiatives existantes
+                html += `<div class="col-span-full text-center py-8 text-gray-500 font-georgia italic bg-white rounded-xl shadow-sm border border-gray-100 masonry-item">Aucune initiative ne correspond à vos filtres. Essayez d'élargir votre recherche.</div>`;
+            }
+
+            html += getCTACard();
+            grid.innerHTML = html;
         }
 
         // --- SOUMISSION DU FORMULAIRE (FETCH POST) ---

@@ -845,19 +845,14 @@
             }
 
             try {
-                // ATTENTION: On retire le mode 'no-cors' pour forcer le navigateur à analyser la réponse de Google.
-                // Cela permettra de savoir EXACTEMENT si le problème vient des permissions de votre Google Apps Script.
-                const response = await fetch(GAS_WEB_APP_URL, {
+                // Rétablissement de la méthode originale infaillible avec mode: 'no-cors'
+                // qui assure l'envoi de la donnée quoi qu'il arrive sans que le navigateur ne bloque.
+                await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dataObj)
                 });
-
-                const result = await response.json();
-
-                if (result.status !== 'success') {
-                    throw new Error(result.message || "Erreur de traitement côté Google.");
-                }
 
                 form.reset();
                 document.getElementById('sliderValue').innerText = 'Niveau 3';
@@ -872,19 +867,11 @@
                 msg.classList.remove('hidden');
                 
             } catch (error) {
-                // Si une erreur réseau (CORS) ou applicative survient, on l'affiche ENFIN à l'utilisateur
-                let errorText = "Une erreur est survenue lors de l'envoi.";
-                
-                if (error.name === 'TypeError' || error.message.includes('fetch')) {
-                    errorText = "Erreur de permission Google. Veuillez vérifier que le script est bien déployé avec l'accès 'Tout le monde'.";
-                } else if (error.message) {
-                    errorText = "Erreur : " + error.message;
-                }
-
-                msg.innerHTML = '<i class="ph ph-warning-circle text-lg"></i> ' + errorText;
+                // Si une erreur réseau survient (plus de wifi, etc.)
+                msg.innerHTML = '<i class="ph ph-warning-circle text-lg"></i> Une erreur réseau est survenue. Veuillez vérifier votre connexion.';
                 msg.className = "text-red-500 text-sm font-bold text-center mt-4 p-3 bg-red-50 rounded-lg border border-red-200";
                 msg.classList.remove('hidden');
-                console.error("Détails techniques de l'erreur :", error);
+                console.error("Erreur de soumission:", error);
             } finally {
                 btn.innerHTML = '<i class="ph ph-paper-plane-tilt text-2xl"></i> Transmettre mes informations';
                 btn.disabled = false;

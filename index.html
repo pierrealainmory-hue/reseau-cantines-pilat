@@ -607,8 +607,8 @@
                 <p>Projet Alimentaire Territorial - CC Monts du Pilat</p>
                 <div class="flex items-center gap-3">
                     <p>&copy; 2026 Réalisé par Cabinet DIX Autrement</p>
-                    <!-- COMPTEUR DE VISITE -->
-                    <img src="https://visitor-badge.laobi.icu/badge?page_id=pierrealainmory-cantines-pilat&left_text=Visites&left_color=%232c3e50&right_color=%23e67e22" alt="Compteur de visites" class="h-4 opacity-75 hover:opacity-100 transition-opacity" title="Nombre de visites">
+                    <!-- COMPTEUR DE VISITE (Uniques / Total) -->
+                    <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fpierrealainmory-hue.github.io%2Freseau-cantines-pilat%2F&amp;count_bg=%23e67e22&amp;title_bg=%232c3e50&amp;title=Visites&amp;edge_flat=true" alt="Compteur" class="h-4 opacity-75 hover:opacity-100 transition-opacity" title="Visiteurs uniques du jour / Total des visites">
                 </div>
             </div>
         </div>
@@ -617,7 +617,7 @@
     <!-- LOGIQUE JAVASCRIPT -->
     <script>
         // URL du Google Apps Script
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwoay44Z96DJqqcqcMBMOtDvSz_9cHt-1QEfiEBE42SPv68-Y43dJUzLKdfOH7IDClbzg/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbytSQiAqIPle4qgtWWwyOCL-dWPanhj2TdDHzClbezTYSJxCvhcj2mLjoFykT4h9IHpkQ/exec";
         
         let initiativesLoaded = false;
         let allInitiatives = []; // Variable globale pour stocker toutes les initiatives pour le filtrage
@@ -845,9 +845,10 @@
             }
 
             try {
-                // Utilisation propre et sans no-cors pour lire le retour de Google proprement
+                // L'ajout de mode: 'no-cors' est OBLIGATOIRE pour envoyer des données en POST vers Google Apps Script depuis un autre domaine
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dataObj)
                 });

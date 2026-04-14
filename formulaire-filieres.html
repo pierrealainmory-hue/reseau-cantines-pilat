@@ -34,11 +34,17 @@
         input[type="range"].mini-slider { height: 4px; }
         input[type="range"].mini-slider::-webkit-slider-thumb { width: 14px; height: 14px; }
 
-        .slider-g1::-webkit-slider-thumb { background: #549e39 !important; }
-        .slider-g2::-webkit-slider-thumb { background: #3b82f6 !important; }
-        .slider-g3::-webkit-slider-thumb { background: #06b6d4 !important; }
-        .slider-g4::-webkit-slider-thumb { background: #f59e0b !important; }
-        .slider-g5::-webkit-slider-thumb { background: #f97316 !important; }
+        /* CORRECTIF DES COULEURS DES GAMMES (Compatible tous navigateurs) */
+        .slider-g1::-webkit-slider-thumb { background: #10b981 !important; } /* emerald-500 */
+        .slider-g1::-moz-range-thumb { background: #10b981 !important; border: none; border-radius: 50%; width: 14px; height: 14px; }
+        .slider-g2::-webkit-slider-thumb { background: #3b82f6 !important; } /* blue-500 */
+        .slider-g2::-moz-range-thumb { background: #3b82f6 !important; border: none; border-radius: 50%; width: 14px; height: 14px; }
+        .slider-g3::-webkit-slider-thumb { background: #06b6d4 !important; } /* cyan-500 */
+        .slider-g3::-moz-range-thumb { background: #06b6d4 !important; border: none; border-radius: 50%; width: 14px; height: 14px; }
+        .slider-g4::-webkit-slider-thumb { background: #f59e0b !important; } /* amber-500 */
+        .slider-g4::-moz-range-thumb { background: #f59e0b !important; border: none; border-radius: 50%; width: 14px; height: 14px; }
+        .slider-g5::-webkit-slider-thumb { background: #f97316 !important; } /* orange-500 */
+        .slider-g5::-moz-range-thumb { background: #f97316 !important; border: none; border-radius: 50%; width: 14px; height: 14px; }
 
         .range-slider { position: relative; width: 100%; height: 6px; background: #d1d5db; border-radius: 5px; margin: 15px 0; }
         .range-slider .progress { position: absolute; height: 100%; border-radius: 5px; z-index: 0; }
@@ -199,7 +205,7 @@
                             <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 mt-4">
                                 <label class="flex items-center cursor-pointer group">
                                     <input type="checkbox" name="interet_pommes_transf" value="Oui" class="w-5 h-5 text-[#549e39] mr-3 rounded" onchange="toggleVisibility('pommes_transf_div', this.checked)">
-                                    <span class="font-bold text-[#405F59] group-hover:text-[#549e39] transition-colors">Consommez-vous des fruits transformés (pommes) ?</span>
+                                    <span class="font-bold text-[#405F59] group-hover:text-[#549e39] transition-colors ml-2">Consommez-vous des fruits transformés (pommes) ?</span>
                                 </label>
                                 <div id="pommes_transf_div" class="hidden mt-4 pt-4 border-t border-gray-200">
                                     <p class="text-sm text-gray-600 mb-3 italic">Si oui, n'hésitez pas à préciser les volumes annuels de vos achats :</p>
@@ -734,92 +740,63 @@
           bocal: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8v12h10V8z"/><path d="M6 8h12v-2H6z M5 8v4h2"/><path d="M7 10v2" stroke="#549e39"/></svg>',
           surgele: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l-1 14h14l-1-14z"/><path d="M5 6h14 M7 6l-1-3h12l-1 3"/><path d="M12 11v6 M9 14h6 M10 12l4 4 M10 16l4-4" stroke="#549e39"/></svg>',
           barquette: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-2 8H6z"/><path d="M4 10c2-3 5-4 8-4" stroke="#549e39"/></svg>',
-          dyn_default: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c0-5 3-10 8-10s8 5 8 10"/><circle cx="12" cy="4" r="2" stroke="#549e39"/><path d="M2 16h20v2c0 1-1 2-2 2H4c-1 0-2-1-2-2z"/></svg>'
+          
+          // NOUVEAU PRODUIT (Cercle pointillés)
+          dyn_default: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" stroke-dasharray="2 2"/><circle cx="12" cy="12" r="3" stroke="#549e39"/></svg>'
         };
 
-        // Fonction magique pour afficher l'icône (Personnalisée OU Lucide en fallback)
-        function getIconHtml(iconName, customClasses) {
-            if (customSvgIcons && customSvgIcons[iconName]) {
-                return `<span class="custom-svg-wrapper flex items-center justify-center ${customClasses}">${customSvgIcons[iconName]}</span>`;
+        function getIconHtml(iconName, arg2, arg3) {
+            let customClasses = arg3 !== undefined ? arg3 : arg2;
+            let lucideFallback = arg3 !== undefined ? arg2 : iconName;
+            let actualIconName = iconName;
+
+            if (customSvgIcons && customSvgIcons[actualIconName]) {
+                // TAILLES FIXES INJECTÉES : Empêche le SVG de devenir géant en attendant que le CSS de Tailwind charge
+                let sizeStyle = "width: 2rem; height: 2rem;"; 
+                if (customClasses && customClasses.includes('w-6')) sizeStyle = "width: 1.5rem; height: 1.5rem;";
+                else if (customClasses && customClasses.includes('w-5')) sizeStyle = "width: 1.25rem; height: 1.25rem;";
+                else if (customClasses && customClasses.includes('w-4')) sizeStyle = "width: 1rem; height: 1rem;";
+                
+                return customSvgIcons[actualIconName].replace('<svg ', `<svg class="${customClasses}" style="${sizeStyle}" `);
             }
-            return `<i data-lucide="${iconName}" class="${customClasses}"></i>`;
+            return `<i data-lucide="${lucideFallback}" class="${customClasses}"></i>`;
         }
-        
-        // MOTEUR D'AUTO-DÉTECTION D'ICÔNE (SÉMANTIQUE)
+
         function autoDetectIcon(val) {
-            val = val.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Retire les accents
+            val = val.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             
-            // 1. Mots-clés vers icônes Lucide natives
-            if (val.includes('carotte')) return 'carrot';
-            if (val.includes('boeuf') || val.includes('viande')) return 'beef';
-            if (val.includes('lait')) return 'milk';
-            if (val.includes('oeuf')) return 'egg';
-            if (val.includes('poulet') || val.includes('dinde') || val.includes('volaille')) return 'drumstick';
-            if (val.includes('huile')) return 'droplet';
+            if (val.includes('carotte')) return 'carotte';
+            if (val.includes('boeuf') || val.includes('viande')) return 'steak';
+            if (val.includes('lait')) return 'lait_bouteille';
+            if (val.includes('oeuf')) return 'oeuf'; 
+            if (val.includes('poulet') || val.includes('dinde') || val.includes('volaille')) return 'cuisse_volaille';
+            if (val.includes('huile')) return 'huile';
             
-            // 2. Recherche dans notre bibliothèque sur-mesure
             for (let key in customSvgIcons) {
                 let cleanKey = key.replace('_', ' '); 
                 if (val.includes(cleanKey)) return key;
             }
             
-            // 3. Mots-clés alternatifs vers du sur-mesure
             if (val.includes('porc') || val.includes('lardon')) return 'cote_porc';
             if (val.includes('brebis')) return 'palet_chevre';
             if (val.includes('fromage')) return 'portion';
             if (val.includes('pain')) return 'baguette';
             if (val.includes('courgette') || val.includes('aubergine')) return 'courgette'; 
             
-            // 4. Par défaut : le cercle neutre de Lucide
-            return 'circle';
+            return 'dyn_default';
         }
 
-        // LISTES DE DONNÉES POUR GÉNÉRATION (Mixte Lucide / Custom)
-        const lgList = [
-            { id: 'pdt', icon: 'pdt', name: 'Pommes de terre', pl: 'Ex: 500' }, // Custom
-            { id: 'carotte', icon: 'carrot', name: 'Carottes', pl: 'Ex: 300' }, // Lucide
-            { id: 'oignon', icon: 'oignon', name: 'Oignons', pl: 'Ex: 100' },   // Custom
-            { id: 'tomate', icon: 'tomate', name: 'Tomates', pl: 'Ex: 400' },   // Custom
-            { id: 'poireau', icon: 'poireau', name: 'Poireaux', pl: 'Ex: 200' },// Custom
-            { id: 'ete', icon: 'sun', name: 'Légumes d\'été', pl: 'Ex: 350' },  // Lucide
-            { id: 'chou', icon: 'chou', name: 'Choux', pl: 'Ex: 150' },         // Custom
-            { id: 'courge', icon: 'courge', name: 'Courges', pl: 'Ex: 150' }    // Custom
-        ];
-
-        const mtList = [
-            { id: 'porc', icon: 'roti_porc', name: 'Porc', pl: 'Ex: 500' },     // Custom
-            { id: 'boeuf', icon: 'beef', name: 'Bœuf', pl: 'Ex: 500' },         // Lucide
-            { id: 'volaille', icon: 'drumstick', name: 'Volaille', pl: 'Ex: 500' }, // Lucide
-            { id: 'ovin', icon: 'gigot', name: 'Ovin', pl: 'Ex: 100' },         // Custom
-            { id: 'caprin', icon: 'gigot', name: 'Caprin', pl: 'Ex: 50' }       // Custom
-        ];
-
-        const vacheList = [
-            { id: 'coupe', icon: 'meule', name: 'Fromages Coupe (Tomme)', sub: 'Meules, Tommes entières', unit: 'kg' }, // Custom
-            { id: 'portion', icon: 'portion', name: 'Portions / Râpé', sub: 'Fromage découpé, râpé', unit: 'kg' },       // Custom
-            { id: 'lait', icon: 'milk', name: 'Lait & Crème', sub: 'Liquide UHT ou Frais', unit: 'Litres' },            // Lucide
-            { id: 'ultrafrais', icon: 'yaourt', name: 'Ultra-frais', sub: 'Yaourts, Fromage Blanc', unit: 'kg ou Unité' } // Custom
-        ];
-        
-        const chevreList = [
-            { id: 'affine', icon: 'buche_chevre', name: 'Fromages Affinés', sub: 'Bûches, Tommes brebis', unit: 'kg' },   // Custom
-            { id: 'frais', icon: 'palet_chevre', name: 'Fromages Frais', sub: 'Palets, Faisselles', unit: 'kg' },         // Custom
-            { id: 'ultrafrais_chevre', icon: 'yaourt', name: 'Ultra-frais', sub: 'Yaourts brebis/chèvre', unit: 'kg ou Unité' } // Custom
-        ];
-
-        const oeufList = [
-            { id: 'coquille', icon: 'oeuf', name: 'Œufs Coquille', sub: 'Frais, entiers', pl: 'Ex: 3000', unit: 'Unités', min: 0.15, max: 0.30, limit: 1, step: 0.05 },
-            { id: 'liquide', icon: 'bidon_oeuf', name: 'Œufs Liquides', sub: 'Ovoproduits en bidons', pl: 'Ex: 50', unit: 'Litres', min: 3.0, max: 6.0, limit: 15, step: 0.1 },
-            { id: 'dur', icon: 'seau_oeuf', name: 'Œufs durs écalés', sub: 'En seaux, prêts à l\'emploi', pl: 'Ex: 20', unit: 'kg', min: 4.0, max: 8.0, limit: 20, step: 0.5 }
-        ];
-
+        const lgList = [{id:'pdt',icon:'pdt',name:'Pommes de terre',pl:'Ex: 500'},{id:'carotte',icon:'carotte',name:'Carottes',pl:'Ex: 300'},{id:'oignon',icon:'oignon',name:'Oignons',pl:'Ex: 100'},{id:'tomate',icon:'tomate',name:'Tomates',pl:'Ex: 400'},{id:'poireau',icon:'poireau',name:'Poireaux',pl:'Ex: 200'},{id:'ete',icon:'aubergine',name:'Légumes d\'été',pl:'Ex: 350'},{id:'chou',icon:'chou',name:'Choux',pl:'Ex: 150'},{id:'courge',icon:'courge',name:'Courges',pl:'Ex: 150'}];
+        const mtList = [{id:'porc',icon:'roti_porc',name:'Porc',pl:'Ex: 500'},{id:'boeuf',icon:'steak',name:'Bœuf',pl:'Ex: 500'},{id:'volaille',icon:'cuisse_volaille',name:'Volaille',pl:'Ex: 500'},{id:'ovin',icon:'gigot',name:'Ovin',pl:'Ex: 100'},{id:'caprin',icon:'gigot',name:'Caprin',pl:'Ex: 50'}];
+        const vacheList = [{id:'coupe',icon:'meule',name:'Fromages Coupe (Tomme)',sub:'Meules, Tommes entières',unit:'kg'},{id:'portion',icon:'portion',name:'Portions / Râpé',sub:'Fromage découpé, râpé',unit:'kg'},{id:'lait',icon:'lait_bouteille',name:'Lait & Crème',sub:'Liquide UHT ou Frais',unit:'Litres'},{id:'ultrafrais',icon:'yaourt',name:'Ultra-frais',sub:'Yaourts, Fromage Blanc',unit:'kg ou Unité'}];
+        const chevreList = [{id:'affine',icon:'buche_chevre',name:'Fromages Affinés',sub:'Bûches, Tommes brebis',unit:'kg'},{id:'frais',icon:'palet_chevre',name:'Fromages Frais',sub:'Palets, Faisselles',unit:'kg'},{id:'ultrafrais_chevre',icon:'yaourt',name:'Ultra-frais',sub:'Yaourts brebis/chèvre',unit:'kg ou Unité'}];
+        const oeufList = [{id:'coquille',icon:'oeuf',name:'Œufs Coquille',sub:'Frais, entiers',pl:'Ex: 3000',unit:'Unités',min:0.15,max:0.3,limit:1,step:0.05},{id:'liquide',icon:'bidon_oeuf',name:'Œufs Liquides',sub:'Ovoproduits en bidons',pl:'Ex: 50',unit:'Litres',min:3.0,max:6.0,limit:15,step:0.1},{id:'dur',icon:'seau_oeuf',name:'Œufs durs écalés',sub:'En seaux, prêts à l\'emploi',pl:'Ex: 20',unit:'kg',min:4.0,max:8.0,limit:20,step:0.5}];
         const sucreList = [ { id: 'miel', icon: 'miel', name: 'Miel', pl: 'Ex: 50', unit: 'kg' }, { id: 'confiture', icon: 'confiture', name: 'Confitures', pl: 'Ex: 50', unit: 'kg' } ];
-        const saleList = [ { id: 'huile', icon: 'droplet', name: 'Huiles', pl: 'Ex: 50', unit: 'Litres' }, { id: 'condiment', icon: 'moutarde', name: 'Condiments/Moutarde', pl: 'Ex: 20', unit: 'kg' } ];
+        const saleList = [ { id: 'huile', icon: 'huile', name: 'Huiles', pl: 'Ex: 50', unit: 'Litres' }, { id: 'condiment', icon: 'moutarde', name: 'Condiments/Moutarde', pl: 'Ex: 20', unit: 'kg' } ];
         const legumineuseList = [ { id: 'lentille', icon: 'lentilles', name: 'Lentilles', pl: 'Ex: 100', unit: 'kg' }, { id: 'poischiche', icon: 'pois_chiche', name: 'Pois chiches', pl: 'Ex: 50', unit: 'kg' }, { id: 'haricot', icon: 'haricot_sec', name: 'Haricots secs', pl: 'Ex: 50', unit: 'kg' } ];
-        const meunerieList = [ { id: 'farine', icon: 'wheat', name: 'Farines', pl: 'Ex: 100', unit: 'kg' }, { id: 'pate', icon: 'pates', name: 'Pâtes sèches', pl: 'Ex: 150', unit: 'kg' }, { id: 'cereale', icon: 'cereales', name: 'Céréales/Grains', pl: 'Ex: 50', unit: 'kg' } ];
+        const meunerieList = [ { id: 'farine', icon: 'farine', name: 'Farines', pl: 'Ex: 100', unit: 'kg' }, { id: 'pate', icon: 'pates', name: 'Pâtes sèches', pl: 'Ex: 150', unit: 'kg' }, { id: 'cereale', icon: 'cereales', name: 'Céréales/Grains', pl: 'Ex: 50', unit: 'kg' } ];
         const boulangerieList = [ { id: 'pain', icon: 'baguette', name: 'Pain frais', pl: 'Ex: 500', unit: 'kg ou unités' } ];
 
-        // GESTION PRIX ET GAMMES
         function updatePriceRange(id, el, isMin, maxLimit) {
             let minEl = document.getElementById('price_min_' + id);
             let maxEl = document.getElementById('price_max_' + id);
@@ -868,7 +845,6 @@
         function updateMeatGamme(meatId, changedInput) { updateGammeTotalBase(`viande_${meatId}`, `total_${meatId}`, false, 5, changedInput); }
         function updateDynamicMeatGamme(meatId, changedInput) { updateGammeTotalBase(`autre_viande_g${changedInput.name.split('_g')[1].split('_')[0]}_${meatId}`.replace(/_g\d+/, ''), `total_autre_viande_${meatId}`, false, 5, changedInput); }
 
-        // GESTION UI CARTES ET NOMMAGE DYNAMIQUE
         function toggleProductCard(cardId, btnId) {
             const card = document.getElementById(cardId);
             const btn = document.getElementById(btnId);
@@ -899,7 +875,7 @@
         function validerProduit(cardId, btnId, checkId) {
             document.getElementById(cardId).classList.add('hidden');
             const btn = document.getElementById(btnId);
-            btn.classList.remove('border-[#549e39]', 'bg-green-50', 'ring-2', 'ring-green-200', 'border-rose-400', 'bg-rose-50', 'ring-rose-200', 'border-blue-400', 'bg-blue-50', 'ring-blue-200', 'border-gray-200', 'bg-white');
+            btn.classList.remove('border-[#549e39]', 'bg-green-50', 'ring-2', 'ring-green-200', 'border-rose-400', 'bg-rose-50', 'ring-rose-200', 'border-blue-400', 'bg-blue-50', 'ring-blue-200', 'border-yellow-400', 'bg-yellow-50', 'ring-yellow-200', 'border-gray-200', 'bg-white');
             btn.classList.add('border-emerald-500', 'bg-emerald-50', 'ring-2', 'ring-emerald-100');
             document.getElementById(checkId).classList.remove('hidden');
         }
@@ -918,15 +894,13 @@
             if(btnText) { btnText.textContent = val; btnText.title = val; }
             if(headerText) headerText.textContent = val;
 
-            // DÉTECTION SÉMANTIQUE DE L'ICÔNE (HYBRIDE)
             let detectedKey = autoDetectIcon(val);
             let btnIconNode = document.getElementById('icon_btn_' + cId);
             let headerIconNode = document.getElementById('icon_header_' + cId);
             
-            if(btnIconNode) btnIconNode.innerHTML = getIconHtml(detectedKey, 'w-8 h-8 text-[#405F59] mb-1');
-            if(headerIconNode) headerIconNode.innerHTML = getIconHtml(detectedKey, 'w-6 h-6');
+            if(btnIconNode) btnIconNode.innerHTML = getIconHtml(detectedKey, 'circle', 'w-8 h-8 text-[#405F59] mb-1');
+            if(headerIconNode) headerIconNode.innerHTML = getIconHtml(detectedKey, 'circle', 'w-6 h-6');
             
-            // Recharger Lucide au cas où l'icône détectée serait native
             lucide.createIcons();
         }
 
@@ -941,11 +915,10 @@
             }
         }
 
-        // GENERATEUR DE CARD (HTML COMPACT)
         function createCardHtml(item, prefix, theme, step, maxLimit, gammes, colors) {
-            let h = `<div class="flex justify-between items-start mb-4 border-b pb-2"><div><h4 class="font-oswald text-${theme}-500 text-xl m-0 flex items-center gap-2">${getIconHtml(item.icon, 'w-6 h-6')} ${item.name}</h4>${item.sub ? `<p class="text-xs text-gray-500 mt-1">${item.sub}</p>` : ''}</div><button type="button" onclick="toggleProductCard('card_${item.id}', 'btn_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x"></i></button></div>`;
+            let h = `<div class="flex justify-between items-start mb-4 border-b pb-2"><div><h4 class="font-oswald text-${theme}-500 text-xl m-0 flex items-center gap-2">${getIconHtml(item.icon, 'circle', 'w-6 h-6')} ${item.name}</h4>${item.sub ? `<p class="text-xs text-gray-500 mt-1">${item.sub}</p>` : ''}</div><button type="button" onclick="toggleProductCard('card_${item.id}', 'btn_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x"></i></button></div>`;
             if(gammes) {
-                h += `<div class="flex flex-col md:flex-row gap-6 mb-4"><div class="input-group md:w-1/4 mb-0"><label>Volume annuel (kg)</label><input type="number" name="${prefix}_${item.id}_vol" step="50" value="0" placeholder="${item.pl}"></div><div class="input-group md:w-3/4 mb-0"><label>Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
+                h += `<div class="flex flex-col md:flex-row gap-6 mb-4"><div class="input-group md:w-1/4 mb-0"><label>Volume annuel (kg)</label><input type="number" name="${prefix}_${item.id}_vol" step="50" value="0" placeholder="${item.pl||''}"></div><div class="input-group md:w-3/4 mb-0"><label>Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
                 h += `<div class="input-group border-t border-gray-100 pt-4 mb-0"><div class="flex justify-between items-end mb-2"><label class="text-sm">Répartition par gammes</label><span id="total_${item.id}" class="text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700">0%</span></div><div class="w-full h-3 bg-gray-200 rounded-full flex overflow-hidden mb-4">${gammes.map((_,i)=>`<div id="bar_${prefix}_${item.id}_g${i+1}" class="h-full bg-${colors[i]||'gray-400'} transition-all" style="width: 0%;"></div>`).join('')}</div><div class="grid grid-cols-${gammes.length} gap-3">${gammes.map((g,i)=>`<div class="text-center"><label class="text-[10px] text-gray-700 font-bold mb-0.5 leading-tight block">${g[0]}</label><p class="text-[8px] text-gray-500 leading-tight mb-1 h-6 flex items-center justify-center px-1">${g[1]}</p><output id="out_${prefix}_${item.id}_g${i+1}" class="block text-xs font-bold text-${colors[i]||'gray-500'} mb-1">0%</output><input type="range" name="${prefix}_${item.id}_g${i+1}" value="0" min="0" max="100" step="5" class="mini-slider slider-g${i+1}" oninput="updateGammeTotalBase('${prefix}_${item.id}', 'total_${item.id}', false, ${gammes.length}, this)"></div>`).join('')}</div></div>`;
                 h += `<div class="input-group border-t border-gray-100 pt-4 mt-4 w-full"><label class="text-sm m-0">Prix acceptables par gamme (€/kg)</label><p class="text-[10px] text-gray-500 italic mb-2 mt-1">Ajustez la répartition au-dessus pour activer les prix.</p>${gammes.map((g,i)=>`<div id="price_wrapper_${prefix}_${item.id}_g${i+1}" class="hidden mt-3 mb-2"><div class="flex justify-between items-end mb-1"><span class="text-[10px] font-bold text-gray-600">${g[0]} (${g[1]})</span><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-700"><span id="price_min_val_${item.id}_g${i+1}">${step===15?1.50:8.00}</span>€ - <span id="price_max_val_${item.id}_g${i+1}">${step===15?3.00:15.00}</span>€</span></div><div class="range-slider ${theme==='rose'?'rose':''} mt-1 mb-1"><div class="progress absolute h-full rounded bg-${colors[i]||'gray-400'}" id="price_progress_${item.id}_g${i+1}" style="left: ${step===15?'10%':'20%'}; right: ${step===15?'80%':'62.5%'};"></div><input type="range" name="prix_min_${item.id}_g${i+1}" id="price_min_${item.id}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${step===15?1.50:8.00}" class="slider-g${i+1}" oninput="updatePriceRange('${item.id}_g${i+1}', this, true, ${maxLimit})"><input type="range" name="prix_max_${item.id}_g${i+1}" id="price_max_${item.id}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${step===15?3.00:15.00}" class="slider-g${i+1}" oninput="updatePriceRange('${item.id}_g${i+1}', this, false, ${maxLimit})"></div></div>`).join('')}</div>`;
             } else {
@@ -954,59 +927,61 @@
                 let pLimit = item.limit !== undefined ? item.limit : maxLimit;
                 let pStep = item.step !== undefined ? item.step : 0.1;
 
-                h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Volume annuel (${item.unit})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl || 'Ex: 100'}"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${item.unit.split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-${theme}-100 text-${theme}-700"><span id="price_min_val_${item.id}">${pMin.toFixed(2)}</span>€ - <span id="price_max_val_${item.id}">${pMax.toFixed(2)}</span>€</span></div><div class="range-slider ${theme} mt-2 mb-1"><div class="progress absolute h-full rounded bg-${theme}-500" id="price_progress_${item.id}" style="left: ${(pMin/pLimit)*100}%; right: ${100-(pMax/pLimit)*100}%;"></div><input type="range" name="prix_min_${item.id}" id="price_min_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMin}" oninput="updatePriceRange('${item.id}', this, true, ${pLimit})"><input type="range" name="prix_max_${item.id}" id="price_max_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMax}" oninput="updatePriceRange('${item.id}', this, false, ${pLimit})"></div><div class="flex justify-between text-[10px] text-${theme}-700 mt-1"><span>0 €</span><span>${pLimit} €+</span></div></div></div>`;
-                h += `<div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
+                h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Volume annuel (${item.unit||''})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl || 'Ex: 100'}"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${(item.unit||'').split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-${theme}-100 text-${theme}-700"><span id="price_min_val_${item.id}">${pMin.toFixed(2)}</span>€ - <span id="price_max_val_${item.id}">${pMax.toFixed(2)}</span>€</span></div><div class="range-slider ${theme} mt-2 mb-1"><div class="progress absolute h-full rounded bg-${theme}-500" id="price_progress_${item.id}" style="left: ${(pMin/pLimit)*100}%; right: ${100-(pMax/pLimit)*100}%;"></div><input type="range" name="prix_min_${item.id}" id="price_min_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMin}" oninput="updatePriceRange('${item.id}', this, true, ${pLimit})"><input type="range" name="prix_max_${item.id}" id="price_max_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMax}" oninput="updatePriceRange('${item.id}', this, false, ${pLimit})"></div><div class="flex justify-between text-[10px] text-${theme}-700 mt-1"><span>0 €</span><span>${pLimit} €+</span></div></div></div>`;
+                h += `<div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
             }
             h += `<div class="mt-6 border-t border-gray-100 pt-4 flex justify-end"><button type="button" onclick="validerProduit('card_${item.id}', 'btn_${item.id}', 'check_${item.id}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
             return h;
         }
 
-        // INITIALISATION DES CARTES FIXES ET EN-TÊTES
         function buildMosaicAndCards() {
-            // Remplacement hybride des icônes d'en-tête de section
-            const hdFruits = document.getElementById('head-icon-fruits'); if(hdFruits) hdFruits.innerHTML = getIconHtml('apple', 'w-8 h-8');
-            const hdLegumes = document.getElementById('head-icon-legumes'); if(hdLegumes) hdLegumes.innerHTML = getIconHtml('carrot', 'w-8 h-8');
-            const hdViandes = document.getElementById('head-icon-viandes'); if(hdViandes) hdViandes.innerHTML = getIconHtml('beef', 'w-8 h-8');
-            const hdLaitages = document.getElementById('head-icon-laitages'); if(hdLaitages) hdLaitages.innerHTML = getIconHtml('milk', 'w-8 h-8');
-            const hdAutres = document.getElementById('head-icon-autres'); if(hdAutres) hdAutres.innerHTML = getIconHtml('wheat', 'w-8 h-8');
+            const hdFruits = document.getElementById('head-icon-fruits'); if(hdFruits) hdFruits.innerHTML = getIconHtml('pomme', 'circle', 'w-8 h-8');
+            const hdLegumes = document.getElementById('head-icon-legumes'); if(hdLegumes) hdLegumes.innerHTML = getIconHtml('carotte', 'circle', 'w-8 h-8');
+            const hdViandes = document.getElementById('head-icon-viandes'); if(hdViandes) hdViandes.innerHTML = getIconHtml('steak', 'circle', 'w-8 h-8');
+            const hdLaitages = document.getElementById('head-icon-laitages'); if(hdLaitages) hdLaitages.innerHTML = getIconHtml('lait_bouteille', 'circle', 'w-8 h-8');
+            const hdAutres = document.getElementById('head-icon-autres'); if(hdAutres) hdAutres.innerHTML = getIconHtml('cereales', 'circle', 'w-8 h-8');
             
-            // Remplacement des icônes de sous-section (Laitages / Épicerie)
-            const hsVache = document.getElementById('head_icon_vache_section'); if(hsVache) hsVache.innerHTML = getIconHtml('milk', 'w-6 h-6');
-            const hsChevre = document.getElementById('head_icon_chevre_section'); if(hsChevre) hsChevre.innerHTML = getIconHtml('milk', 'w-6 h-6');
-            const hsOeuf = document.getElementById('head_icon_oeuf_section'); if(hsOeuf) hsOeuf.innerHTML = getIconHtml('egg', 'w-6 h-6');
-            const hsSucre = document.getElementById('head_icon_sucre_section'); if(hsSucre) hsSucre.innerHTML = getIconHtml('miel', 'w-6 h-6');
-            const hsSale = document.getElementById('head_icon_sale_section'); if(hsSale) hsSale.innerHTML = getIconHtml('flask-conical', 'w-6 h-6');
-            const hsLegu = document.getElementById('head_icon_legumineuse_section'); if(hsLegu) hsLegu.innerHTML = getIconHtml('bean', 'w-6 h-6');
-            const hsMeu = document.getElementById('head_icon_meu_section'); if(hsMeu) hsMeu.innerHTML = getIconHtml('wheat', 'w-6 h-6');
-            const hsBou = document.getElementById('head_icon_bou_section'); if(hsBou) hsBou.innerHTML = getIconHtml('croissant', 'w-6 h-6');
+            const hsVache = document.getElementById('head_icon_vache_section'); if(hsVache) hsVache.innerHTML = getIconHtml('lait_brique', 'circle', 'w-6 h-6');
+            const hsChevre = document.getElementById('head_icon_chevre_section'); if(hsChevre) hsChevre.innerHTML = getIconHtml('buche_chevre', 'circle', 'w-6 h-6');
+            const hsOeuf = document.getElementById('head_icon_oeuf_section'); if(hsOeuf) hsOeuf.innerHTML = getIconHtml('oeuf', 'circle', 'w-6 h-6');
+            const hsSucre = document.getElementById('head_icon_sucre_section'); if(hsSucre) hsSucre.innerHTML = getIconHtml('confiture', 'circle', 'w-6 h-6');
+            const hsSale = document.getElementById('head_icon_sale_section'); if(hsSale) hsSale.innerHTML = getIconHtml('huile', 'circle', 'w-6 h-6');
+            const hsLegu = document.getElementById('head_icon_legumineuse_section'); if(hsLegu) hsLegu.innerHTML = getIconHtml('lentilles', 'circle', 'w-6 h-6');
+            const hsMeu = document.getElementById('head_icon_meu_section'); if(hsMeu) hsMeu.innerHTML = getIconHtml('farine', 'circle', 'w-6 h-6');
+            const hsBou = document.getElementById('head_icon_bou_section'); if(hsBou) hsBou.innerHTML = getIconHtml('baguette', 'circle', 'w-6 h-6');
 
-            // Remplacement pour Pommes et Poires (Etape 1 native)
-            const icnPommes = document.getElementById('icon_pommes'); if (icnPommes) icnPommes.outerHTML = getIconHtml('apple', 'w-8 h-8 text-[#405F59] mb-1');
-            const icnPoires = document.getElementById('icon_poires'); if (icnPoires) icnPoires.outerHTML = getIconHtml('poire', 'w-8 h-8 text-[#405F59] mb-1');
-            const hdPommes = document.getElementById('head_pommes'); if (hdPommes) hdPommes.outerHTML = getIconHtml('apple', 'w-6 h-6');
-            const hdPoires = document.getElementById('head_poires'); if (hdPoires) hdPoires.outerHTML = getIconHtml('poire', 'w-6 h-6');
+            const icnPommes = document.getElementById('icon_pommes'); if (icnPommes) icnPommes.outerHTML = getIconHtml('pomme', 'circle', 'w-8 h-8 text-[#405F59] mb-1');
+            const icnPoires = document.getElementById('icon_poires'); if (icnPoires) icnPoires.outerHTML = getIconHtml('poire', 'circle', 'w-8 h-8 text-[#405F59] mb-1');
+            const hdPommes = document.getElementById('head_pommes'); if (hdPommes) hdPommes.outerHTML = getIconHtml('pomme', 'circle', 'w-6 h-6');
+            const hdPoires = document.getElementById('head_poires'); if (hdPoires) hdPoires.outerHTML = getIconHtml('poire', 'circle', 'w-6 h-6');
 
             const appendMosaic = (list, mosaicId, contId, prefix, theme, step, maxLimit, gammes, colors) => {
                 const mosaic = document.getElementById(mosaicId);
                 const cont = document.getElementById(contId);
                 if(!mosaic || !cont) return;
+                
+                // On récupère le bouton (+) existant dans le HTML pour insérer AVANT lui
+                const btnAdd = mosaic.lastElementChild; 
+                
                 list.forEach(item => {
                     const btn = document.createElement('button');
                     btn.type = "button"; btn.id = `btn_${item.id}`;
                     btn.onclick = () => toggleProductCard(`card_${item.id}`, `btn_${item.id}`);
-                    btn.className = `relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-${theme}-400 hover:bg-${theme}-50 transition-all shadow-sm`;
-                    btn.innerHTML = `<div id="check_${item.id}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div>${getIconHtml(item.icon, 'w-8 h-8 text-[#405F59] mb-1')}<span class="font-bold text-xs text-[#405F59] text-center">${item.name}</span>`;
-                    mosaic.insertBefore(btn, mosaic.lastElementChild);
+                    btn.className = `relative p-4 border-2 border-gray-100 bg-gray-50 rounded-2xl flex flex-col items-center gap-2 hover:border-${theme}-400 transition-all shadow-sm`;
+                    btn.innerHTML = `<div id="check_${item.id}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-sm"><i class="ph ph-check text-[10px]"></i></div>${getIconHtml(item.icon, 'circle', 'w-8 h-8 text-dixDark mb-1')}<span class="font-bold text-[10px] text-center">${item.name}</span>`;
+                    
+                    mosaic.insertBefore(btn, btnAdd); // Insertion avant le bouton "Autre produit"
+                    
                     const card = document.createElement('div');
                     card.id = `card_${item.id}`;
-                    card.className = `hidden animate-fadeIn bg-white p-5 rounded-xl border border-${theme}-400 shadow-md ring-4 ring-${theme}-50`;
+                    card.className = `hidden animate-fadeIn bg-white p-6 rounded-3xl border border-gray-100 shadow-sm ring-4 ring-gray-50`;
                     card.innerHTML = createCardHtml(item, prefix, theme, step, maxLimit, gammes, colors);
                     cont.appendChild(card);
                 });
             };
 
-            appendMosaic(lgList, 'mosaic-legumes', 'cards-container-legumes', 'leg', 'emerald', 15, 15, [['1ère gamme','Frais brut'],['2ème gamme','Conserves'],['3ème gamme','Surgelés'],['4ème gamme','Prêt à l\'emploi'],['5ème gamme','Cuit sous-vide']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500']);
-            appendMosaic(mtList, 'mosaic-viandes', 'cards-container-viandes', 'viande', 'rose', 40, 40, [['Frais Brut','Carcasses, pièces'],['Sous-vide','Pièces emballées'],['Surgelé','Viandes surgelées'],['Préparé cru','Haché, saucisses'],['Cuit/Charcut.','Jambon, rôtis']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500']);
+            appendMosaic(lgList, 'mosaic-legumes', 'cards-container-legumes', 'leg', 'emerald', 15, 15, [['1ère','Frais'],['2ème','Cons.'],['3ème','Surg.'],['4ème','Prêt'],['5ème','Cuit']], ['emerald-500','blue-500','cyan-500','amber-500','orange-500']);
+            appendMosaic(mtList, 'mosaic-viandes', 'cards-container-viandes', 'viande', 'rose', 40, 40, [['Frais Brut','Carcasses'],['Sous-vide','Emballé'],['Surgelé','Surgelé'],['Préparé cru','Haché'],['Cuit','Jambon']], ['emerald-500','blue-500','cyan-500','amber-500','orange-500']);
             appendMosaic(vacheList, 'mosaic-vache', 'cards-container-vache', 'vache', 'blue', 30, 30, null, null);
             appendMosaic(chevreList, 'mosaic-chevre', 'cards-container-chevre', 'chevre', 'blue', 30, 30, null, null);
             appendMosaic(oeufList, 'mosaic-oeuf', 'cards-container-oeuf', 'oeuf', 'yellow', 15, 15, null, null);
@@ -1022,22 +997,27 @@
             const mosaic = document.getElementById(mosaicId);
             const container = document.getElementById(containerId);
             if(!mosaic || !container) return;
+            
+            // On récupère le bouton (+) existant dans le HTML pour insérer AVANT lui
+            const btnAdd = mosaic.lastElementChild;
+            
             list.forEach(item => {
                 const btn = document.createElement('button');
                 btn.type = "button"; btn.id = `btn_${prefix}_${item.id}`;
                 btn.onclick = () => toggleProductCard(`card_${prefix}_${item.id}`, `btn_${prefix}_${item.id}`);
-                btn.className = "relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm";
-                btn.innerHTML = `<div id="check_${prefix}_${item.id}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div>${getIconHtml(item.icon, 'w-8 h-8 text-[#405F59] mb-1')}<span class="font-bold text-xs text-[#405F59] text-center">${item.name}</span>`;
-                mosaic.insertBefore(btn, mosaic.lastElementChild);
+                btn.className = "relative p-4 border-2 border-gray-100 bg-gray-50 rounded-2xl flex flex-col items-center gap-2 hover:border-[#549e39] transition-all shadow-sm";
+                btn.innerHTML = `<div id="check_${prefix}_${item.id}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-3 h-3"></i></div>${getIconHtml(item.icon, 'circle', 'w-8 h-8 text-dixDark mb-1')}<span class="font-bold text-[10px] text-center">${item.name}</span>`;
+                
+                mosaic.insertBefore(btn, btnAdd); // Insertion avant le bouton "Autre produit"
+                
                 const card = document.createElement('div');
                 card.id = `card_${prefix}_${item.id}`;
-                card.className = "hidden animate-fadeIn bg-white p-5 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50";
-                card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b pb-2"><h4 class="font-oswald text-[#549e39] text-xl m-0 flex items-center gap-2">${getIconHtml(item.icon, 'w-6 h-6')} ${item.name}</h4><button type="button" onclick="toggleProductCard('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}')" class="text-gray-400 hover:text-red-500"><i data-lucide="x"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Volume annuel (${item.unit})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl}"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${item.unit.split('/')[0]||item.unit.split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${prefix}_${item.id}">2.00</span>€ - <span id="price_max_val_${prefix}_${item.id}">8.00</span>€</span></div><div class="range-slider mt-2 mb-1"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${prefix}_${item.id}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${prefix}_${item.id}" id="price_min_${prefix}_${item.id}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${prefix}_${item.id}', this, true, 20)"><input type="range" name="prix_max_${prefix}_${item.id}" id="price_max_${prefix}_${item.id}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${prefix}_${item.id}', this, false, 20)"></div><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_local" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Local</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Déjà 100% local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-4 flex justify-end"><button type="button" onclick="validerProduit('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}', 'check_${prefix}_${item.id}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
+                card.className = "hidden animate-fadeIn bg-white p-6 rounded-3xl border border-gray-100 shadow-sm ring-4 ring-gray-50";
+                card.innerHTML = `<div class="flex justify-between items-start mb-4 border-b pb-2"><div><h4 class="font-oswald text-[#549e39] text-xl m-0 flex items-center gap-2">${getIconHtml(item.icon, 'circle', 'w-6 h-6')} ${item.name}</h4></div><button type="button" onclick="toggleProductCard('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Volume annuel (${item.unit})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl}"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${item.unit.split('/')[0]||item.unit.split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${prefix}_${item.id}">2.00</span>€ - <span id="price_max_val_${prefix}_${item.id}">8.00</span>€</span></div><div class="range-slider mt-2 mb-1"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${prefix}_${item.id}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${prefix}_${item.id}" id="price_min_${prefix}_${item.id}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${prefix}_${item.id}', this, true, 20)"><input type="range" name="prix_max_${prefix}_${item.id}" id="price_max_${prefix}_${item.id}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${prefix}_${item.id}', this, false, 20)"></div><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-4 flex justify-end"><button type="button" onclick="validerProduit('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}', 'check_${prefix}_${item.id}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
                 container.appendChild(card);
             });
         }
 
-        // LIGNES DYNAMIQUES GENERIQUES AVEC AUTO-DETECTION
         let dynCounter = 1;
         function addDynamicRow(type, prefix, theme, maxLimit, gammes, colors, unit, placeholder) {
             const cId = `${type}_dyn_${dynCounter++}`;
@@ -1060,18 +1040,19 @@
             const tileBtn = document.createElement('button');
             tileBtn.type = 'button'; tileBtn.id = `btn_${cId}`;
             tileBtn.onclick = () => toggleProductCard(`card_${cId}`, `btn_${cId}`);
-            tileBtn.className = `relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-${theme}-400 hover:bg-${theme}-50 transition-all shadow-sm`;
-            tileBtn.innerHTML = `<div id="check_${cId}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div><span id="icon_btn_${cId}">${getIconHtml('dyn_default', 'circle', 'w-8 h-8 text-[#405F59] mb-1')}</span><span id="text_btn_${cId}" class="font-bold text-xs text-[#405F59] text-center w-full truncate px-1" title="Nouveau produit">Nouveau produit</span>`;
-            mosaic.insertBefore(tileBtn, btnAdd);
+            tileBtn.className = `relative p-4 border-2 border-gray-100 bg-gray-50 rounded-2xl flex flex-col items-center gap-2 hover:border-${theme}-400 transition-all shadow-sm`;
+            tileBtn.innerHTML = `<div id="check_${cId}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-3 h-3"></i></div><span id="icon_btn_${cId}">${getIconHtml('dyn_default', 'circle', 'w-8 h-8 text-dixDark mb-1')}</span><span id="text_btn_${cId}" class="font-bold text-[10px] text-center w-full truncate px-1" title="Nouveau produit">Nouveau produit</span>`;
+            
+            mosaic.insertBefore(tileBtn, btnAdd); // Insertion avant le bouton "Autre produit"
 
             const card = document.createElement('div');
             card.id = `card_${cId}`;
-            card.className = `hidden animate-fadeIn bg-white p-5 rounded-xl border border-${theme}-400 shadow-md ring-4 ring-${theme}-50`;
+            card.className = `hidden animate-fadeIn bg-white p-6 rounded-3xl border border-gray-100 shadow-sm ring-4 ring-gray-50`;
             
             let h = `<div class="flex justify-between items-start mb-4 border-b pb-2"><div><h4 class="font-oswald text-${theme}-500 text-xl m-0 flex items-center gap-2"><span id="icon_header_${cId}">${getIconHtml('dyn_default', 'circle', 'w-6 h-6')}</span> <span id="text_header_${cId}">Nouveau produit</span></h4></div><button type="button" onclick="toggleProductCard('card_${cId}', 'btn_${cId}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x"></i></button></div>`;
             h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Nom du produit</label><input type="text" name="${cId}_nom" placeholder="${placeholder}" class="mb-4" oninput="updateProductName(this, '${cId}')" required><label>Volume annuel (${unit})</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0"></div>`;
             if(gammes) {
-                h += `<div class="input-group md:w-full mb-0"><label>Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
+                h += `<div class="input-group md:w-full mb-0"><label>Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_local" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Local</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
                 h += `<div class="input-group border-t border-gray-100 pt-4 mb-0"><div class="flex justify-between items-end mb-2"><label class="text-sm">Répartition par gammes</label><span id="total_${cId}" class="text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700">0%</span></div><div class="w-full h-3 bg-gray-200 rounded-full flex overflow-hidden mb-4">${gammes.map((_,i)=>`<div id="bar_${prefix}_${cId}_g${i+1}" class="h-full bg-${colors[i]||'gray-400'} transition-all" style="width: 0%;"></div>`).join('')}</div><div class="grid grid-cols-${gammes.length} gap-3">${gammes.map((g,i)=>`<div class="text-center"><label class="text-[10px] text-gray-700 font-bold mb-0.5 leading-tight block">${g[0]}</label><p class="text-[8px] text-gray-500 leading-tight mb-1 h-6 flex items-center justify-center px-1">${g[1]}</p><output id="out_${prefix}_${cId}_g${i+1}" class="block text-xs font-bold text-${colors[i]||'gray-500'} mb-1">0%</output><input type="range" name="${prefix}_${cId}_g${i+1}" value="0" min="0" max="100" step="5" class="mini-slider slider-g${i+1}" oninput="updateGammeTotalBase('${prefix}_${cId}', 'total_${cId}', false, ${gammes.length}, this)"></div>`).join('')}</div></div>`;
                 h += `<div class="input-group border-t border-gray-100 pt-4 mt-4 w-full"><label class="text-sm m-0">Prix acceptables par gamme (€/kg)</label><p class="text-[10px] text-gray-500 italic mb-2 mt-1">Ajustez la répartition au-dessus pour activer les prix.</p>${gammes.map((g,i)=>`<div id="price_wrapper_${cId}_g${i+1}" class="hidden mt-3 mb-2"><div class="flex justify-between items-end mb-1"><span class="text-[10px] font-bold text-gray-600">${g[0]} (${g[1]})</span><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-700"><span id="price_min_val_${cId}_g${i+1}">${maxLimit===15?1.50:8.00}</span>€ - <span id="price_max_val_${cId}_g${i+1}">${maxLimit===15?3.00:15.00}</span>€</span></div><div class="range-slider ${theme==='rose'?'rose':''} mt-1 mb-1"><div class="progress absolute h-full rounded bg-${colors[i]||'gray-400'}" id="price_progress_${cId}_g${i+1}" style="left: ${maxLimit===15?'10%':'20%'}; right: ${maxLimit===15?'80%':'62.5%'};"></div><input type="range" name="prix_min_${cId}_g${i+1}" id="price_min_${cId}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${maxLimit===15?1.50:8.00}" class="slider-g${i+1}" oninput="updatePriceRange('${cId}_g${i+1}', this, true, ${maxLimit})"><input type="range" name="prix_max_${cId}_g${i+1}" id="price_max_${cId}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${maxLimit===15?3.00:15.00}" class="slider-g${i+1}" oninput="updatePriceRange('${cId}_g${i+1}', this, false, ${maxLimit})"></div></div>`).join('')}</div>`;
             } else {
@@ -1079,11 +1060,10 @@
                 let pMax = 10.0;
                 let pLimit = maxLimit;
                 let pStep = 0.1;
-
                 h += `<div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${unit.split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-${theme}-100 text-${theme}-700"><span id="price_min_val_${cId}">${pMin.toFixed(2)}</span>€ - <span id="price_max_val_${cId}">${pMax.toFixed(2)}</span>€</span></div><div class="range-slider ${theme} mt-2 mb-1"><div class="progress absolute h-full rounded bg-${theme}-500" id="price_progress_${cId}" style="left: ${(pMin/pLimit)*100}%; right: ${100-(pMax/pLimit)*100}%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="${pLimit}" step="${pStep}" value="${pMin}" oninput="updatePriceRange('${cId}', this, true, ${pLimit})"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="${pLimit}" step="${pStep}" value="${pMax}" oninput="updatePriceRange('${cId}', this, false, ${pLimit})"></div><div class="flex justify-between text-[10px] text-${theme}-700 mt-1"><span>0 €</span><span>${pLimit} €+</span></div></div></div>`;
-                h += `<div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
+                h += `<div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
             }
-            h += `<div class="mt-6 border-t border-gray-100 pt-4 flex justify-between"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider</button></div>`;
+            h += `<div class="mt-6 border-t border-gray-100 pt-4 flex justify-between"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
             card.innerHTML = h;
             container.appendChild(card);
             lucide.createIcons(); toggleProductCard(`card_${cId}`, `btn_${cId}`);
@@ -1091,10 +1071,11 @@
         }
 
         function addFruitRow() { addDynamicRow('fruit', 'fruit', 'emerald', 15, null, null, 'kg', 'Ex: Fraises...'); }
-        function addLegRow() { addDynamicRow('leg', 'leg', 'emerald', 15, [['1ère gamme','Frais brut'],['2ème gamme','Conserves'],['3ème gamme','Surgelés'],['4ème gamme','Prêt à l\'emploi'],['5ème gamme','Cuit sous-vide']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500'], 'kg', 'Ex: Navets...'); }
-        function addMeatRow() { addDynamicRow('viande', 'viande', 'rose', 40, [['Frais Brut','Carcasses'],['Sous-vide','Emballé'],['Surgelé','Viandes surgelées'],['Préparé cru','Haché, saucisses'],['Cuit/Charcut.','Jambon, rôtis']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500'], 'kg', 'Ex: Canard...'); }
+        function addLegRow() { addDynamicRow('leg', 'leg', 'emerald', 15, [['1ère gamme','Frais brut'],['2ème gamme','Conserves'],['3ème gamme','Surgelés'],['4ème gamme','Prêt à l\'emploi'],['5ème gamme','Cuit sous-vide']], ['emerald-500','blue-500','cyan-500','amber-500','orange-500'], 'kg', 'Ex: Navets...'); }
+        function addMeatRow() { addDynamicRow('viande', 'viande', 'rose', 40, [['Frais Brut','Carcasses'],['Sous-vide','Emballé'],['Surgelé','Viandes surgelées'],['Préparé cru','Haché, saucisses'],['Cuit/Charcut.','Jambon, rôtis']], ['emerald-500','blue-500','cyan-500','amber-500','orange-500'], 'kg', 'Ex: Canard...'); }
         function addVacheRow() { addDynamicRow('vache', 'vache', 'blue', 30, null, null, 'kg ou L', 'Ex: Crème fraîche...'); }
         function addChevreRow() { addDynamicRow('chevre', 'chevre', 'blue', 30, null, null, 'kg ou L', 'Ex: Fromage frais...'); }
+        function addOeufRow() { addDynamicRow('oeuf', 'oeuf', 'yellow', 15, null, null, 'kg ou unités', 'Ex: Œufs d\'oie...'); }
 
         let dynamicEpiCounter = 1;
         function addDynamicEpiRow(prefix, label, icon, mosaicId, containerId) {
@@ -1105,13 +1086,15 @@
             const tileBtn = document.createElement('button');
             tileBtn.type = 'button'; tileBtn.id = `btn_${cId}`;
             tileBtn.onclick = () => toggleProductCard(`card_${cId}`, `btn_${cId}`);
-            tileBtn.className = "relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm";
-            tileBtn.innerHTML = `<div id="check_${cId}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div><span id="icon_btn_${cId}">${getIconHtml('circle', 'w-8 h-8 text-[#405F59] mb-1')}</span><span id="text_btn_${cId}" class="font-bold text-xs text-[#405F59] text-center w-full truncate px-1" title="Nouveau produit">Nouveau produit</span>`;
-            mosaic.insertBefore(tileBtn, btnAdd);
+            tileBtn.className = "relative p-4 border-2 border-gray-100 bg-gray-50 rounded-2xl flex flex-col items-center gap-2 hover:border-[#549e39] transition-all shadow-sm";
+            tileBtn.innerHTML = `<div id="check_${cId}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-3 h-3"></i></div><span id="icon_btn_${cId}">${getIconHtml('dyn_default', 'circle', 'w-8 h-8 text-dixDark mb-1')}</span><span id="text_btn_${cId}" class="font-bold text-[10px] text-center w-full truncate px-1" title="Nouveau produit">Nouveau produit</span>`;
+            
+            mosaic.insertBefore(tileBtn, btnAdd); // Insertion avant le bouton "Autre produit"
+            
             const card = document.createElement('div');
             card.id = `card_${cId}`;
-            card.className = "hidden animate-fadeIn bg-white p-5 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50";
-            card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b pb-2"><h4 class="font-oswald text-[#549e39] text-xl m-0 flex items-center gap-2"><span id="icon_header_${cId}">${getIconHtml('circle', 'w-6 h-6')}</span> <span id="text_header_${cId}">Nouveau produit</span></h4><button type="button" onclick="toggleProductCard('card_${cId}', 'btn_${cId}')" class="text-gray-400 hover:text-red-500"><i data-lucide="x"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Nom du produit</label><input type="text" name="${cId}_nom" placeholder="Ex: ${label}..." class="mb-4" oninput="updateProductName(this, '${cId}')" required><label>Volume annuel</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/unité)</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${cId}">2.00</span>€ - <span id="price_max_val_${cId}">8.00</span>€</span></div><div class="range-slider mt-2 mb-1"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${cId}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${cId}', this, true, 20)"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${cId}', this, false, 20)"></div><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-4 flex justify-end"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
+            card.className = "hidden animate-fadeIn bg-white p-6 rounded-3xl border border-gray-100 shadow-sm ring-4 ring-gray-50";
+            card.innerHTML = `<div class="flex justify-between items-start mb-4 border-b pb-2"><div><h4 class="font-oswald text-[#549e39] text-xl m-0 flex items-center gap-2">${getIconHtml('dyn_default', 'circle', 'w-6 h-6')} <span id="text_header_${cId}">Nouveau produit</span></h4></div><button type="button" onclick="toggleProductCard('card_${cId}', 'btn_${cId}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Nom du produit</label><input type="text" name="${cId}_nom" placeholder="Ex: ${label}..." class="mb-4" oninput="updateProductName(this, '${cId}')" required><label>Volume annuel</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/unité)</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${cId}">2.00</span>€ - <span id="price_max_val_${cId}">8.00</span>€</span></div><div class="range-slider mt-2 mb-1"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${cId}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${cId}', this, true, 20)"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${cId}', this, false, 20)"></div><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-4 flex justify-between"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
             container.appendChild(card); lucide.createIcons(); toggleProductCard(`card_${cId}`, `btn_${cId}`);
             setTimeout(() => { const inp = card.querySelector('input[type="text"]'); if(inp) inp.focus(); }, 50);
         }
@@ -1172,7 +1155,7 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            const googleScriptURL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; 
+            const googleScriptURL = "https://script.google.com/macros/s/AKfycbx3Yq5PQ_igyE_9zb18F6IOdVBB91JIMX6guA-7kSeeFWcIQAxkRgUvNVgFJlqVIEzePg/exec"; 
             
             fetch(googleScriptURL, {
                 method: 'POST',
@@ -1197,6 +1180,7 @@
         // ==========================================
         window.addEventListener('DOMContentLoaded', () => {
             buildMosaicAndCards();
+            showStep(0); // <-- LE CORRECTIF EST LÀ : Initialise les étapes et le bouton "Suivant" !
             lucide.createIcons();
             const form = document.getElementById('filiereForm');
             if(form) form.reset();

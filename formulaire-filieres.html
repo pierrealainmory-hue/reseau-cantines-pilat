@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saisie des Volumes - Réseau des cantines du Pilat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500&family=Georgia&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --dix-dark: #405F59;
+            --dix-light: #549e39;
+            --dix-bg: #f3f3f3;
+        }
+        body { font-family: 'Georgia', serif; background-color: var(--dix-bg); color: var(--dix-dark); }
+        h1, h2, h3, h4, .font-oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
+        
+        .wizard-step { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .wizard-step.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
+        
+        input[type="number"], input[type="text"], textarea, select {
+            width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 0.375rem; font-family: 'Arial', sans-serif; font-size: 0.875rem; transition: all 0.2s;
+        }
+        input[type="number"]:focus, input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--dix-light); box-shadow: 0 0 0 2px rgba(84, 158, 57, 0.2);
+        }
+        
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: #d1d5db; border-radius: 5px; outline: none; padding: 0; border: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--dix-light); cursor: pointer; transition: transform 0.1s; }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type="range"].mini-slider { height: 4px; }
+        input[type="range"].mini-slider::-webkit-slider-thumb { width: 14px; height: 14px; }
+
+        .slider-g1::-webkit-slider-thumb { background: #549e39 !important; }
+        .slider-g2::-webkit-slider-thumb { background: #3b82f6 !important; }
+        .slider-g3::-webkit-slider-thumb { background: #06b6d4 !important; }
+        .slider-g4::-webkit-slider-thumb { background: #f59e0b !important; }
+        .slider-g5::-webkit-slider-thumb { background: #f97316 !important; }
+
+        .range-slider { position: relative; width: 100%; height: 6px; background: #d1d5db; border-radius: 5px; margin: 15px 0; }
+        .range-slider .progress { position: absolute; height: 100%; border-radius: 5px; z-index: 0; }
+        .range-slider input[type="range"] { position: absolute; width: 100%; -webkit-appearance: none; pointer-events: none; background: transparent; outline: none; top: -6px; height: 18px; margin: 0; }
+        .range-slider input[type="range"]::-webkit-slider-thumb { pointer-events: all; position: relative; z-index: 1; outline: 0; -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .range-slider input[type="range"]::-moz-range-thumb { pointer-events: all; position: relative; z-index: 1; outline: 0; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        
+        .range-slider.rose .progress { background: #fb7185; }
+        .range-slider.rose input[type="range"]::-webkit-slider-thumb { background: #f43f5e; }
+        .range-slider.rose input[type="range"]::-moz-range-thumb { background: #f43f5e; }
+
+        .range-slider.blue .progress { background: #60a5fa; }
+        .range-slider.blue input[type="range"]::-webkit-slider-thumb { background: #3b82f6; }
+        .range-slider.blue input[type="range"]::-moz-range-thumb { background: #3b82f6; }
+
+        .range-slider.yellow .progress { background: #facc15; }
+        .range-slider.yellow input[type="range"]::-webkit-slider-thumb { background: #eab308; }
+        .range-slider.yellow input[type="range"]::-moz-range-thumb { background: #eab308; }
+
+        .input-group label { display: block; font-size: 0.75rem; font-weight: bold; color: var(--dix-dark); margin-bottom: 0.3rem; font-family: 'Arial', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+        .no-spinners::-webkit-outer-spin-button, .no-spinners::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .no-spinners { -moz-appearance: textfield; }
+        
+        /* Styles pour que les SVG épousent parfaitement les tailles prévues */
+        .custom-svg-wrapper svg { width: 100%; height: 100%; display: block; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-white border-b-4 shadow-sm" style="border-color: var(--dix-light);">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl text-[#405F59] flex items-center gap-2 font-oswald">
+                    <i data-lucide="sprout" class="text-[#549e39]"></i>
+                    Réseau des cantines du Pilat
+                </h1>
+                <p class="text-xs text-gray-500 italic mt-1">Outil de consolidation des filières - Initiative CCMP & DIX Autrement</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto w-full px-4 py-8">
+        <!-- BARRE DE PROGRESSION (6 ÉTAPES) -->
+        <div class="mb-8">
+            <div class="flex justify-between mb-2 text-xs font-oswald text-gray-400" id="step-indicators">
+                <span class="text-[#549e39] font-bold">1. Établissement</span>
+                <span>2. Fruits</span>
+                <span>3. Légumes</span>
+                <span>4. Viandes</span>
+                <span>5. Laitages & Œufs</span>
+                <span>6. Autres Filières</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-[#549e39] h-2 rounded-full transition-all duration-300 ease-out" id="progress-bar" style="width: 16.66%;"></div>
+            </div>
+        </div>
+
+        <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 border border-gray-100">
+            <form id="filiereForm" onsubmit="submitData(event)" autocomplete="off">
+                <input type="hidden" name="formType" value="donnees_filieres">
+
+                <!-- ÉTAPE 0: IDENTIFICATION -->
+                <div class="wizard-step active" id="step-0">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                        <div class="p-3 bg-gray-50 rounded-lg text-[#549e39]"><i data-lucide="building"></i></div>
+                        <div>
+                            <h2 class="text-2xl text-[#405F59] font-oswald">Identification</h2>
+                            <p class="text-sm text-gray-500">Commençons par identifier votre structure.</p>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg">
+                        <div class="flex items-start">
+                            <i data-lucide="info" class="text-blue-500 w-5 h-5 mr-3 mt-0.5"></i>
+                            <p class="text-sm text-blue-800">
+                                <strong>L'enjeu de ce module est de cartographier vos pratiques d'achats actuelles et d'identifier vos envies de relocalisation pour adapter l'offre agricole.</strong><br><br>
+                                L'objectif est d'obtenir une estimation à grande maille. L'enjeu n'est pas d'avoir une précision au kilo près, mais de dégager un ordre de grandeur (à la centaine de kilos près) pour structurer l'offre locale. Sentez-vous libre d'arrondir !
+                            </p>
+                        </div>
+                    </div>
+                    <div class="input-group max-w-md bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <label>Nom de l'établissement *</label>
+                        <input type="text" name="etablissement" id="etablissement" required placeholder="Ex: Collège du Pilat" autocomplete="off" class="w-full">
+                        <p class="text-xs text-gray-400 mt-2 italic">Ce nom nous permettra de lier ces données à votre enquête globale.</p>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 1: FRUITS -->
+                <div class="wizard-step" id="step-1">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                        <div class="p-3 bg-gray-50 rounded-lg text-[#549e39]" id="head-icon-fruits"></div>
+                        <div>
+                            <h2 class="text-2xl text-[#405F59] font-oswald">Fruits</h2>
+                            <p class="text-sm text-gray-500">Estimations annuelles à la centaine de kilos près.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-6 mb-6 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="pie-chart" class="w-24 h-24 text-emerald-900"></i></div>
+                        <div class="relative z-10">
+                            <div class="input-group mb-6">
+                                <label class="text-emerald-900 text-lg mb-2">Volume de fruits consommé par année (en kg)</label>
+                                <input type="number" name="fruits_total_kg" step="100" placeholder="Ex: 2500" value="0" class="text-xl p-3 border-emerald-300 w-full md:w-1/2 shadow-sm">
+                            </div>
+                            <p class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-4">Sur ce volume global, quelle est la part estimée de :</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="input-group">
+                                    <label class="text-emerald-700 flex justify-between"><span>% Bio</span> <output id="out_bio" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="fruits_pct_bio" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_bio').value = this.value + '%'">
+                                </div>
+                                <div class="input-group">
+                                    <label class="text-emerald-700 flex justify-between"><span>% Local</span> <output id="out_local" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="fruits_pct_local" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_local').value = this.value + '%'">
+                                </div>
+                                <div class="input-group">
+                                    <label class="text-emerald-700 flex justify-between"><span>% EGAlim</span> <output id="out_egalim" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="fruits_pct_egalim" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_egalim').value = this.value + '%'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="font-oswald text-[#549e39] text-xl mb-3">Sélectionnez les fruits à détailler :</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="mosaic-fruits">
+                            <button type="button" id="btn_pommes" onclick="toggleProductCard('card_pommes', 'btn_pommes')" class="relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm">
+                                <div id="check_pommes" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div>
+                                <div id="icon_pommes"></div><span class="font-bold text-sm text-[#405F59]">Pommes</span>
+                            </button>
+                            <button type="button" id="btn_poires" onclick="toggleProductCard('card_poires', 'btn_poires')" class="relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm">
+                                <div id="check_poires" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div>
+                                <div id="icon_poires"></div><span class="font-bold text-sm text-[#405F59]">Poires</span>
+                            </button>
+                            <button type="button" onclick="addFruitRow()" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-[#549e39] transition-colors"></i>
+                                <span class="font-bold text-sm text-gray-500 group-hover:text-[#549e39] text-center">Autre fruit</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cards-container-fruits" class="space-y-5">
+                        <div id="card_pommes" class="hidden animate-fadeIn bg-white p-5 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h3 class="font-oswald text-[#549e39] m-0 flex items-center gap-2"><div id="head_pommes"></div> Dont volume pommes par an (kg)</h3>
+                                <button type="button" onclick="toggleProductCard('card_pommes', 'btn_pommes')" class="text-gray-400 hover:text-red-500"><i data-lucide="x"></i></button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-end">
+                                <div class="input-group"><label>Entières (kg)</label><input type="number" name="pommes_entieres" step="100" value="0" placeholder="0"></div>
+                                <div class="input-group">
+                                    <label>Si une offre locale existait, seriez-vous intéressé·e par :</label>
+                                    <div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md">
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="pommes_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="pommes_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="pommes_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="pommes_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 mt-4">
+                                <label class="flex items-center cursor-pointer group">
+                                    <input type="checkbox" name="interet_pommes_transf" value="Oui" class="w-5 h-5 text-[#549e39] mr-3 rounded" onchange="toggleVisibility('pommes_transf_div', this.checked)">
+                                    <span class="font-bold text-[#405F59] group-hover:text-[#549e39] transition-colors">Consommez-vous des fruits transformés (pommes) ?</span>
+                                </label>
+                                <div id="pommes_transf_div" class="hidden mt-4 pt-4 border-t border-gray-200">
+                                    <p class="text-sm text-gray-600 mb-3 italic">Si oui, n'hésitez pas à préciser les volumes annuels de vos achats :</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div class="input-group"><label>Compotes/Purées (kg)</label><input type="number" name="pommes_compotes" value="0" step="50"></div>
+                                        <div class="input-group"><label>Jus (Litres)</label><input type="number" name="pommes_jus" value="0" step="50"></div>
+                                        <div class="input-group"><label>Pâtes de fruits (kg)</label><input type="number" name="pommes_pates" value="0" step="10"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group border-t border-gray-100 pt-4 mt-4 w-full">
+                                <div class="flex justify-between items-end mb-2"><label class="text-sm m-0">Fourchette de prix acceptable (Fruits entiers - €/kg)</label><span class="text-xs font-bold px-2 py-1 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_pommes">1.50</span>€ - <span id="price_max_val_pommes">3.00</span>€</span></div>
+                                <div class="range-slider mt-3 mb-2"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_pommes" style="left: 10%; right: 80%;"></div><input type="range" name="prix_min_pommes" id="price_min_pommes" min="0" max="15" step="0.1" value="1.5" class="slider-g1" oninput="updatePriceRange('pommes', this, true, 15)"><input type="range" name="prix_max_pommes" id="price_max_pommes" min="0" max="15" step="0.1" value="3.0" class="slider-g1" oninput="updatePriceRange('pommes', this, false, 15)"></div>
+                                <div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>15 €+</span></div>
+                            </div>
+                            <div class="mt-6 border-t border-gray-100 pt-4 flex justify-end">
+                                <button type="button" onclick="validerProduit('card_pommes', 'btn_pommes', 'check_pommes')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button>
+                            </div>
+                        </div>
+
+                        <div id="card_poires" class="hidden animate-fadeIn bg-white p-5 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50">
+                            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                                <h3 class="font-oswald text-[#549e39] m-0 flex items-center gap-2">
+                                    <div id="head_poires"></div> Dont volume poires par an (kg)
+                                </h3>
+                                <button type="button" onclick="toggleProductCard('card_poires', 'btn_poires')" class="text-gray-400 hover:text-red-500"><i data-lucide="x"></i></button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-end">
+                                <div class="input-group"><label>Entières (kg)</label><input type="number" name="poires_entieres" value="0" step="100" placeholder="0"></div>
+                                <div class="input-group">
+                                    <label>Si une offre locale existait, seriez-vous intéressé·e par :</label>
+                                    <div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md">
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="poires_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="poires_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="poires_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="poires_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group border-t border-gray-100 pt-4 mt-4 w-full">
+                                <div class="flex justify-between items-end mb-2"><label class="text-sm m-0">Fourchette de prix acceptable (Fruits entiers - €/kg)</label><span class="text-xs font-bold px-2 py-1 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_poires">1.50</span>€ - <span id="price_max_val_poires">3.00</span>€</span></div>
+                                <div class="range-slider mt-3 mb-2"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_poires" style="left: 10%; right: 80%;"></div><input type="range" name="prix_min_poires" id="price_min_poires" min="0" max="15" step="0.1" value="1.5" class="slider-g1" oninput="updatePriceRange('poires', this, true, 15)"><input type="range" name="prix_max_poires" id="price_max_poires" min="0" max="15" step="0.1" value="3.0" class="slider-g1" oninput="updatePriceRange('poires', this, false, 15)"></div>
+                                <div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>15 €+</span></div>
+                            </div>
+                            <div class="mt-6 border-t border-gray-100 pt-4 flex justify-end">
+                                <button type="button" onclick="validerProduit('card_poires', 'btn_poires', 'check_poires')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button>
+                            </div>
+                        </div>
+
+                        <div id="dynamic-fruits-container" class="space-y-4"></div>
+                    </div>
+                    
+                    <div class="mt-8 bg-emerald-50 border border-emerald-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-oswald text-emerald-800 text-lg mb-2 flex items-center gap-2"><i data-lucide="lightbulb" class="w-5 h-5"></i> Avant de passer à la suite...</h4>
+                        <div class="input-group mb-0">
+                            <label class="text-emerald-900">S'il y avait un fruit ou un produit à base de fruit que vous seriez content·e de trouver localement, quel serait-il ?</label>
+                            <input type="text" name="fruits_recherche" placeholder="Ex: Fraises, Jus de pomme artisanal..." class="border-emerald-300 shadow-sm mt-1 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 2: LÉGUMES -->
+                <div class="wizard-step" id="step-2">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                        <div class="p-3 bg-gray-50 rounded-lg text-[#549e39]" id="head-icon-legumes"></div>
+                        <div>
+                            <h2 class="text-2xl text-[#405F59] font-oswald">Légumes</h2>
+                            <p class="text-sm text-gray-500">Précisez vos volumes et l'état des produits (brut ou préparé).</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border-2 border-amber-400 rounded-xl p-6 mb-6 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="pie-chart" class="w-24 h-24 text-amber-900"></i></div>
+                        <div class="relative z-10">
+                            <div class="input-group mb-6">
+                                <label class="text-amber-900 text-lg mb-2">Volume de légumes consommé par année (en kg)</label>
+                                <input type="number" name="leg_total_kg" step="100" placeholder="Ex: 3500" value="0" class="text-xl p-3 border-amber-300 w-full md:w-1/2 shadow-sm">
+                            </div>
+                            <p class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-4">Sur ce volume global, quelle est la part estimée de :</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div class="input-group">
+                                    <label class="text-amber-700 flex justify-between"><span>% Bio</span> <output id="out_leg_bio" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="leg_pct_bio" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_leg_bio').value = this.value + '%'">
+                                </div>
+                                <div class="input-group">
+                                    <label class="text-amber-700 flex justify-between"><span>% Local</span> <output id="out_leg_local" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="leg_pct_local" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_leg_local').value = this.value + '%'">
+                                </div>
+                                <div class="input-group">
+                                    <label class="text-amber-700 flex justify-between"><span>% EGAlim</span> <output id="out_leg_egalim" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="leg_pct_egalim" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_leg_egalim').value = this.value + '%'">
+                                </div>
+                            </div>
+                            <hr class="border-amber-200 my-6">
+                            <div class="flex justify-between items-end mb-4">
+                                <p class="text-xs font-bold text-amber-800 uppercase tracking-wider">Répartition globale du volume par gammes :</p>
+                                <div class="bg-white px-3 py-1 rounded-full border border-amber-200 text-sm font-bold shadow-sm">Total : <span id="gamme_legume_total_display" class="text-red-500">0%</span></div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex flex-col justify-between">
+                                    <div><label class="text-amber-900 text-xs mb-1">1ère gamme</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Frais brut</p></div>
+                                    <div><output id="out_leg_gamme_g1" class="font-bold text-[#549e39] text-sm block text-right mb-1">0%</output><input type="range" name="leg_gamme_g1" min="0" max="100" step="5" value="0" class="w-full slider-g1" oninput="updateGammeTotalBase('leg_gamme', 'gamme_legume_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex flex-col justify-between">
+                                    <div><label class="text-amber-900 text-xs mb-1">2ème gamme</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Conserves</p></div>
+                                    <div><output id="out_leg_gamme_g2" class="font-bold text-blue-500 text-sm block text-right mb-1">0%</output><input type="range" name="leg_gamme_g2" min="0" max="100" step="5" value="0" class="w-full slider-g2" oninput="updateGammeTotalBase('leg_gamme', 'gamme_legume_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex flex-col justify-between">
+                                    <div><label class="text-amber-900 text-xs mb-1">3ème gamme</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Surgelés</p></div>
+                                    <div><output id="out_leg_gamme_g3" class="font-bold text-cyan-500 text-sm block text-right mb-1">0%</output><input type="range" name="leg_gamme_g3" min="0" max="100" step="5" value="0" class="w-full slider-g3" oninput="updateGammeTotalBase('leg_gamme', 'gamme_legume_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex flex-col justify-between">
+                                    <div><label class="text-amber-900 text-xs mb-1">4ème gamme</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Prêt à l'emploi</p></div>
+                                    <div><output id="out_leg_gamme_g4" class="font-bold text-amber-500 text-sm block text-right mb-1">0%</output><input type="range" name="leg_gamme_g4" min="0" max="100" step="5" value="0" class="w-full slider-g4" oninput="updateGammeTotalBase('leg_gamme', 'gamme_legume_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex flex-col justify-between">
+                                    <div><label class="text-amber-900 text-xs mb-1">5ème gamme</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Cuit sous-vide</p></div>
+                                    <div><output id="out_leg_gamme_g5" class="font-bold text-orange-500 text-sm block text-right mb-1">0%</output><input type="range" name="leg_gamme_g5" min="0" max="100" step="5" value="0" class="w-full slider-g5" oninput="updateGammeTotalBase('leg_gamme', 'gamme_legume_total_display', true, 5, this)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="font-oswald text-[#549e39] text-xl mb-3">Sélectionnez les légumes à détailler :</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="mosaic-legumes">
+                            <button type="button" onclick="addLegRow()" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-[#549e39] transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-[#549e39] text-center">Autre légume</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cards-container-legumes" class="space-y-5">
+                        <!-- JS -->
+                    </div>
+
+                    <div id="dynamic-legumes-container" class="space-y-4 mt-5"></div>
+
+                    <div class="mt-8 bg-amber-50 border border-amber-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-oswald text-amber-800 text-lg mb-2 flex items-center gap-2"><i data-lucide="lightbulb" class="w-5 h-5"></i> Avant de passer à la suite...</h4>
+                        <div class="input-group mb-0">
+                            <label class="text-amber-900">S'il y avait un légume ou une gamme de légume que vous seriez content·e de trouver localement, quel serait-il ?</label>
+                            <input type="text" name="legumes_recherche" placeholder="Ex: Carottes râpées locales, Courges bio prêtes à l'emploi..." class="border-amber-300 shadow-sm mt-1 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 3: VIANDES -->
+                <div class="wizard-step" id="step-3">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                        <div class="p-3 bg-gray-50 rounded-lg text-rose-500" id="head-icon-viandes"></div>
+                        <div>
+                            <h2 class="text-2xl text-[#405F59] font-oswald">Filière Carnée</h2>
+                            <p class="text-sm text-gray-500">Précisez vos volumes et l'état des viandes (fraîches, préparées, sous-vide...).</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-rose-50 border-2 border-rose-400 rounded-xl p-6 mb-6 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="pie-chart" class="w-24 h-24 text-rose-900"></i></div>
+                        <div class="relative z-10">
+                            <div class="input-group mb-6">
+                                <label class="text-rose-900 text-lg mb-2">Volume de viandes consommé par année (en kg)</label>
+                                <input type="number" name="viande_total_kg" step="100" placeholder="Ex: 1500" value="0" class="text-xl p-3 border-rose-300 w-full md:w-1/2 shadow-sm">
+                            </div>
+                            
+                            <p class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-4">Sur ce volume global, quelle est la part estimée de :</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div class="input-group">
+                                    <label class="text-rose-700 flex justify-between"><span>% Bio</span> <output id="out_viande_bio" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="viande_pct_bio" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_viande_bio').value = this.value + '%'">
+                                </div>
+                                <div class="input-group">
+                                    <label class="text-rose-700 flex justify-between"><span>% Local</span> <output id="out_viande_local" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="viande_pct_local" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_viande_local').value = this.value + '%'">
+                                </div>
+                                <div class="input-group">
+                                    <label class="text-rose-700 flex justify-between"><span>% EGAlim</span> <output id="out_viande_egalim" class="text-lg font-bold">0%</output></label>
+                                    <input type="range" name="viande_pct_egalim" min="0" max="100" step="5" value="0" class="w-full mt-2 slider-g1" oninput="document.getElementById('out_viande_egalim').value = this.value + '%'">
+                                </div>
+                            </div>
+                            <hr class="border-rose-200 my-6">
+                            <div class="flex justify-between items-end mb-4">
+                                <p class="text-xs font-bold text-rose-800 uppercase tracking-wider">Répartition globale des achats par type de transformation :</p>
+                                <div class="bg-white px-3 py-1 rounded-full border border-rose-200 text-sm font-bold shadow-sm">Total : <span id="gamme_viande_total_display" class="text-red-500">0%</span></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-rose-100 flex flex-col justify-between">
+                                    <div><label class="text-rose-900 text-xs mb-1">Frais Brut</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Carcasses, pièces brutes</p></div>
+                                    <div><output id="out_viande_gamme_g1" class="font-bold text-[#549e39] text-sm block text-right mb-1">0%</output><input type="range" name="viande_gamme_g1" min="0" max="100" step="5" value="0" class="w-full slider-g1" oninput="updateGammeTotalBase('viande_gamme', 'gamme_viande_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-rose-100 flex flex-col justify-between">
+                                    <div><label class="text-rose-900 text-xs mb-1">Sous-vide</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Pièces fraîches emballées</p></div>
+                                    <div><output id="out_viande_gamme_g2" class="font-bold text-blue-500 text-sm block text-right mb-1">0%</output><input type="range" name="viande_gamme_g2" min="0" max="100" step="5" value="0" class="w-full slider-g2" oninput="updateGammeTotalBase('viande_gamme', 'gamme_viande_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-rose-100 flex flex-col justify-between">
+                                    <div><label class="text-rose-900 text-xs mb-1">Surgelé</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Viandes surgelées</p></div>
+                                    <div><output id="out_viande_gamme_g3" class="font-bold text-cyan-500 text-sm block text-right mb-1">0%</output><input type="range" name="viande_gamme_g3" min="0" max="100" step="5" value="0" class="w-full slider-g3" oninput="updateGammeTotalBase('viande_gamme', 'gamme_viande_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-rose-100 flex flex-col justify-between">
+                                    <div><label class="text-rose-900 text-xs mb-1">Préparé cru</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Haché, saucisses, élaborés</p></div>
+                                    <div><output id="out_viande_gamme_g4" class="font-bold text-amber-500 text-sm block text-right mb-1">0%</output><input type="range" name="viande_gamme_g4" min="0" max="100" step="5" value="0" class="w-full slider-g4" oninput="updateGammeTotalBase('viande_gamme', 'gamme_viande_total_display', true, 5, this)"></div>
+                                </div>
+                                <div class="input-group bg-white p-3 rounded-lg shadow-sm border border-rose-100 flex flex-col justify-between">
+                                    <div><label class="text-rose-900 text-xs mb-1">Cuit / Charcut.</label><p class="text-[9px] text-gray-500 mb-2 leading-tight">Jambon, rôtis cuits</p></div>
+                                    <div><output id="out_viande_gamme_g5" class="font-bold text-orange-500 text-sm block text-right mb-1">0%</output><input type="range" name="viande_gamme_g5" min="0" max="100" step="5" value="0" class="w-full slider-g5" oninput="updateGammeTotalBase('viande_gamme', 'gamme_viande_total_display', true, 5, this)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="font-oswald text-rose-500 text-xl mb-3">Sélectionnez les viandes à détailler :</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="mosaic-viandes">
+                            <button type="button" onclick="addMeatRow()" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-rose-400 hover:bg-rose-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-rose-500 transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-rose-500 text-center">Autre viande</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cards-container-viandes" class="space-y-5">
+                       <!-- JS -->
+                    </div>
+
+                    <div id="dynamic-viandes-container" class="space-y-4 mt-5"></div>
+
+                    <div class="mt-8 bg-rose-50 border border-rose-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-oswald text-rose-800 text-lg mb-2 flex items-center gap-2"><i data-lucide="lightbulb" class="w-5 h-5"></i> Avant de passer à la suite...</h4>
+                        <div class="input-group mb-0">
+                            <label class="text-rose-900">S'il y avait un produit carné que vous seriez content·e de trouver localement, quel serait-il ?</label>
+                            <input type="text" name="viandes_recherche" placeholder="Ex: Saucisses locales, Haché de bœuf bio..." class="border-rose-300 shadow-sm mt-1 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 4: LAITAGES & ŒUFS -->
+                <div class="wizard-step" id="step-4">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                        <div class="p-3 bg-gray-50 rounded-lg text-blue-500" id="head-icon-laitages"></div>
+                        <div>
+                            <h2 class="text-2xl text-[#405F59] font-oswald">Laitages & Œufs</h2>
+                            <p class="text-sm text-gray-500">Fromages, produits laitiers et filière avicole.</p>
+                        </div>
+                    </div>
+
+                    <!-- SOUS-PARTIE 1 : VACHE -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-8 flex items-center gap-2"><div id="head_icon_vache_section"></div> Sous-partie 1 : Lait de Vache</h3>
+
+                    <div class="mb-6 mt-4">
+                        <h3 class="font-oswald text-blue-500 text-xl mb-3">Sélectionnez les produits Vache à détailler :</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="mosaic-vache">
+                            <button type="button" onclick="addVacheRow()" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-blue-400 hover:bg-blue-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-blue-500 text-center">Autre produit</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cards-container-vache" class="space-y-5">
+                       <!-- JS -->
+                    </div>
+                    <div id="dynamic-vache-container" class="space-y-4 mt-5 mb-10"></div>
+
+
+                    <!-- SOUS-PARTIE 2 : CAPRIN / OVIN -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-10 flex items-center gap-2"><div id="head_icon_chevre_section"></div> Sous-partie 2 : Lait Caprin / Ovin</h3>
+
+                    <div class="mb-6 mt-4">
+                        <h3 class="font-oswald text-blue-500 text-xl mb-3">Sélectionnez les produits Chèvre/Brebis à détailler :</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="mosaic-chevre">
+                            <button type="button" onclick="addChevreRow()" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-blue-400 hover:bg-blue-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-blue-500 text-center">Autre produit</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cards-container-chevre" class="space-y-5">
+                       <!-- JS -->
+                    </div>
+                    <div id="dynamic-chevre-container" class="space-y-4 mt-5 mb-10"></div>
+
+
+                    <!-- SOUS-PARTIE 3 : OEUFS -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-10 flex items-center gap-2"><div id="head_icon_oeuf_section"></div> Sous-partie 3 : Filière ŒUFS</h3>
+
+                    <div class="mb-6 mt-4">
+                        <h3 class="font-oswald text-yellow-600 text-xl mb-3">Sélectionnez les produits Œufs à détailler :</h3>
+                        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="mosaic-oeuf">
+                            <button type="button" onclick="addDynamicRow('oeuf', 'oeuf', 'yellow', 15, null, null, 'kg ou unités', 'Ex: Œufs d\'oie...')" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-yellow-400 hover:bg-yellow-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-yellow-500 transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-yellow-500 text-center">Autre produit</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cards-container-oeuf" class="space-y-5"></div>
+                    <div id="dynamic-oeuf-container" class="space-y-4 mt-5 mb-10"></div>
+
+
+                    <div class="mt-8 bg-blue-50 border border-blue-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-oswald text-blue-800 text-lg mb-2 flex items-center gap-2"><i data-lucide="lightbulb" class="w-5 h-5"></i> Avant de passer à la suite...</h4>
+                        <div class="input-group mb-0">
+                            <label class="text-blue-900">S'il y avait un produit laitier ou avicole que vous seriez content·e de trouver localement, quel serait-il ?</label>
+                            <input type="text" name="laitages_recherche" placeholder="Ex: Fromage blanc fermier, Œufs plein air..." class="border-blue-300 shadow-sm mt-1 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 5: AUTRES FILIÈRES -->
+                <div class="wizard-step" id="step-5">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                        <div class="p-3 bg-gray-50 rounded-lg text-[#549e39]" id="head-icon-autres"></div>
+                        <div>
+                            <h2 class="text-2xl text-[#405F59] font-oswald">Autres Filières</h2>
+                            <p class="text-sm text-gray-500">Épicerie, Meunerie et Boulangerie.</p>
+                        </div>
+                    </div>
+
+                    <!-- SUCRÉ -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-8 flex items-center gap-2"><div id="head_icon_sucre_section"></div> Épicerie Sucrée</h3>
+                    <div class="mb-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="mosaic-sucre">
+                            <button type="button" onclick="addDynamicEpiRow('sucre', 'Nouveau produit', 'dyn_default', 'mosaic-sucre', 'cards-container-sucre')" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-[#549e39] transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-[#549e39] text-center">Autre produit</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cards-container-sucre" class="space-y-5 mb-8"></div>
+
+                    <!-- SALÉ -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-8 flex items-center gap-2"><div id="head_icon_sale_section"></div> Épicerie Salée</h3>
+                    <div class="mb-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="mosaic-sale">
+                            <button type="button" onclick="addDynamicEpiRow('sale', 'Nouveau produit', 'dyn_default', 'mosaic-sale', 'cards-container-sale')" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-[#549e39] transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-[#549e39] text-center">Autre produit</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cards-container-sale" class="space-y-5 mb-8"></div>
+
+                    <!-- LÉGUMINEUSES -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-8 flex items-center gap-2"><div id="head_icon_legumineuse_section"></div> Légumineuses</h3>
+                    <div class="mb-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="mosaic-legumineuses">
+                            <button type="button" onclick="addDynamicEpiRow('legumineuse', 'Nouveau produit', 'dyn_default', 'mosaic-legumineuses', 'cards-container-legumineuses')" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-[#549e39] transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-[#549e39] text-center">Autre légumineuse</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cards-container-legumineuses" class="space-y-5 mb-8"></div>
+
+                    <!-- MEUNERIE -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-8 flex items-center gap-2"><div id="head_icon_meu_section"></div> Meunerie (Céréales, Farines, Pâtes)</h3>
+                    <div class="mb-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="mosaic-meunerie">
+                            <button type="button" onclick="addDynamicEpiRow('meu', 'Nouveau produit', 'dyn_default', 'mosaic-meunerie', 'cards-container-meunerie')" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-[#549e39] transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-[#549e39] text-center">Autre produit</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cards-container-meunerie" class="space-y-5 mb-8"></div>
+
+                    <!-- BOULANGERIE -->
+                    <h3 class="font-oswald text-[#549e39] border-b mb-4 pb-1 mt-8 flex items-center gap-2"><div id="head_icon_bou_section"></div> Boulangerie</h3>
+                    
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm mb-4">
+                        <div class="input-group mb-0">
+                            <label class="text-sm font-bold text-[#405F59] mb-2 block">Le pain servi est-il d'origine locale actuellement ?</label>
+                            <select name="bou_pain_local" class="bg-gray-50 border-gray-300">
+                                <option value="">-- Choisir une option --</option>
+                                <option value="Oui, 100% local">Oui, 100% boulanger local</option>
+                                <option value="Mixte">Mixte (Industriel et Local)</option>
+                                <option value="Non local">Non, achats industriels / gros volume</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="mosaic-boulangerie">
+                            <button type="button" onclick="addDynamicEpiRow('bou', 'Nouveau produit', 'dyn_default', 'mosaic-boulangerie', 'cards-container-boulangerie')" class="p-3 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
+                                <i data-lucide="plus-circle" class="w-8 h-8 text-gray-400 group-hover:text-[#549e39] transition-colors"></i>
+                                <span class="font-bold text-xs text-gray-500 group-hover:text-[#549e39] text-center">Autre produit</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cards-container-boulangerie" class="space-y-5 mb-8"></div>
+                    
+                    <div class="mt-8 bg-gray-50 border border-gray-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-oswald text-gray-800 text-lg mb-2 flex items-center gap-2"><i data-lucide="lightbulb" class="w-5 h-5 text-[#549e39]"></i> Un autre produit ?</h4>
+                        <div class="input-group mb-0">
+                            <label class="text-gray-900">Y a-t-il un autre produit d'épicerie que vous aimeriez trouver localement ?</label>
+                            <input type="text" name="epicerie_recherche" placeholder="Ex: Vinaigre, tisanes, biscuits artisanaux..." class="border-gray-300 shadow-sm mt-1 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOUTONS DE NAVIGATION -->
+                <div class="mt-10 pt-6 border-t border-gray-200 flex justify-between items-center">
+                    <button type="button" id="prevBtn" class="px-6 py-2 border-2 border-gray-300 text-gray-600 font-oswald rounded-lg hover:bg-gray-100 hidden transition-colors" onclick="changeStep(-1)">Précédent</button>
+                    <div class="flex-grow"></div>
+                    <button type="button" id="nextBtn" class="px-8 py-3 bg-[#405F59] text-white font-oswald rounded-lg shadow hover:bg-[#2d433f] transition-colors text-lg" onclick="changeStep(1)">Étape Suivante <i data-lucide="arrow-right" class="inline w-5 h-5 ml-1"></i></button>
+                    <button type="submit" id="submitBtn" class="px-8 py-3 bg-[#549e39] text-white font-oswald rounded-lg shadow-lg hover:bg-[#43802d] hidden flex items-center gap-2 text-lg transition-colors">
+                        <i data-lucide="check-circle"></i> Transmettre les données
+                    </button>
+                </div>
+
+                <div id="loading" class="hidden text-center mt-6 text-[#549e39] font-bold font-oswald text-xl">
+                    <i data-lucide="loader-2" class="animate-spin inline-block mr-2"></i> Enregistrement en cours...
+                </div>
+                <div id="successMsg" class="hidden text-center mt-6 text-[#405F59] p-6 bg-green-50 border border-green-200 rounded-lg shadow-sm">
+                    <h3 class="font-oswald text-2xl mb-2 text-[#549e39]">Données transmises avec succès !</h3>
+                    <p class="text-lg">Merci d'avoir contribué à la structuration des filières locales des Monts du Pilat.</p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // ==========================================
+        // DICTIONNAIRE DES ICÔNES PERSONNALISÉES
+        // ==========================================
+        const customSvgIcons = {
+          // FRUITS
+          pomme: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7c-3-5-8-1-8 4.5c0 5 4 9.5 8 10.5c4-1 8-5.5 8-10.5c0-5.5-5-9.5-8-4.5z"/><path d="M12 7V3" stroke="#549e39"/><path d="M12 4.5c2-1.5 4.5 0 3 3c-2 1.5-4.5 0-3-3z" fill="#549e39" stroke="#549e39"/></svg>',
+          poire: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2 0-3 4-3 7c-3 1-5 5-5 8c0 3 3 4 8 4s8-1 8-4c0-3-2-7-5-8c0-3-1-7-3-7z"/><path d="M12 3V1" stroke="#549e39"/><path d="M12 2c2-1 4 0 2 2" fill="#549e39" stroke="#549e39"/></svg>',
+          peche: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><path d="M12 4v10"/><path d="M12 4c2-2 5-1 3 2" fill="#549e39" stroke="#549e39"/></svg>',
+          abricot: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="7"/><path d="M12 7v8"/><path d="M12 7c2-1 4 0 2 2" fill="#549e39" stroke="#549e39"/></svg>',
+          prune: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="7" ry="9"/><path d="M12 4v18"/><path d="M12 4c2-1 4 0 2 2" fill="#549e39" stroke="#549e39"/></svg>',
+          cerise: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="17" r="4"/><circle cx="16" cy="16" r="4"/><path d="M8 13c0-5 3-8 4-9c1 1 4 4 4 8" stroke="#549e39"/><path d="M12 4c2-1 4 0 2 2" fill="#549e39" stroke="#549e39"/></svg>',
+          fraise: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-5 0-7-9-7-12c0-3 3-5 7-5s7 2 7 5c0 3-2 12-7 12z"/><path d="M12 4c-2 0-4-1-4-1s1 2 4 2s4-2 4-2s-2 1-4 1z" fill="#549e39" stroke="#549e39"/><path d="M10 10v.5 M14 11v.5 M12 14v.5" stroke="#405F59"/></svg>',
+          framboise: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-4 0-5-7-5-10c0-3 2-4 5-4s5 1 5 4c0 3-1 10-5 10z"/><path d="M9 10a2 2 0 006 0 M9 14a2 2 0 006 0 M10 6a2 2 0 004 0"/><path d="M12 3v-1" stroke="#549e39"/></svg>',
+          myrtille: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7"/><path d="M10 6l1-2 1 1 1-1 1 2" stroke="#549e39"/></svg>',
+          raisin: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><circle cx="9" cy="14" r="3"/><circle cx="15" cy="14" r="3"/><circle cx="12" cy="10" r="3"/><circle cx="7" cy="10" r="3"/><circle cx="17" cy="10" r="3"/><path d="M12 7V3" stroke="#549e39"/><path d="M12 4c2-1 4 0 2 2" fill="#549e39" stroke="#549e39"/></svg>',
+          melon: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3c-3 3-3 15 0 18 M12 3c3 3 3 15 0 18" stroke="#549e39"/></svg>',
+          pasteque: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a9 9 0 0018 0z"/><path d="M5 10a7 7 0 0014 0" stroke="#549e39"/><path d="M10 14v1 M14 14v1 M12 16v1"/></svg>',
+          kiwi: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="7"/><ellipse cx="12" cy="12" rx="4" ry="3" stroke="#549e39"/><path d="M12 12v.5 M10 12v.5 M14 12v.5"/></svg>',
+          agrume: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><path d="M12 4c2-1 4 1 2 3c-2 1-4-1-2-3z" fill="#549e39" stroke="#549e39"/></svg>',
+          citron: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6c-2-2-6-2-10 2s-4 8-2 10c2 2 6 2 10-2s4-8 2-10z"/><path d="M18 6l2-2 M6 18l-2 2" stroke="#549e39"/></svg>',
+          compote: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c0 4 3 6 8 6s8-2 8-6"/><path d="M4 14c0-3 3-5 8-5s8 2 8 5"/><path d="M15 9l3-4" stroke="#549e39"/></svg>',
+          jus: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="8" height="12" rx="1"/><rect x="10" y="3" width="4" height="7"/><path d="M8 15h8" stroke="#549e39"/></svg>',
+          noix: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v16 M8 8c1 2-1 4 0 6 M16 8c-1 2 1 4 0 6"/></svg>',
+
+          // LÉGUMES
+          pdt: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12c0-4 3-7 7-7c5 0 8 4 8 8c0 5-4 7-9 7c-4 0-6-4-6-8z"/><path d="M9 10v.5 M15 14v.5" stroke="#549e39"/></svg>',
+          carotte: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22l-4-12c0-3 8-3 8 0z"/><path d="M9 13h3 M12 16h3"/><path d="M12 10V4 M10 6l2-2 M14 6l-2-2" stroke="#549e39"/></svg>',
+          oignon: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c-5 4-7 9-7 13c0 3 3 5 7 5s7-2 7-5c0-4-2-9-7-13z"/><path d="M10 22v2 M12 22v2 M14 22v2" stroke="#549e39"/></svg>',
+          ail: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c-4 4-6 9-6 13c0 2 2 4 6 4s6-2 6-4c0-4-2-9-6-13z"/><path d="M12 5v17 M8 13c1 3 3 4 4 5 M16 13c-1 3-3 4-4 5"/></svg>',
+          tomate: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><path d="M12 4v3 M9 5l3 2 M15 5l-3 2" stroke="#549e39"/></svg>',
+          poireau: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="12" width="4" height="10" rx="1"/><path d="M10 12c-2-4-4-8-4-8 M12 12V3 M14 12c2-4 4-8 4-8" stroke="#549e39"/></svg>',
+          courgette: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect transform="rotate(45 12 12)" x="7" y="4" width="10" height="16" rx="4"/><path d="M9 9l6 6" stroke="#549e39"/></svg>',
+          aubergine: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10c0-4 2-6 3-6s3 2 3 6c0 6 3 8 3 11c0 3-2 5-6 5s-6-2-6-5c0-3 3-5 3-11z"/><path d="M12 4V2 M10 4h4" stroke="#549e39"/></svg>',
+          poivron: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8c0-3 3-4 6-4s6 1 6 4v8c0 4-3 6-6 6s-6-2-6-6z"/><path d="M12 4v16"/><path d="M12 4V2" stroke="#549e39"/></svg>',
+          salade: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-5 0-8-3-8-8c0-5 3-9 8-9s8 4 8 9c0 5-3 8-8 8z"/><path d="M7 12c1-2 4-3 5-3s4 1 5 3 M8 16c1-2 3-2 4-2s3 0 4 2" stroke="#549e39"/></svg>',
+          epinard: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-4 M12 18c-5-2-7-6-7-10c0-5 4-6 7-6s7 1 7 6c0 4-2 8-7 10z"/><path d="M12 2v16" stroke="#549e39"/></svg>',
+          blette: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 22V10h2v12z"/><path d="M11 10c-4-1-6-4-6-7c0-2 3-1 7-1s7-1 7 1c0 3-2 6-6 7" stroke="#549e39"/></svg>',
+          chou: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><path d="M5 10c3 3 8 3 12-2 M6 16c4 3 9 2 13-2" stroke="#549e39"/></svg>',
+          choufleur: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20c2 2 6 2 8 0" stroke="#549e39"/><path d="M8 20c-4 0-6-3-5-6c-2-2-1-6 2-7c2-2 6-3 9-1c3-1 6 1 7 4c2 3 1 6-1 7c1 3-1 6-5 6h-5z"/></svg>',
+          brocoli: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22v-8h4v8z"/><path d="M10 14c-4 0-5-3-4-5c-2-2-1-5 2-6c2-2 5-2 8 0c2-1 5 0 6 3c2 2 1 5-1 6c1 2 0 5-4 5h-7z" stroke="#549e39"/></svg>',
+          radis: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M12 20v3"/><path d="M12 8V3 M10 5l2-2 M14 5l-2-2" stroke="#549e39"/></svg>',
+          navet: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10c0-4 3-6 6-6s6 2 6 6c0 5-4 9-6 12c-2-3-6-7-6-12z"/><path d="M6 10h12" stroke="#549e39"/></svg>',
+          celeri: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="3" height="14" rx="1"/><rect x="13" y="8" width="3" height="14" rx="1"/><path d="M9 8V4 M14 8V4" stroke="#549e39"/></svg>',
+          courge: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="9" ry="7"/><path d="M12 7v14 M8 8c-1 3-1 9 0 12 M16 8c1 3 1 9 0 12"/><path d="M12 7V4" stroke="#549e39"/></svg>',
+          haricot_vert: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c2-8 6-12 14-14 M5 21c3-8 7-12 15-14" stroke="#549e39"/></svg>',
+          petit_pois: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c4-4 12-12 16-16c-3 5-11 13-16 16z"/><circle cx="10" cy="12" r="1.5" fill="#549e39" stroke="none"/><circle cx="14" cy="8" r="1.5" fill="#549e39" stroke="none"/><circle cx="12" cy="10" r="1.5" fill="#549e39" stroke="none"/></svg>',
+          asperge: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="8" width="4" height="14" rx="1"/><path d="M10 8l2-5 2 5z" stroke="#549e39"/><path d="M10 12l2-1 2 1 M10 16l2-1 2 1" stroke="#549e39"/></svg>',
+          champignon: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12c0-5 3-8 7-8s7 3 7 8z"/><path d="M10 12v8h4v-8"/></svg>',
+
+          // VIANDES
+          steak: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10c0-4 3-6 7-6c5 0 8 3 8 7c0 5-2 8-6 8c-5 0-9-4-9-9z"/><path d="M8 8l8 8 M16 8l-8 8"/><circle cx="16" cy="6" r="1" fill="#549e39" stroke="none"/></svg>',
+          roti_boeuf: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="10" rx="4"/><path d="M8 7v10 M12 7v10 M16 7v10 M4 12h16"/></svg>',
+          hache: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 14c1-2 3-3 5-2c2 1 4 0 5-2c1-2 4-1 5 1c1 2-1 4-2 5c-2 1-3 3-5 2c-2-1-4 0-5 2c-2 1-4 0-3-6z"/><path d="M9 12v.5 M13 14v.5" stroke="#549e39"/></svg>',
+          cote_porc: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6c-3 0-4 3-4 6c0 4 2 6 5 6h5c3 0 4-2 4-6c0-3-2-6-5-6z"/><path d="M18 12h4 M22 10v4"/></svg>',
+          roti_porc: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="8" rx="2"/><path d="M8 8v8 M12 8v8 M16 8v8 M5 12h14"/></svg>',
+          saucisse: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="4" rx="2"/><path d="M4 12H2 M20 12h2"/></svg>',
+          saucisson: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect transform="rotate(-15 12 12)" x="6" y="8" width="12" height="6" rx="3"/><ellipse cx="18" cy="18" rx="2" ry="4" stroke="#549e39"/></svg>',
+          jambon: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h10c3 0 5 2 5 5v7c0 2-2 4-5 4H5c-1 0-2-2-2-4V8c0-1 1-2 2-2z"/><path d="M7 10c2 2 4 1 6 3"/></svg>',
+          filet_volaille: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 6c3 3 3 8 0 11c-2 3-6 4-9 2c-3-2-4-6-2-9c3-4 8-7 11-4z"/></svg>',
+          cuisse_volaille: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16c-3 3-7 3-8 2c-1-2 0-5 2-8l5-5c2-2 6-2 8 0c3 3 3 7 0 10l-7 1z"/><path d="M3 4c-1-1-1-3 1-3s3 1 3 3"/></svg>',
+          poulet_roti: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="7" ry="6"/><path d="M9 9l-2-5 M15 9l2-5"/><path d="M5 14c-2-1-2-3 0-4 M19 14c2-1 2-3 0-4"/></svg>',
+          canard: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6c2 2 2 7-1 10c-2 3-6 5-9 3c-2-2-3-6-1-9c3-3 8-6 11-4z"/><path d="M10 8l4 4 M12 7l4 4 M8 10l4 4 M14 8l-4 4 M16 10l-4 4"/></svg>',
+          cote_agneau: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="5"/><path d="M14 14l6 6 M19 21l2-2"/></svg>',
+          gigot: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8c-4 0-5 4-5 8c0 5 4 6 8 6c4 0 8-1 8-6c0-3-2-6-5-6L8 8z"/><path d="M14 10l6-6 M19 3l2 2"/></svg>',
+
+          // LAITAGES
+          lait_brique: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10v14H7z"/><path d="M7 8l2-4h6l2 4"/><rect x="9" y="12" width="6" height="6" stroke="#549e39"/></svg>',
+          lait_bouteille: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12c0-3 1-4 2-6V4h4v2c1 2 3 2 6v10H8z"/><path d="M9 4h6v2H9z"/><path d="M8 16h8" stroke="#549e39"/></svg>',
+          creme: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8l-1 12h12l-1-12z"/><path d="M5 8h14v2H5z"/><path d="M9 14h6" stroke="#549e39"/></svg>',
+          beurre: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="8" rx="1"/><path d="M19 12v4H5" stroke="#549e39"/></svg>',
+          yaourt: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6l1 14h8l1-14z"/><path d="M6 6h12" stroke="#549e39"/></svg>',
+          faisselle: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l1 14h10l1-14z"/><path d="M9 10v.5 M12 10v.5 M15 10v.5 M9 14v.5 M12 14v.5 M15 14v.5" stroke="#549e39"/></svg>',
+          meule: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="6"/><path d="M12 12l8-3 M12 12l4 5"/><path d="M2 12v4c0 3 4 6 10 6s10-3 10-6v-4"/></svg>',
+          portion: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l8 12H4z"/><circle cx="10" cy="12" r="1" fill="#549e39" stroke="none"/></svg>',
+          buche_chevre: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="8" rx="2"/><path d="M8 8v8 M12 8v8 M16 8v8" stroke="#549e39"/></svg>',
+          palet_chevre: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="6" ry="4"/><path d="M6 12v3c0 2 3 4 6 4s6-2 6-4v-3"/></svg>',
+          rape: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12l1 16H5z"/><path d="M9 10l2 1 M13 12l1-2 M10 15l2-1 M14 16l1 1" stroke="#549e39"/></svg>',
+
+          // ŒUFS
+          oeuf: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-4 0-7-4-7-9c0-6 4-11 7-11s7 5 7 11c0 5-3 9-7 9z"/></svg>',
+          boite_oeufs: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="8" rx="2"/><path d="M8 10v8 M12 10v8 M16 10v8 M4 14h16"/></svg>',
+          bidon_oeuf: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="12" height="14" rx="2"/><path d="M10 8V5h4v3"/><path d="M6 12H4V6h6"/><ellipse cx="12" cy="15" rx="2" ry="3" stroke="#549e39"/></svg>',
+          seau_oeuf: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l2 14h10l2-14z"/><path d="M5 8c0-4 3-6 7-6s7 2 7 6"/><ellipse cx="12" cy="8" rx="7" ry="2"/></svg>',
+
+          // ÉPICERIE ET LÉGUMINEUSES
+          lentilles: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="16" r="1"/><path d="M10 14v.5 M14 14v.5 M8 16v.5 M16 16v.5 M12 18v.5 M10 18v.5 M14 18v.5" stroke="#549e39"/></svg>',
+          pois_chiche: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="16" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="10" cy="18" r="1.5"/><circle cx="14" cy="18" r="1.5"/></svg>',
+          haricot_sec: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10c-3 0-5 2-5 5c0 4 3 5 6 3c1-1 2-1 3 0c3 2 6 1 6-3c0-3-2-5-5-5z"/></svg>',
+          farine: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21h10c1 0 2-1 2-2V9c0-1-1-2-2-2H7C6 7 5 8 5 9v10c0 1 1 2 2 2z"/><path d="M6 7l-1-4h14l-1 4z"/><path d="M9 13h6" stroke="#549e39"/></svg>',
+          pates: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l10 10 M8 6l10 10 M6 8l2-2 M16 18l2-2"/><path d="M16 6l-8 8 M18 8l-8 8 M16 6l2 2 M8 14l2 2"/></svg>',
+          riz: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10v10h12V10"/><path d="M6 10c2 2 5-1 8 1s3-1 4-1"/><path d="M12 15l2 2 M10 13l2 2" stroke="#549e39"/></svg>',
+          cereales: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V10"/><path d="M12 10l-2-2 M12 8l-2-2 M12 6l-2-2 M12 10l2-2 M12 8l2-2 M12 6l2-2" stroke="#549e39"/></svg>',
+          miel: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9v11h10V9z"/><path d="M6 9h12v-3H6z"/><path d="M12 9v6 M10 15h4 M11 16h2" stroke="#549e39"/></svg>',
+          confiture: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10v10h12V10z"/><path d="M5 10c1-2 2-4 7-4s6 2 7 4z"/><path d="M4 10h16" stroke="#549e39"/></svg>',
+          huile: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12c0-3 1-4 2-6V4h4v2c1 2 3 4 3 8v8H7z"/><path d="M12 14c-1 1-1 3 0 4c1-1 1-3 0-4z" fill="#549e39" stroke="#549e39"/></svg>',
+          vinaigre: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14c0-4 2-6 3-8V4h4v2c1 2 3 4 3 8v8H7z"/><path d="M12 14l2-2" stroke="#549e39"/></svg>',
+          moutarde: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v10h10V10z"/><path d="M6 10h12v-2c0-1-1-2-2-2H8c-1 0-2 1-2 2z"/><path d="M9 15h6" stroke="#549e39"/></svg>',
+          sel: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8v12h8V8z"/><path d="M8 8c0-2 2-4 4-4s4 2 4 4z"/><path d="M12 6v.5 M10 7v.5 M14 7v.5" stroke="#549e39"/></svg>',
+
+          // BOULANGERIE
+          baguette: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect transform="rotate(-45 12 12)" x="4" y="10" width="16" height="4" rx="2"/><path d="M10 10l2 2 M12 8l2 2 M8 12l2 2" stroke="#549e39"/></svg>',
+          pain: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M9 9l6 6 M15 9l-6 6" stroke="#549e39"/></svg>',
+          croissant: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16c2-4 6-6 10-6c3 0 5 1 6 3c-1-1-4-2-6-2c-5 0-8 3-9 6c-1 2-2 4-2 6c0-2 0-5 1-7z"/><path d="M9 13l2 4 M13 11l1 5 M16 11l1 4" stroke="#549e39"/></svg>',
+
+          // AUTRES / GÉNÉRIQUE
+          conserve: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6v12 M18 6v12"/><ellipse cx="12" cy="6" rx="6" ry="2"/><ellipse cx="12" cy="18" rx="6" ry="2"/><path d="M6 10h12 M6 14h12" stroke="#549e39"/></svg>',
+          bocal: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8v12h10V8z"/><path d="M6 8h12v-2H6z M5 8v4h2"/><path d="M7 10v2" stroke="#549e39"/></svg>',
+          surgele: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l-1 14h14l-1-14z"/><path d="M5 6h14 M7 6l-1-3h12l-1 3"/><path d="M12 11v6 M9 14h6 M10 12l4 4 M10 16l4-4" stroke="#549e39"/></svg>',
+          barquette: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-2 8H6z"/><path d="M4 10c2-3 5-4 8-4" stroke="#549e39"/></svg>',
+          dyn_default: '<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c0-5 3-10 8-10s8 5 8 10"/><circle cx="12" cy="4" r="2" stroke="#549e39"/><path d="M2 16h20v2c0 1-1 2-2 2H4c-1 0-2-1-2-2z"/></svg>'
+        };
+
+        // Fonction magique pour afficher l'icône (Personnalisée OU Lucide en fallback)
+        function getIconHtml(iconName, customClasses) {
+            if (customSvgIcons && customSvgIcons[iconName]) {
+                return `<span class="custom-svg-wrapper flex items-center justify-center ${customClasses}">${customSvgIcons[iconName]}</span>`;
+            }
+            return `<i data-lucide="${iconName}" class="${customClasses}"></i>`;
+        }
+        
+        // MOTEUR D'AUTO-DÉTECTION D'ICÔNE (SÉMANTIQUE)
+        function autoDetectIcon(val) {
+            val = val.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Retire les accents
+            
+            // 1. Mots-clés vers icônes Lucide natives
+            if (val.includes('carotte')) return 'carrot';
+            if (val.includes('boeuf') || val.includes('viande')) return 'beef';
+            if (val.includes('lait')) return 'milk';
+            if (val.includes('oeuf')) return 'egg';
+            if (val.includes('poulet') || val.includes('dinde') || val.includes('volaille')) return 'drumstick';
+            if (val.includes('huile')) return 'droplet';
+            
+            // 2. Recherche dans notre bibliothèque sur-mesure
+            for (let key in customSvgIcons) {
+                let cleanKey = key.replace('_', ' '); 
+                if (val.includes(cleanKey)) return key;
+            }
+            
+            // 3. Mots-clés alternatifs vers du sur-mesure
+            if (val.includes('porc') || val.includes('lardon')) return 'cote_porc';
+            if (val.includes('brebis')) return 'palet_chevre';
+            if (val.includes('fromage')) return 'portion';
+            if (val.includes('pain')) return 'baguette';
+            if (val.includes('courgette') || val.includes('aubergine')) return 'courgette'; 
+            
+            // 4. Par défaut : le cercle neutre de Lucide
+            return 'circle';
+        }
+
+        // LISTES DE DONNÉES POUR GÉNÉRATION (Mixte Lucide / Custom)
+        const lgList = [
+            { id: 'pdt', icon: 'pdt', name: 'Pommes de terre', pl: 'Ex: 500' }, // Custom
+            { id: 'carotte', icon: 'carrot', name: 'Carottes', pl: 'Ex: 300' }, // Lucide
+            { id: 'oignon', icon: 'oignon', name: 'Oignons', pl: 'Ex: 100' },   // Custom
+            { id: 'tomate', icon: 'tomate', name: 'Tomates', pl: 'Ex: 400' },   // Custom
+            { id: 'poireau', icon: 'poireau', name: 'Poireaux', pl: 'Ex: 200' },// Custom
+            { id: 'ete', icon: 'sun', name: 'Légumes d\'été', pl: 'Ex: 350' },  // Lucide
+            { id: 'chou', icon: 'chou', name: 'Choux', pl: 'Ex: 150' },         // Custom
+            { id: 'courge', icon: 'courge', name: 'Courges', pl: 'Ex: 150' }    // Custom
+        ];
+
+        const mtList = [
+            { id: 'porc', icon: 'roti_porc', name: 'Porc', pl: 'Ex: 500' },     // Custom
+            { id: 'boeuf', icon: 'beef', name: 'Bœuf', pl: 'Ex: 500' },         // Lucide
+            { id: 'volaille', icon: 'drumstick', name: 'Volaille', pl: 'Ex: 500' }, // Lucide
+            { id: 'ovin', icon: 'gigot', name: 'Ovin', pl: 'Ex: 100' },         // Custom
+            { id: 'caprin', icon: 'gigot', name: 'Caprin', pl: 'Ex: 50' }       // Custom
+        ];
+
+        const vacheList = [
+            { id: 'coupe', icon: 'meule', name: 'Fromages Coupe (Tomme)', sub: 'Meules, Tommes entières', unit: 'kg' }, // Custom
+            { id: 'portion', icon: 'portion', name: 'Portions / Râpé', sub: 'Fromage découpé, râpé', unit: 'kg' },       // Custom
+            { id: 'lait', icon: 'milk', name: 'Lait & Crème', sub: 'Liquide UHT ou Frais', unit: 'Litres' },            // Lucide
+            { id: 'ultrafrais', icon: 'yaourt', name: 'Ultra-frais', sub: 'Yaourts, Fromage Blanc', unit: 'kg ou Unité' } // Custom
+        ];
+        
+        const chevreList = [
+            { id: 'affine', icon: 'buche_chevre', name: 'Fromages Affinés', sub: 'Bûches, Tommes brebis', unit: 'kg' },   // Custom
+            { id: 'frais', icon: 'palet_chevre', name: 'Fromages Frais', sub: 'Palets, Faisselles', unit: 'kg' },         // Custom
+            { id: 'ultrafrais_chevre', icon: 'yaourt', name: 'Ultra-frais', sub: 'Yaourts brebis/chèvre', unit: 'kg ou Unité' } // Custom
+        ];
+
+        const oeufList = [
+            { id: 'coquille', icon: 'oeuf', name: 'Œufs Coquille', sub: 'Frais, entiers', pl: 'Ex: 3000', unit: 'Unités', min: 0.15, max: 0.30, limit: 1, step: 0.05 },
+            { id: 'liquide', icon: 'bidon_oeuf', name: 'Œufs Liquides', sub: 'Ovoproduits en bidons', pl: 'Ex: 50', unit: 'Litres', min: 3.0, max: 6.0, limit: 15, step: 0.1 },
+            { id: 'dur', icon: 'seau_oeuf', name: 'Œufs durs écalés', sub: 'En seaux, prêts à l\'emploi', pl: 'Ex: 20', unit: 'kg', min: 4.0, max: 8.0, limit: 20, step: 0.5 }
+        ];
+
+        const sucreList = [ { id: 'miel', icon: 'miel', name: 'Miel', pl: 'Ex: 50', unit: 'kg' }, { id: 'confiture', icon: 'confiture', name: 'Confitures', pl: 'Ex: 50', unit: 'kg' } ];
+        const saleList = [ { id: 'huile', icon: 'droplet', name: 'Huiles', pl: 'Ex: 50', unit: 'Litres' }, { id: 'condiment', icon: 'moutarde', name: 'Condiments/Moutarde', pl: 'Ex: 20', unit: 'kg' } ];
+        const legumineuseList = [ { id: 'lentille', icon: 'lentilles', name: 'Lentilles', pl: 'Ex: 100', unit: 'kg' }, { id: 'poischiche', icon: 'pois_chiche', name: 'Pois chiches', pl: 'Ex: 50', unit: 'kg' }, { id: 'haricot', icon: 'haricot_sec', name: 'Haricots secs', pl: 'Ex: 50', unit: 'kg' } ];
+        const meunerieList = [ { id: 'farine', icon: 'wheat', name: 'Farines', pl: 'Ex: 100', unit: 'kg' }, { id: 'pate', icon: 'pates', name: 'Pâtes sèches', pl: 'Ex: 150', unit: 'kg' }, { id: 'cereale', icon: 'cereales', name: 'Céréales/Grains', pl: 'Ex: 50', unit: 'kg' } ];
+        const boulangerieList = [ { id: 'pain', icon: 'baguette', name: 'Pain frais', pl: 'Ex: 500', unit: 'kg ou unités' } ];
+
+        // GESTION PRIX ET GAMMES
+        function updatePriceRange(id, el, isMin, maxLimit) {
+            let minEl = document.getElementById('price_min_' + id);
+            let maxEl = document.getElementById('price_max_' + id);
+            let minVal = parseFloat(minEl.value);
+            let maxVal = parseFloat(maxEl.value);
+            let step = parseFloat(el.step) || 0.1;
+            if (isMin && minVal > maxVal - step) { minVal = maxVal - step; minEl.value = minVal.toFixed(2); }
+            if (!isMin && maxVal < minVal + step) { maxVal = minVal + step; maxEl.value = maxVal.toFixed(2); }
+            document.getElementById('price_min_val_' + id).textContent = minVal.toFixed(2);
+            document.getElementById('price_max_val_' + id).textContent = maxVal.toFixed(2);
+            let progress = document.getElementById('price_progress_' + id);
+            progress.style.left = (minVal / maxLimit * 100) + '%';
+            progress.style.right = (100 - (maxVal / maxLimit * 100)) + '%';
+        }
+
+        function updateGammeTotalBase(prefix, totalId, displayId, maxGamme, changedInput) {
+            let inputs = Array.from({length: maxGamme}, (_, i) => document.querySelector(`input[name="${prefix}_g${i+1}"]`));
+            if (inputs.some(input => input === null)) return;
+            let values = inputs.map(input => parseInt(input.value) || 0);
+            let total = values.reduce((a, b) => a + b, 0);
+            if (total > 100 && changedInput) {
+                changedInput.value = parseInt(changedInput.value) - (total - 100);
+                values = inputs.map(input => parseInt(input.value) || 0);
+                total = 100;
+            }
+            inputs.forEach((input, i) => {
+                let out = document.getElementById(`out_${prefix}_g${i+1}`);
+                if(out) out.value = values[i] + '%';
+                let bar = document.getElementById(`bar_${prefix}_g${i+1}`);
+                if(bar) bar.style.width = values[i] + '%';
+                const priceWrapper = document.getElementById(`price_wrapper_${prefix}_g${i+1}`);
+                if(priceWrapper) priceWrapper.classList.toggle('hidden', values[i] <= 0);
+            });
+            const totalEl = document.getElementById(totalId);
+            if(totalEl){
+                totalEl.textContent = total + '%';
+                totalEl.className = total === 100 ? 
+                    (displayId ? 'text-emerald-600' : 'text-xs font-bold px-2 py-1 rounded bg-emerald-100 text-emerald-700') : 
+                    (displayId ? 'text-red-500' : 'text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700');
+            }
+        }
+        function updateGammeTotal(changedInput) { updateGammeTotalBase('leg_gamme', 'gamme_legume_total_display', true, 5, changedInput); }
+        function updateVegGamme(vegId, changedInput) { updateGammeTotalBase(`leg_${vegId}`, `total_${vegId}`, false, 5, changedInput); }
+        function updateDynamicVegGamme(legId, changedInput) { updateGammeTotalBase(`autre_leg_g${changedInput.name.split('_g')[1].split('_')[0]}_${legId}`.replace(/_g\d+/, ''), `total_autre_leg_${legId}`, false, 5, changedInput); } 
+        function updateMeatGammeTotal(changedInput) { updateGammeTotalBase('viande_gamme', 'gamme_viande_total_display', true, 5, changedInput); }
+        function updateMeatGamme(meatId, changedInput) { updateGammeTotalBase(`viande_${meatId}`, `total_${meatId}`, false, 5, changedInput); }
+        function updateDynamicMeatGamme(meatId, changedInput) { updateGammeTotalBase(`autre_viande_g${changedInput.name.split('_g')[1].split('_')[0]}_${meatId}`.replace(/_g\d+/, ''), `total_autre_viande_${meatId}`, false, 5, changedInput); }
+
+        // GESTION UI CARTES ET NOMMAGE DYNAMIQUE
+        function toggleProductCard(cardId, btnId) {
+            const card = document.getElementById(cardId);
+            const btn = document.getElementById(btnId);
+            const isOpening = card.classList.contains('hidden');
+            const stepContainer = card.closest('.wizard-step');
+            stepContainer.querySelectorAll('[id^="card_"]').forEach(c => c.classList.add('hidden'));
+            stepContainer.querySelectorAll('[id^="btn_"]').forEach(b => {
+                const check = document.getElementById(b.id.replace('btn_', 'check_'));
+                b.classList.remove('border-[#549e39]', 'bg-green-50', 'ring-2', 'ring-green-200', 'border-rose-400', 'bg-rose-50', 'ring-rose-200', 'border-blue-400', 'bg-blue-50', 'ring-blue-200', 'border-yellow-400', 'bg-yellow-50', 'ring-yellow-200');
+                if (check && !check.classList.contains('hidden')) b.classList.add('border-emerald-500', 'bg-emerald-50', 'ring-2', 'ring-emerald-100');
+                else b.classList.add('border-gray-200', 'bg-white');
+            });
+            if (isOpening) {
+                card.classList.remove('hidden');
+                btn.classList.remove('border-gray-200', 'bg-white', 'border-emerald-500', 'bg-emerald-50', 'ring-emerald-100');
+                if (cardId.includes('viande') || cardId.includes('porc') || cardId.includes('boeuf') || cardId.includes('volaille') || cardId.includes('ovin') || cardId.includes('caprin')) {
+                    btn.classList.add('border-rose-400', 'bg-rose-50', 'ring-2', 'ring-rose-200');
+                } else if (cardId.includes('oeuf') || cardId.includes('coquille') || cardId.includes('liquide') || cardId.includes('dur')) {
+                    btn.classList.add('border-yellow-400', 'bg-yellow-50', 'ring-2', 'ring-yellow-200');
+                } else if (cardId.includes('vache') || cardId.includes('chevre') || cardId.includes('lait') || cardId.includes('ultrafrais') || cardId.includes('beurre') || cardId.includes('coupe') || cardId.includes('portion') || cardId.includes('affine') || cardId.includes('frais') || cardId.includes('dyn')) {
+                    btn.classList.add('border-blue-400', 'bg-blue-50', 'ring-2', 'ring-blue-200');
+                } else {
+                    btn.classList.add('border-[#549e39]', 'bg-green-50', 'ring-2', 'ring-green-200');
+                }
+            }
+        }
+
+        function validerProduit(cardId, btnId, checkId) {
+            document.getElementById(cardId).classList.add('hidden');
+            const btn = document.getElementById(btnId);
+            btn.classList.remove('border-[#549e39]', 'bg-green-50', 'ring-2', 'ring-green-200', 'border-rose-400', 'bg-rose-50', 'ring-rose-200', 'border-blue-400', 'bg-blue-50', 'ring-blue-200', 'border-gray-200', 'bg-white');
+            btn.classList.add('border-emerald-500', 'bg-emerald-50', 'ring-2', 'ring-emerald-100');
+            document.getElementById(checkId).classList.remove('hidden');
+        }
+        
+        function supprimerProduit(cardId, btnId) {
+            if(confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
+                document.getElementById(cardId).remove();
+                if(btnId) document.getElementById(btnId).remove();
+            }
+        }
+
+        function updateProductName(input, cId) {
+            let val = input.value.trim() || "Nouveau produit";
+            let btnText = document.getElementById('text_btn_' + cId);
+            let headerText = document.getElementById('text_header_' + cId);
+            if(btnText) { btnText.textContent = val; btnText.title = val; }
+            if(headerText) headerText.textContent = val;
+
+            // DÉTECTION SÉMANTIQUE DE L'ICÔNE (HYBRIDE)
+            let detectedKey = autoDetectIcon(val);
+            let btnIconNode = document.getElementById('icon_btn_' + cId);
+            let headerIconNode = document.getElementById('icon_header_' + cId);
+            
+            if(btnIconNode) btnIconNode.innerHTML = getIconHtml(detectedKey, 'w-8 h-8 text-[#405F59] mb-1');
+            if(headerIconNode) headerIconNode.innerHTML = getIconHtml(detectedKey, 'w-6 h-6');
+            
+            // Recharger Lucide au cas où l'icône détectée serait native
+            lucide.createIcons();
+        }
+
+        function toggleVisibility(divId, isChecked) {
+            const div = document.getElementById(divId);
+            if (isChecked) {
+                div.classList.remove('hidden'); div.style.opacity = 0;
+                setTimeout(() => { div.style.transition = 'opacity 0.3s'; div.style.opacity = 1; }, 10);
+            } else {
+                div.classList.add('hidden');
+                div.querySelectorAll('input').forEach(input => input.value = '');
+            }
+        }
+
+        // GENERATEUR DE CARD (HTML COMPACT)
+        function createCardHtml(item, prefix, theme, step, maxLimit, gammes, colors) {
+            let h = `<div class="flex justify-between items-start mb-4 border-b pb-2"><div><h4 class="font-oswald text-${theme}-500 text-xl m-0 flex items-center gap-2">${getIconHtml(item.icon, 'w-6 h-6')} ${item.name}</h4>${item.sub ? `<p class="text-xs text-gray-500 mt-1">${item.sub}</p>` : ''}</div><button type="button" onclick="toggleProductCard('card_${item.id}', 'btn_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x"></i></button></div>`;
+            if(gammes) {
+                h += `<div class="flex flex-col md:flex-row gap-6 mb-4"><div class="input-group md:w-1/4 mb-0"><label>Volume annuel (kg)</label><input type="number" name="${prefix}_${item.id}_vol" step="50" value="0" placeholder="${item.pl}"></div><div class="input-group md:w-3/4 mb-0"><label>Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
+                h += `<div class="input-group border-t border-gray-100 pt-4 mb-0"><div class="flex justify-between items-end mb-2"><label class="text-sm">Répartition par gammes</label><span id="total_${item.id}" class="text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700">0%</span></div><div class="w-full h-3 bg-gray-200 rounded-full flex overflow-hidden mb-4">${gammes.map((_,i)=>`<div id="bar_${prefix}_${item.id}_g${i+1}" class="h-full bg-${colors[i]||'gray-400'} transition-all" style="width: 0%;"></div>`).join('')}</div><div class="grid grid-cols-${gammes.length} gap-3">${gammes.map((g,i)=>`<div class="text-center"><label class="text-[10px] text-gray-700 font-bold mb-0.5 leading-tight block">${g[0]}</label><p class="text-[8px] text-gray-500 leading-tight mb-1 h-6 flex items-center justify-center px-1">${g[1]}</p><output id="out_${prefix}_${item.id}_g${i+1}" class="block text-xs font-bold text-${colors[i]||'gray-500'} mb-1">0%</output><input type="range" name="${prefix}_${item.id}_g${i+1}" value="0" min="0" max="100" step="5" class="mini-slider slider-g${i+1}" oninput="updateGammeTotalBase('${prefix}_${item.id}', 'total_${item.id}', false, ${gammes.length}, this)"></div>`).join('')}</div></div>`;
+                h += `<div class="input-group border-t border-gray-100 pt-4 mt-4 w-full"><label class="text-sm m-0">Prix acceptables par gamme (€/kg)</label><p class="text-[10px] text-gray-500 italic mb-2 mt-1">Ajustez la répartition au-dessus pour activer les prix.</p>${gammes.map((g,i)=>`<div id="price_wrapper_${prefix}_${item.id}_g${i+1}" class="hidden mt-3 mb-2"><div class="flex justify-between items-end mb-1"><span class="text-[10px] font-bold text-gray-600">${g[0]} (${g[1]})</span><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-700"><span id="price_min_val_${item.id}_g${i+1}">${step===15?1.50:8.00}</span>€ - <span id="price_max_val_${item.id}_g${i+1}">${step===15?3.00:15.00}</span>€</span></div><div class="range-slider ${theme==='rose'?'rose':''} mt-1 mb-1"><div class="progress absolute h-full rounded bg-${colors[i]||'gray-400'}" id="price_progress_${item.id}_g${i+1}" style="left: ${step===15?'10%':'20%'}; right: ${step===15?'80%':'62.5%'};"></div><input type="range" name="prix_min_${item.id}_g${i+1}" id="price_min_${item.id}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${step===15?1.50:8.00}" class="slider-g${i+1}" oninput="updatePriceRange('${item.id}_g${i+1}', this, true, ${maxLimit})"><input type="range" name="prix_max_${item.id}_g${i+1}" id="price_max_${item.id}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${step===15?3.00:15.00}" class="slider-g${i+1}" oninput="updatePriceRange('${item.id}_g${i+1}', this, false, ${maxLimit})"></div></div>`).join('')}</div>`;
+            } else {
+                let pMin = item.min !== undefined ? item.min : 4.0;
+                let pMax = item.max !== undefined ? item.max : 10.0;
+                let pLimit = item.limit !== undefined ? item.limit : maxLimit;
+                let pStep = item.step !== undefined ? item.step : 0.1;
+
+                h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Volume annuel (${item.unit})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl || 'Ex: 100'}"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${item.unit.split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-${theme}-100 text-${theme}-700"><span id="price_min_val_${item.id}">${pMin.toFixed(2)}</span>€ - <span id="price_max_val_${item.id}">${pMax.toFixed(2)}</span>€</span></div><div class="range-slider ${theme} mt-2 mb-1"><div class="progress absolute h-full rounded bg-${theme}-500" id="price_progress_${item.id}" style="left: ${(pMin/pLimit)*100}%; right: ${100-(pMax/pLimit)*100}%;"></div><input type="range" name="prix_min_${item.id}" id="price_min_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMin}" oninput="updatePriceRange('${item.id}', this, true, ${pLimit})"><input type="range" name="prix_max_${item.id}" id="price_max_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMax}" oninput="updatePriceRange('${item.id}', this, false, ${pLimit})"></div><div class="flex justify-between text-[10px] text-${theme}-700 mt-1"><span>0 €</span><span>${pLimit} €+</span></div></div></div>`;
+                h += `<div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
+            }
+            h += `<div class="mt-6 border-t border-gray-100 pt-4 flex justify-end"><button type="button" onclick="validerProduit('card_${item.id}', 'btn_${item.id}', 'check_${item.id}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
+            return h;
+        }
+
+        // INITIALISATION DES CARTES FIXES ET EN-TÊTES
+        function buildMosaicAndCards() {
+            // Remplacement hybride des icônes d'en-tête de section
+            const hdFruits = document.getElementById('head-icon-fruits'); if(hdFruits) hdFruits.innerHTML = getIconHtml('apple', 'w-8 h-8');
+            const hdLegumes = document.getElementById('head-icon-legumes'); if(hdLegumes) hdLegumes.innerHTML = getIconHtml('carrot', 'w-8 h-8');
+            const hdViandes = document.getElementById('head-icon-viandes'); if(hdViandes) hdViandes.innerHTML = getIconHtml('beef', 'w-8 h-8');
+            const hdLaitages = document.getElementById('head-icon-laitages'); if(hdLaitages) hdLaitages.innerHTML = getIconHtml('milk', 'w-8 h-8');
+            const hdAutres = document.getElementById('head-icon-autres'); if(hdAutres) hdAutres.innerHTML = getIconHtml('wheat', 'w-8 h-8');
+            
+            // Remplacement des icônes de sous-section (Laitages / Épicerie)
+            const hsVache = document.getElementById('head_icon_vache_section'); if(hsVache) hsVache.innerHTML = getIconHtml('milk', 'w-6 h-6');
+            const hsChevre = document.getElementById('head_icon_chevre_section'); if(hsChevre) hsChevre.innerHTML = getIconHtml('milk', 'w-6 h-6');
+            const hsOeuf = document.getElementById('head_icon_oeuf_section'); if(hsOeuf) hsOeuf.innerHTML = getIconHtml('egg', 'w-6 h-6');
+            const hsSucre = document.getElementById('head_icon_sucre_section'); if(hsSucre) hsSucre.innerHTML = getIconHtml('miel', 'w-6 h-6');
+            const hsSale = document.getElementById('head_icon_sale_section'); if(hsSale) hsSale.innerHTML = getIconHtml('flask-conical', 'w-6 h-6');
+            const hsLegu = document.getElementById('head_icon_legumineuse_section'); if(hsLegu) hsLegu.innerHTML = getIconHtml('bean', 'w-6 h-6');
+            const hsMeu = document.getElementById('head_icon_meu_section'); if(hsMeu) hsMeu.innerHTML = getIconHtml('wheat', 'w-6 h-6');
+            const hsBou = document.getElementById('head_icon_bou_section'); if(hsBou) hsBou.innerHTML = getIconHtml('croissant', 'w-6 h-6');
+
+            // Remplacement pour Pommes et Poires (Etape 1 native)
+            const icnPommes = document.getElementById('icon_pommes'); if (icnPommes) icnPommes.outerHTML = getIconHtml('apple', 'w-8 h-8 text-[#405F59] mb-1');
+            const icnPoires = document.getElementById('icon_poires'); if (icnPoires) icnPoires.outerHTML = getIconHtml('poire', 'w-8 h-8 text-[#405F59] mb-1');
+            const hdPommes = document.getElementById('head_pommes'); if (hdPommes) hdPommes.outerHTML = getIconHtml('apple', 'w-6 h-6');
+            const hdPoires = document.getElementById('head_poires'); if (hdPoires) hdPoires.outerHTML = getIconHtml('poire', 'w-6 h-6');
+
+            const appendMosaic = (list, mosaicId, contId, prefix, theme, step, maxLimit, gammes, colors) => {
+                const mosaic = document.getElementById(mosaicId);
+                const cont = document.getElementById(contId);
+                if(!mosaic || !cont) return;
+                list.forEach(item => {
+                    const btn = document.createElement('button');
+                    btn.type = "button"; btn.id = `btn_${item.id}`;
+                    btn.onclick = () => toggleProductCard(`card_${item.id}`, `btn_${item.id}`);
+                    btn.className = `relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-${theme}-400 hover:bg-${theme}-50 transition-all shadow-sm`;
+                    btn.innerHTML = `<div id="check_${item.id}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div>${getIconHtml(item.icon, 'w-8 h-8 text-[#405F59] mb-1')}<span class="font-bold text-xs text-[#405F59] text-center">${item.name}</span>`;
+                    mosaic.insertBefore(btn, mosaic.lastElementChild);
+                    const card = document.createElement('div');
+                    card.id = `card_${item.id}`;
+                    card.className = `hidden animate-fadeIn bg-white p-5 rounded-xl border border-${theme}-400 shadow-md ring-4 ring-${theme}-50`;
+                    card.innerHTML = createCardHtml(item, prefix, theme, step, maxLimit, gammes, colors);
+                    cont.appendChild(card);
+                });
+            };
+
+            appendMosaic(lgList, 'mosaic-legumes', 'cards-container-legumes', 'leg', 'emerald', 15, 15, [['1ère gamme','Frais brut'],['2ème gamme','Conserves'],['3ème gamme','Surgelés'],['4ème gamme','Prêt à l\'emploi'],['5ème gamme','Cuit sous-vide']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500']);
+            appendMosaic(mtList, 'mosaic-viandes', 'cards-container-viandes', 'viande', 'rose', 40, 40, [['Frais Brut','Carcasses, pièces'],['Sous-vide','Pièces emballées'],['Surgelé','Viandes surgelées'],['Préparé cru','Haché, saucisses'],['Cuit/Charcut.','Jambon, rôtis']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500']);
+            appendMosaic(vacheList, 'mosaic-vache', 'cards-container-vache', 'vache', 'blue', 30, 30, null, null);
+            appendMosaic(chevreList, 'mosaic-chevre', 'cards-container-chevre', 'chevre', 'blue', 30, 30, null, null);
+            appendMosaic(oeufList, 'mosaic-oeuf', 'cards-container-oeuf', 'oeuf', 'yellow', 15, 15, null, null);
+
+            buildEpiSection(sucreList, 'mosaic-sucre', 'cards-container-sucre', 'epi_sucre');
+            buildEpiSection(saleList, 'mosaic-sale', 'cards-container-sale', 'epi_sale');
+            buildEpiSection(legumineuseList, 'mosaic-legumineuses', 'cards-container-legumineuses', 'epi_legumineuse');
+            buildEpiSection(meunerieList, 'mosaic-meunerie', 'cards-container-meunerie', 'epi_meu');
+            buildEpiSection(boulangerieList, 'mosaic-boulangerie', 'cards-container-boulangerie', 'epi_bou');
+        }
+
+        function buildEpiSection(list, mosaicId, containerId, prefix) {
+            const mosaic = document.getElementById(mosaicId);
+            const container = document.getElementById(containerId);
+            if(!mosaic || !container) return;
+            list.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = "button"; btn.id = `btn_${prefix}_${item.id}`;
+                btn.onclick = () => toggleProductCard(`card_${prefix}_${item.id}`, `btn_${prefix}_${item.id}`);
+                btn.className = "relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm";
+                btn.innerHTML = `<div id="check_${prefix}_${item.id}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div>${getIconHtml(item.icon, 'w-8 h-8 text-[#405F59] mb-1')}<span class="font-bold text-xs text-[#405F59] text-center">${item.name}</span>`;
+                mosaic.insertBefore(btn, mosaic.lastElementChild);
+                const card = document.createElement('div');
+                card.id = `card_${prefix}_${item.id}`;
+                card.className = "hidden animate-fadeIn bg-white p-5 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50";
+                card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b pb-2"><h4 class="font-oswald text-[#549e39] text-xl m-0 flex items-center gap-2">${getIconHtml(item.icon, 'w-6 h-6')} ${item.name}</h4><button type="button" onclick="toggleProductCard('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}')" class="text-gray-400 hover:text-red-500"><i data-lucide="x"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Volume annuel (${item.unit})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl}"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${item.unit.split('/')[0]||item.unit.split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${prefix}_${item.id}">2.00</span>€ - <span id="price_max_val_${prefix}_${item.id}">8.00</span>€</span></div><div class="range-slider mt-2 mb-1"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${prefix}_${item.id}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${prefix}_${item.id}" id="price_min_${prefix}_${item.id}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${prefix}_${item.id}', this, true, 20)"><input type="range" name="prix_max_${prefix}_${item.id}" id="price_max_${prefix}_${item.id}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${prefix}_${item.id}', this, false, 20)"></div><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_local" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Local</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Déjà 100% local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-4 flex justify-end"><button type="button" onclick="validerProduit('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}', 'check_${prefix}_${item.id}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
+                container.appendChild(card);
+            });
+        }
+
+        // LIGNES DYNAMIQUES GENERIQUES AVEC AUTO-DETECTION
+        let dynCounter = 1;
+        function addDynamicRow(type, prefix, theme, maxLimit, gammes, colors, unit, placeholder) {
+            const cId = `${type}_dyn_${dynCounter++}`;
+            const item = { id: cId, icon: 'dyn_default', name: 'Nouveau produit', pl: placeholder, unit: unit };
+            
+            const containerIdMap = {
+                'fruit': 'dynamic-fruits-container',
+                'leg': 'dynamic-legumes-container',
+                'viande': 'dynamic-viandes-container',
+                'vache': 'dynamic-vache-container',
+                'chevre': 'dynamic-chevre-container',
+                'oeuf': 'dynamic-oeuf-container'
+            };
+            const containerId = containerIdMap[type] || `dynamic-${type}-container`;
+            const mosaicId = `mosaic-${type==='viande'?'viandes':type==='leg'?'legumes':type==='fruit'?'fruits':type}`;
+            const mosaic = document.getElementById(mosaicId);
+            const container = document.getElementById(containerId);
+            const btnAdd = mosaic.lastElementChild;
+            
+            const tileBtn = document.createElement('button');
+            tileBtn.type = 'button'; tileBtn.id = `btn_${cId}`;
+            tileBtn.onclick = () => toggleProductCard(`card_${cId}`, `btn_${cId}`);
+            tileBtn.className = `relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-${theme}-400 hover:bg-${theme}-50 transition-all shadow-sm`;
+            tileBtn.innerHTML = `<div id="check_${cId}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div><span id="icon_btn_${cId}">${getIconHtml('dyn_default', 'circle', 'w-8 h-8 text-[#405F59] mb-1')}</span><span id="text_btn_${cId}" class="font-bold text-xs text-[#405F59] text-center w-full truncate px-1" title="Nouveau produit">Nouveau produit</span>`;
+            mosaic.insertBefore(tileBtn, btnAdd);
+
+            const card = document.createElement('div');
+            card.id = `card_${cId}`;
+            card.className = `hidden animate-fadeIn bg-white p-5 rounded-xl border border-${theme}-400 shadow-md ring-4 ring-${theme}-50`;
+            
+            let h = `<div class="flex justify-between items-start mb-4 border-b pb-2"><div><h4 class="font-oswald text-${theme}-500 text-xl m-0 flex items-center gap-2"><span id="icon_header_${cId}">${getIconHtml('dyn_default', 'circle', 'w-6 h-6')}</span> <span id="text_header_${cId}">Nouveau produit</span></h4></div><button type="button" onclick="toggleProductCard('card_${cId}', 'btn_${cId}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x"></i></button></div>`;
+            h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Nom du produit</label><input type="text" name="${cId}_nom" placeholder="${placeholder}" class="mb-4" oninput="updateProductName(this, '${cId}')" required><label>Volume annuel (${unit})</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0"></div>`;
+            if(gammes) {
+                h += `<div class="input-group md:w-full mb-0"><label>Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
+                h += `<div class="input-group border-t border-gray-100 pt-4 mb-0"><div class="flex justify-between items-end mb-2"><label class="text-sm">Répartition par gammes</label><span id="total_${cId}" class="text-xs font-bold px-2 py-1 rounded bg-red-100 text-red-700">0%</span></div><div class="w-full h-3 bg-gray-200 rounded-full flex overflow-hidden mb-4">${gammes.map((_,i)=>`<div id="bar_${prefix}_${cId}_g${i+1}" class="h-full bg-${colors[i]||'gray-400'} transition-all" style="width: 0%;"></div>`).join('')}</div><div class="grid grid-cols-${gammes.length} gap-3">${gammes.map((g,i)=>`<div class="text-center"><label class="text-[10px] text-gray-700 font-bold mb-0.5 leading-tight block">${g[0]}</label><p class="text-[8px] text-gray-500 leading-tight mb-1 h-6 flex items-center justify-center px-1">${g[1]}</p><output id="out_${prefix}_${cId}_g${i+1}" class="block text-xs font-bold text-${colors[i]||'gray-500'} mb-1">0%</output><input type="range" name="${prefix}_${cId}_g${i+1}" value="0" min="0" max="100" step="5" class="mini-slider slider-g${i+1}" oninput="updateGammeTotalBase('${prefix}_${cId}', 'total_${cId}', false, ${gammes.length}, this)"></div>`).join('')}</div></div>`;
+                h += `<div class="input-group border-t border-gray-100 pt-4 mt-4 w-full"><label class="text-sm m-0">Prix acceptables par gamme (€/kg)</label><p class="text-[10px] text-gray-500 italic mb-2 mt-1">Ajustez la répartition au-dessus pour activer les prix.</p>${gammes.map((g,i)=>`<div id="price_wrapper_${cId}_g${i+1}" class="hidden mt-3 mb-2"><div class="flex justify-between items-end mb-1"><span class="text-[10px] font-bold text-gray-600">${g[0]} (${g[1]})</span><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-700"><span id="price_min_val_${cId}_g${i+1}">${maxLimit===15?1.50:8.00}</span>€ - <span id="price_max_val_${cId}_g${i+1}">${maxLimit===15?3.00:15.00}</span>€</span></div><div class="range-slider ${theme==='rose'?'rose':''} mt-1 mb-1"><div class="progress absolute h-full rounded bg-${colors[i]||'gray-400'}" id="price_progress_${cId}_g${i+1}" style="left: ${maxLimit===15?'10%':'20%'}; right: ${maxLimit===15?'80%':'62.5%'};"></div><input type="range" name="prix_min_${cId}_g${i+1}" id="price_min_${cId}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${maxLimit===15?1.50:8.00}" class="slider-g${i+1}" oninput="updatePriceRange('${cId}_g${i+1}', this, true, ${maxLimit})"><input type="range" name="prix_max_${cId}_g${i+1}" id="price_max_${cId}_g${i+1}" min="0" max="${maxLimit}" step="0.1" value="${maxLimit===15?3.00:15.00}" class="slider-g${i+1}" oninput="updatePriceRange('${cId}_g${i+1}', this, false, ${maxLimit})"></div></div>`).join('')}</div>`;
+            } else {
+                let pMin = 4.0;
+                let pMax = 10.0;
+                let pLimit = maxLimit;
+                let pStep = 0.1;
+
+                h += `<div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/${unit.split(' ')[0]})</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-${theme}-100 text-${theme}-700"><span id="price_min_val_${cId}">${pMin.toFixed(2)}</span>€ - <span id="price_max_val_${cId}">${pMax.toFixed(2)}</span>€</span></div><div class="range-slider ${theme} mt-2 mb-1"><div class="progress absolute h-full rounded bg-${theme}-500" id="price_progress_${cId}" style="left: ${(pMin/pLimit)*100}%; right: ${100-(pMax/pLimit)*100}%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="${pLimit}" step="${pStep}" value="${pMin}" oninput="updatePriceRange('${cId}', this, true, ${pLimit})"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="${pLimit}" step="${pStep}" value="${pMax}" oninput="updatePriceRange('${cId}', this, false, ${pLimit})"></div><div class="flex justify-between text-[10px] text-${theme}-700 mt-1"><span>0 €</span><span>${pLimit} €+</span></div></div></div>`;
+                h += `<div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_egalim" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_conv" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_deja" value="Oui" class="w-4 h-4 text-${theme}-500 rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
+            }
+            h += `<div class="mt-6 border-t border-gray-100 pt-4 flex justify-between"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider</button></div>`;
+            card.innerHTML = h;
+            container.appendChild(card);
+            lucide.createIcons(); toggleProductCard(`card_${cId}`, `btn_${cId}`);
+            setTimeout(() => { const inp = card.querySelector('input[type="text"]'); if(inp) inp.focus(); }, 50);
+        }
+
+        function addFruitRow() { addDynamicRow('fruit', 'fruit', 'emerald', 15, null, null, 'kg', 'Ex: Fraises...'); }
+        function addLegRow() { addDynamicRow('leg', 'leg', 'emerald', 15, [['1ère gamme','Frais brut'],['2ème gamme','Conserves'],['3ème gamme','Surgelés'],['4ème gamme','Prêt à l\'emploi'],['5ème gamme','Cuit sous-vide']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500'], 'kg', 'Ex: Navets...'); }
+        function addMeatRow() { addDynamicRow('viande', 'viande', 'rose', 40, [['Frais Brut','Carcasses'],['Sous-vide','Emballé'],['Surgelé','Viandes surgelées'],['Préparé cru','Haché, saucisses'],['Cuit/Charcut.','Jambon, rôtis']], ['[#549e39]','blue-400','cyan-400','amber-400','orange-500'], 'kg', 'Ex: Canard...'); }
+        function addVacheRow() { addDynamicRow('vache', 'vache', 'blue', 30, null, null, 'kg ou L', 'Ex: Crème fraîche...'); }
+        function addChevreRow() { addDynamicRow('chevre', 'chevre', 'blue', 30, null, null, 'kg ou L', 'Ex: Fromage frais...'); }
+
+        let dynamicEpiCounter = 1;
+        function addDynamicEpiRow(prefix, label, icon, mosaicId, containerId) {
+            const cId = `${prefix}_dyn_${dynamicEpiCounter++}`;
+            const mosaic = document.getElementById(mosaicId);
+            const container = document.getElementById(containerId);
+            const btnAdd = mosaic.lastElementChild;
+            const tileBtn = document.createElement('button');
+            tileBtn.type = 'button'; tileBtn.id = `btn_${cId}`;
+            tileBtn.onclick = () => toggleProductCard(`card_${cId}`, `btn_${cId}`);
+            tileBtn.className = "relative p-3 border-2 border-gray-200 bg-white rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm";
+            tileBtn.innerHTML = `<div id="check_${cId}" class="hidden absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></div><span id="icon_btn_${cId}">${getIconHtml('circle', 'w-8 h-8 text-[#405F59] mb-1')}</span><span id="text_btn_${cId}" class="font-bold text-xs text-[#405F59] text-center w-full truncate px-1" title="Nouveau produit">Nouveau produit</span>`;
+            mosaic.insertBefore(tileBtn, btnAdd);
+            const card = document.createElement('div');
+            card.id = `card_${cId}`;
+            card.className = "hidden animate-fadeIn bg-white p-5 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50";
+            card.innerHTML = `<div class="flex justify-between items-center mb-4 border-b pb-2"><h4 class="font-oswald text-[#549e39] text-xl m-0 flex items-center gap-2"><span id="icon_header_${cId}">${getIconHtml('circle', 'w-6 h-6')}</span> <span id="text_header_${cId}">Nouveau produit</span></h4><button type="button" onclick="toggleProductCard('card_${cId}', 'btn_${cId}')" class="text-gray-400 hover:text-red-500"><i data-lucide="x"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 items-end"><div class="input-group mb-0"><label>Nom du produit</label><input type="text" name="${cId}_nom" placeholder="Ex: ${label}..." class="mb-4" oninput="updateProductName(this, '${cId}')" required><label>Volume annuel</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-1"><label class="text-sm m-0">Prix acceptable (€/unité)</label><span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${cId}">2.00</span>€ - <span id="price_max_val_${cId}">8.00</span>€</span></div><div class="range-slider mt-2 mb-1"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${cId}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${cId}', this, true, 20)"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${cId}', this, false, 20)"></div><div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-2 border-t border-gray-100 pt-4"><label>Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-3 mt-1 bg-gray-50 p-2.5 border border-gray-200 rounded-md"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_bio" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_egalim" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_conv" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Conv.</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_deja" value="Oui" class="w-4 h-4 text-[#549e39] rounded"> <span class="ml-1.5 text-[11px] font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-4 flex justify-end"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
+            container.appendChild(card); lucide.createIcons(); toggleProductCard(`card_${cId}`, `btn_${cId}`);
+            setTimeout(() => { const inp = card.querySelector('input[type="text"]'); if(inp) inp.focus(); }, 50);
+        }
+
+        // ==========================================
+        // ETAPES ET SOUMISSION
+        // ==========================================
+        let currentStep = 0;
+        const steps = document.querySelectorAll(".wizard-step");
+        const indicators = document.getElementById("step-indicators").children;
+        const progressBar = document.getElementById("progress-bar");
+
+        function showStep(n) {
+            steps.forEach(step => step.classList.remove("active"));
+            steps[n].classList.add("active");
+            
+            const progress = ((n + 1) / steps.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            Array.from(indicators).forEach((ind, index) => {
+                if (index === n) ind.className = "text-[#549e39] font-bold";
+                else if (index < n) ind.className = "text-[#405F59]";
+                else ind.className = "text-gray-400";
+            });
+
+            document.getElementById("prevBtn").style.display = (n === 0) ? "none" : "block";
+            
+            if (n === (steps.length - 1)) {
+                document.getElementById("nextBtn").style.display = "none";
+                document.getElementById("submitBtn").style.display = "flex";
+            } else {
+                document.getElementById("nextBtn").style.display = "block";
+                document.getElementById("submitBtn").style.display = "none";
+            }
+        }
+
+        function changeStep(n) {
+            if (currentStep === 0 && n === 1) {
+                const etab = document.getElementById('etablissement').value;
+                if (!etab.trim()) {
+                    alert("Merci de renseigner le nom de l'établissement pour associer ces données à votre dossier.");
+                    document.getElementById('etablissement').focus();
+                    return;
+                }
+            }
+            currentStep += n;
+            showStep(currentStep);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function submitData(event) {
+            event.preventDefault();
+            document.getElementById("prevBtn").style.display = "none";
+            document.getElementById("submitBtn").style.display = "none";
+            document.getElementById("loading").style.display = "block";
+
+            const form = document.getElementById("filiereForm");
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const googleScriptURL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; 
+            
+            fetch(googleScriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(() => {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("successMsg").style.display = "block";
+                form.reset();
+            }).catch(error => {
+                console.error('Erreur:', error);
+                alert("Une erreur de connexion est survenue. Veuillez réessayer.");
+                document.getElementById("submitBtn").style.display = "flex";
+                document.getElementById("prevBtn").style.display = "block";
+                document.getElementById("loading").style.display = "none";
+            });
+        }
+
+        // ==========================================
+        // INITIALISATION AU DÉMARRAGE
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            buildMosaicAndCards();
+            lucide.createIcons();
+            const form = document.getElementById('filiereForm');
+            if(form) form.reset();
+        });
+    </script>
+</body>
+</html>

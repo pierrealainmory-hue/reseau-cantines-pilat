@@ -33,7 +33,6 @@
         input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
         input[type="range"].mini-slider { height: 6px; }
         input[type="range"].mini-slider::-webkit-slider-thumb { width: 16px; height: 16px; }
-
         /* CORRECTIF DES COULEURS DES GAMMES (Compatible tous navigateurs) */
         .slider-g1::-webkit-slider-thumb { background: #10b981 !important; } /* emerald-500 */
         .slider-g1::-moz-range-thumb { background: #10b981 !important; border: none; border-radius: 50%; width: 16px; height: 16px; }
@@ -45,7 +44,6 @@
         .slider-g4::-moz-range-thumb { background: #f59e0b !important; border: none; border-radius: 50%; width: 16px; height: 16px; }
         .slider-g5::-webkit-slider-thumb { background: #f97316 !important; } /* orange-500 */
         .slider-g5::-moz-range-thumb { background: #f97316 !important; border: none; border-radius: 50%; width: 16px; height: 16px; }
-
         .range-slider { position: relative; width: 100%; height: 8px; background: #d1d5db; border-radius: 5px; margin: 20px 0; }
         .range-slider .progress { position: absolute; height: 100%; border-radius: 5px; z-index: 0; }
         .range-slider input[type="range"] { position: absolute; width: 100%; -webkit-appearance: none; pointer-events: none; background: transparent; outline: none; top: -6px; height: 20px; margin: 0; }
@@ -55,15 +53,12 @@
         .range-slider.rose .progress { background: #fb7185; }
         .range-slider.rose input[type="range"]::-webkit-slider-thumb { background: #f43f5e; }
         .range-slider.rose input[type="range"]::-moz-range-thumb { background: #f43f5e; }
-
         .range-slider.blue .progress { background: #60a5fa; }
         .range-slider.blue input[type="range"]::-webkit-slider-thumb { background: #3b82f6; }
         .range-slider.blue input[type="range"]::-moz-range-thumb { background: #3b82f6; }
-
         .range-slider.yellow .progress { background: #facc15; }
         .range-slider.yellow input[type="range"]::-webkit-slider-thumb { background: #eab308; }
         .range-slider.yellow input[type="range"]::-moz-range-thumb { background: #eab308; }
-
         /* Augmentation de la taille de police par défaut des labels */
         .input-group label { display: block; font-size: 0.875rem; font-weight: bold; color: var(--dix-dark); margin-bottom: 0.5rem; font-family: 'Arial', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
         .no-spinners::-webkit-outer-spin-button, .no-spinners::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -73,7 +68,6 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-
     <header class="bg-white border-b-4 shadow-sm" style="border-color: var(--dix-light);">
         <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
             <div>
@@ -103,8 +97,7 @@
         </div>
 
         <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 border border-gray-100">
-            <!-- CORRECTION GITHUB PAGES : Retrait du onsubmit natif pour sécuriser l'envoi JS -->
-            <form id="filiereForm" autocomplete="off">
+            <form id="filiereForm" onsubmit="submitData(event)" autocomplete="off">
                 <input type="hidden" name="formType" value="donnees_filieres">
 
                 <!-- ÉTAPE 0: IDENTIFICATION -->
@@ -166,7 +159,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="mb-6">
                         <h3 class="font-oswald text-[#549e39] text-xl mb-4">Sélectionnez les fruits à détailler :</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="mosaic-fruits">
@@ -184,7 +176,6 @@
                             </button>
                         </div>
                     </div>
-
                     <!-- TRACKER ASSISTANT FRUITS -->
                     <div id="tracker_fruits" class="hidden mb-6 p-5 rounded-xl shadow-sm transition-all duration-300 border bg-blue-50 border-blue-200">
                         <div class="flex items-center gap-4">
@@ -200,7 +191,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="cards-container-fruits" class="space-y-6">
                         <div id="card_pommes" class="hidden animate-fadeIn bg-white p-6 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50">
                             <div class="flex justify-between items-start mb-5 border-b pb-3">
@@ -242,7 +232,6 @@
                                 <button type="button" onclick="validerProduit('card_pommes', 'btn_pommes', 'check_pommes')" class="px-6 py-3 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-3 text-base shadow-sm"><i data-lucide="check-circle" class="w-6 h-6"></i> Valider ce produit</button>
                             </div>
                         </div>
-
                         <div id="card_poires" class="hidden animate-fadeIn bg-white p-6 rounded-xl border border-[#549e39] shadow-md ring-4 ring-green-50">
                             <div class="flex justify-between items-start mb-5 border-b pb-3">
                                 <h3 class="font-oswald text-[#549e39] text-2xl m-0 flex items-center gap-3">
@@ -272,7 +261,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="dynamic-fruits-container" class="space-y-6 mt-6"></div>
                     
                     <div class="mt-10 bg-emerald-50 border border-emerald-200 p-8 rounded-xl shadow-sm">
@@ -293,7 +281,6 @@
                             <p class="text-base text-gray-500">Précisez vos volumes et l'état des produits (brut ou préparé).</p>
                         </div>
                     </div>
-
                     <div class="bg-amber-50 border-2 border-amber-400 rounded-xl p-8 mb-8 shadow-sm relative overflow-hidden">
                         <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="pie-chart" class="w-32 h-32 text-amber-900"></i></div>
                         <div class="relative z-10">
@@ -345,7 +332,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="mb-8">
                         <h3 class="font-oswald text-[#549e39] text-xl mb-4">Sélectionnez les légumes à détailler :</h3>
                         <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="mosaic-legumes">
@@ -355,7 +341,6 @@
                             </button>
                         </div>
                     </div>
-
                     <!-- TRACKER ASSISTANT LEGUMES -->
                     <div id="tracker_legumes" class="hidden mb-6 p-5 rounded-xl shadow-sm transition-all duration-300 border bg-blue-50 border-blue-200">
                         <div class="flex items-center gap-4">
@@ -371,13 +356,10 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="cards-container-legumes" class="space-y-6">
                         <!-- JS -->
                     </div>
-
                     <div id="dynamic-legumes-container" class="space-y-6 mt-6"></div>
-
                     <div class="mt-10 bg-amber-50 border border-amber-200 p-8 rounded-xl shadow-sm">
                         <h4 class="font-oswald text-amber-800 text-xl mb-3 flex items-center gap-3"><i data-lucide="lightbulb" class="w-6 h-6"></i> Avant de passer à la suite...</h4>
                         <div class="input-group mb-0">
@@ -396,7 +378,6 @@
                             <p class="text-base text-gray-500">Précisez vos volumes et l'état des viandes (fraîches, préparées, sous-vide...).</p>
                         </div>
                     </div>
-
                     <div class="bg-rose-50 border-2 border-rose-400 rounded-xl p-8 mb-8 shadow-sm relative overflow-hidden">
                         <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="pie-chart" class="w-32 h-32 text-rose-900"></i></div>
                         <div class="relative z-10">
@@ -450,7 +431,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="mb-8">
                         <h3 class="font-oswald text-rose-500 text-xl mb-4">Sélectionnez les viandes à détailler :</h3>
                         <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="mosaic-viandes">
@@ -460,7 +440,6 @@
                             </button>
                         </div>
                     </div>
-
                     <!-- TRACKER ASSISTANT VIANDES -->
                     <div id="tracker_viandes" class="hidden mb-6 p-5 rounded-xl shadow-sm transition-all duration-300 border bg-blue-50 border-blue-200">
                         <div class="flex items-center gap-4">
@@ -476,13 +455,10 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="cards-container-viandes" class="space-y-6">
                        <!-- JS -->
                     </div>
-
                     <div id="dynamic-viandes-container" class="space-y-6 mt-6"></div>
-
                     <div class="mt-10 bg-rose-50 border border-rose-200 p-8 rounded-xl shadow-sm">
                         <h4 class="font-oswald text-rose-800 text-xl mb-3 flex items-center gap-3"><i data-lucide="lightbulb" class="w-6 h-6"></i> Avant de passer à la suite...</h4>
                         <div class="input-group mb-0">
@@ -501,10 +477,9 @@
                             <p class="text-base text-gray-500">Fromages, produits laitiers et filière avicole.</p>
                         </div>
                     </div>
-
+                    
                     <!-- SOUS-PARTIE 1 : VACHE -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-10 flex items-center gap-3 text-2xl"><div id="head_icon_vache_section"></div> Sous-partie 1 : Lait de Vache</h3>
-
                     <div class="mb-8 mt-5">
                         <h3 class="font-oswald text-blue-500 text-xl mb-4">Sélectionnez les produits Vache à détailler :</h3>
                         <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="mosaic-vache">
@@ -514,16 +489,13 @@
                             </button>
                         </div>
                     </div>
-
                     <div id="cards-container-vache" class="space-y-6">
                        <!-- JS -->
                     </div>
                     <div id="dynamic-vache-container" class="space-y-6 mt-6 mb-12"></div>
-
-
+                    
                     <!-- SOUS-PARTIE 2 : CAPRIN / OVIN -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-12 flex items-center gap-3 text-2xl"><div id="head_icon_chevre_section"></div> Sous-partie 2 : Lait Caprin / Ovin</h3>
-
                     <div class="mb-8 mt-5">
                         <h3 class="font-oswald text-blue-500 text-xl mb-4">Sélectionnez les produits Chèvre/Brebis à détailler :</h3>
                         <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="mosaic-chevre">
@@ -533,16 +505,13 @@
                             </button>
                         </div>
                     </div>
-
                     <div id="cards-container-chevre" class="space-y-6">
                        <!-- JS -->
                     </div>
                     <div id="dynamic-chevre-container" class="space-y-6 mt-6 mb-12"></div>
-
-
+                    
                     <!-- SOUS-PARTIE 3 : OEUFS -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-12 flex items-center gap-3 text-2xl"><div id="head_icon_oeuf_section"></div> Sous-partie 3 : Filière ŒUFS</h3>
-
                     <div class="mb-8 mt-5">
                         <h3 class="font-oswald text-yellow-600 text-xl mb-4">Sélectionnez les produits Œufs à détailler :</h3>
                         <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="mosaic-oeuf">
@@ -552,11 +521,9 @@
                             </button>
                         </div>
                     </div>
-
                     <div id="cards-container-oeuf" class="space-y-6"></div>
                     <div id="dynamic-oeuf-container" class="space-y-6 mt-6 mb-12"></div>
-
-
+                    
                     <div class="mt-10 bg-blue-50 border border-blue-200 p-8 rounded-xl shadow-sm">
                         <h4 class="font-oswald text-blue-800 text-xl mb-3 flex items-center gap-3"><i data-lucide="lightbulb" class="w-6 h-6"></i> Avant de passer à la suite...</h4>
                         <div class="input-group mb-0">
@@ -575,7 +542,7 @@
                             <p class="text-base text-gray-500">Épicerie, Meunerie et Boulangerie.</p>
                         </div>
                     </div>
-
+                    
                     <!-- SUCRÉ -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-10 flex items-center gap-3 text-2xl"><div id="head_icon_sucre_section"></div> Épicerie Sucrée</h3>
                     <div class="mb-8">
@@ -587,7 +554,7 @@
                         </div>
                     </div>
                     <div id="cards-container-sucre" class="space-y-6 mb-10"></div>
-
+                    
                     <!-- SALÉ -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-10 flex items-center gap-3 text-2xl"><div id="head_icon_sale_section"></div> Épicerie Salée</h3>
                     <div class="mb-8">
@@ -599,7 +566,7 @@
                         </div>
                     </div>
                     <div id="cards-container-sale" class="space-y-6 mb-10"></div>
-
+                    
                     <!-- LÉGUMINEUSES -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-10 flex items-center gap-3 text-2xl"><div id="head_icon_legumineuse_section"></div> Légumineuses</h3>
                     <div class="mb-8">
@@ -611,7 +578,7 @@
                         </div>
                     </div>
                     <div id="cards-container-legumineuses" class="space-y-6 mb-10"></div>
-
+                    
                     <!-- MEUNERIE -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-10 flex items-center gap-3 text-2xl"><div id="head_icon_meu_section"></div> Meunerie (Céréales, Farines, Pâtes)</h3>
                     <div class="mb-8">
@@ -623,10 +590,9 @@
                         </div>
                     </div>
                     <div id="cards-container-meunerie" class="space-y-6 mb-10"></div>
-
+                    
                     <!-- BOULANGERIE -->
                     <h3 class="font-oswald text-[#549e39] border-b mb-5 pb-2 mt-10 flex items-center gap-3 text-2xl"><div id="head_icon_bou_section"></div> Boulangerie</h3>
-                    
                     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-6">
                         <div class="input-group mb-0">
                             <label class="text-base font-bold text-[#405F59] mb-3 block">Le pain servi est-il d'origine locale actuellement ?</label>
@@ -638,7 +604,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="mb-8">
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="mosaic-boulangerie">
                             <button type="button" onclick="addDynamicEpiRow('bou', 'Nouveau produit', 'dyn_default', 'mosaic-boulangerie', 'cards-container-boulangerie')" class="p-4 border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-[#549e39] hover:bg-green-50 transition-all shadow-sm group">
@@ -659,15 +624,14 @@
                 </div>
 
                 <!-- BOUTONS DE NAVIGATION -->
-                <div class="mt-12 pt-8 border-t border-gray-200 flex justify-between items-center">
-                    <button type="button" id="prevBtn" class="px-6 py-3 border-2 border-gray-300 text-gray-600 font-oswald rounded-xl hover:bg-gray-100 hidden transition-colors text-lg" onclick="changeStep(-1)">Précédent</button>
+                <div class="mt-12 pt-8 border-t border-gray-200 flex flex-wrap justify-between items-center gap-4">
+                    <button type="button" id="prevBtn" class="px-6 py-3 border-2 border-gray-300 text-gray-600 font-oswald rounded-xl hover:bg-gray-100 hidden transition-colors text-lg whitespace-nowrap" onclick="changeStep(-1)">Précédent</button>
                     <div class="flex-grow"></div>
-                    <button type="button" id="nextBtn" class="px-8 py-4 bg-[#405F59] text-white font-oswald rounded-xl shadow-md hover:bg-[#2d433f] transition-colors text-xl flex items-center" onclick="changeStep(1)">Étape Suivante <i data-lucide="arrow-right" class="w-6 h-6 ml-2"></i></button>
-                    <button type="button" id="submitBtn" class="px-8 py-4 bg-[#549e39] text-white font-oswald rounded-xl shadow-lg hover:bg-[#43802d] hidden flex items-center gap-3 text-xl transition-colors" onclick="submitData(event)">
-                        <i data-lucide="check-circle" class="w-7 h-7"></i> Transmettre les données
+                    <button type="button" id="nextBtn" class="px-8 py-4 bg-[#405F59] text-white font-oswald rounded-xl shadow-md hover:bg-[#2d433f] transition-colors text-xl flex items-center justify-center gap-2 whitespace-nowrap" onclick="changeStep(1)">Étape Suivante <i data-lucide="arrow-right" class="w-6 h-6 shrink-0"></i></button>
+                    <button type="submit" id="submitBtn" class="px-8 py-4 bg-[#549e39] text-white font-oswald rounded-xl shadow-lg hover:bg-[#43802d] hidden flex items-center justify-center gap-3 text-xl transition-colors whitespace-nowrap">
+                        <i data-lucide="check-circle" class="w-7 h-7 shrink-0"></i> Transmettre les données
                     </button>
                 </div>
-
                 <div id="loading" class="hidden text-center mt-8 text-[#549e39] font-bold font-oswald text-2xl">
                     <i data-lucide="loader-2" class="animate-spin inline-block mr-3 w-8 h-8"></i> Enregistrement en cours...
                 </div>
@@ -679,56 +643,109 @@
         </div>
     </main>
 
-    <!-- RECONSTRUCTION PROPRE DU JAVASCRIPT -->
+    <!-- BANDEAU PARTENAIRES -->
+    <section class="bg-[#e5edeb] py-10 border-t border-gray-200 mt-12">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-80">
+                <img src="logo-ccmp.png" alt="Logo CCMP" class="h-14 w-auto object-contain">
+                <img src="logo-inrae.png" alt="Logo INRAE" class="h-14 w-auto object-contain">
+                <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-12 w-auto object-contain">
+                <img src="2026_bandeau_logos_pat.png" alt="Partenaires Institutionnels" class="h-14 md:h-16 w-auto object-contain">
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-100 py-10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <!-- Contact 1 : Email -->
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <div class="flex items-center gap-3 text-[#405F59] font-bold font-oswald uppercase">
+                        <i data-lucide="mail" class="w-6 h-6 text-[#549e39]"></i>
+                        <span>Courriel</span>
+                    </div>
+                    <a href="mailto:pierre.alain.mory@dix-autrement.fr" class="text-sm text-gray-600 hover:text-[#549e39] transition-colors">pierre.alain.mory@dix-autrement.fr</a>
+                </div>
+                <!-- Contact 2 : Web -->
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <div class="flex items-center gap-3 text-[#405F59] font-bold font-oswald uppercase">
+                        <i data-lucide="globe" class="w-6 h-6 text-[#549e39]"></i>
+                        <span>Site internet</span>
+                    </div>
+                    <a href="https://www.dix-autrement.fr" target="_blank" class="text-sm text-gray-600 hover:text-[#549e39] transition-colors">www.dix-autrement.fr</a>
+                </div>
+                <!-- Contact 3 : Assistance -->
+                <div class="flex flex-col items-center md:items-start gap-2">
+                    <div class="flex items-center gap-3 text-[#405F59] font-bold font-oswald uppercase">
+                        <i data-lucide="phone" class="w-6 h-6 text-[#549e39]"></i>
+                        <span>Assistance technique</span>
+                    </div>
+                    <p class="text-sm text-gray-600 font-bold">07 83 00 09 56 / Pierre-Alain Mory</p>
+                </div>
+            </div>
+            <!-- Mentions Légales Compactes -->
+            <div class="mt-10 pt-6 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-gray-400 font-georgia uppercase tracking-widest">
+                <p>Projet Alimentaire Territorial - CC Monts du Pilat</p>
+                <div class="flex items-center gap-3">
+                    <p>&copy; 2026 Réalisé par Cabinet DIX Autrement</p>
+                    <!-- COMPTEUR DE VISITE -->
+                    <img src="https://visitor-badge.laobi.icu/badge?page_id=pierrealainmory-cantines-pilat&left_text=Visites&left_color=%232c3e50&right_color=%23e67e22" alt="Compteur de visites" class="h-4 opacity-75 hover:opacity-100 transition-opacity" title="Nombre de visites">
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script>
         const googleScriptURL = "https://script.google.com/macros/s/AKfycbw27X4Mv4lAwcBiAE3pJA1J2fUAUANBs7MvjFouGIGe-0S-1hwqWn9--rBKtaJBPb8/exec";
-
+        
         const customSvgIcons = {
-            "pomme": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 5v-3" stroke="#549e39"/><path d="M12 3.5c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
-            "poire": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.5 0-3 2-3 4s-2 4-2 8a7 7 0 0 0 14 0c0-4-2-6-2-8s-1.5-4-3-4z"/><path d="M12 3v-2" stroke="#549e39"/><path d="M12 2c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
-            "peche": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 5v16M12 5v-2" stroke="#549e39"/><path d="M12 4c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
-            "abricot": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M12 8v12M12 8v-2" stroke="#549e39"/><path d="M12 7c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
-            "prune": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="6" ry="8"/><path d="M12 5v16M12 5v-2" stroke="#549e39"/></svg>`,
-            "cerise": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="4"/><circle cx="17" cy="17" r="4"/><path d="M7 13c0-6 3-8 5-10 2 2 5 4 5 10" stroke="#549e39"/></svg>`,
-            "fraise": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C8 20 5 15 5 11C5 7 8 5 12 5c4 0 7 2 7 6c0 4-3 9-7 11z"/><path d="M12 5v-3m-3 3 1-2m5 2-1-2" stroke="#549e39"/><path d="M12 8.5v.01M9.5 11v.01M14.5 11v.01M7.5 14v.01M12 13.5v.01M16.5 14v.01M10 17v.01M14 17v.01M12 19.5v.01" stroke="#549e39" stroke-width="2"/></svg>`,
-            "framboise": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="2.5"/><circle cx="8" cy="11" r="2.5"/><circle cx="16" cy="11" r="2.5"/><circle cx="10" cy="15" r="2.5"/><circle cx="14" cy="15" r="2.5"/><circle cx="12" cy="19" r="2.5"/><path d="M12 4.5v-2" stroke="#549e39"/></svg>`,
-            "myrtille": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><circle cx="7" cy="15" r="4"/><circle cx="17" cy="15" r="4"/><path d="M11 5.5l1 1 1-1M6 12.5l1 1 1-1M16 12.5l1 1 1-1" stroke="#549e39"/><path d="M12 4c-1-2-3-2-5-1 0 2 2 3 5 1z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
-            "raisin": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/><circle cx="10" cy="16" r="3"/><circle cx="14" cy="16" r="3"/><circle cx="12" cy="20" r="3"/><path d="M12 7v-4m0 0c2 0 3 1 3 2" stroke="#549e39"/></svg>`,
-            "melon": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18m-4.5-1.5c-3-3-3-10 0-15m9 15c3-3 3-10 0-15" stroke="#549e39"/></svg>`,
-            "pasteque": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L21 16A10 10 0 0 1 3 16Z"/><path d="M12 8v2m-3 2v2m6-2v2" stroke="#549e39"/></svg>`,
-            "kiwi": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.5" stroke="#549e39"/><path d="M12 8.5v.01M14.5 9.5v.01M15.5 12v.01M14.5 14.5v.01M12 15.5v.01M9.5 14.5v.01M8.5 12v.01M9.5 9.5v.01" stroke="#549e39" stroke-width="2"/></svg>`,
-            "agrume": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><circle cx="12" cy="13" r="2" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 4c2-1 4 1 2 3c-2 1-4-1-2-3z" fill="#549e39" stroke="#549e39"/><path d="M12 4v8M12 22v-8M19.8 8.5l-6.1 3.5M4.2 17.5l6.1-3.5M19.8 17.5l-6.1-3.5M4.2 8.5l6.1 3.5" stroke="#549e39"/></svg>`,
-            "citron": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5h18a9 9 0 0 1-18 0z"/><path d="M10 7.5a2 2 0 0 0 4 0z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 9.5v7M13 9.2l3.5 6.1M11 9.2l-3.5 6.1" stroke="#549e39"/></svg>`,
-            "compote": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 4 3 8 8 8s8-4 8-8z"/><path d="M6 12c1-3 4-4 6-4s5 1 6 4" stroke="#549e39"/></svg>`,
-            "jus": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="8" width="10" height="14" rx="2"/><path d="M9 8V4h6v4M7 14h10" stroke="#549e39"/></svg>`,
-            "noix": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="7" ry="9"/><path d="M12 3v18"/><path d="M8.5 6c2 1 2 3 0 4 2 1 2 3 0 4 2 1 2 3 0 4M15.5 6c-2 1-2 3 0 4-2 1-2 3 0 4-2 1-2 3 0 4" stroke="#549e39"/></svg>`,
-            "tomate": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.5 0-8-3.5-8-8 0-4 3.5-7.5 8-7.5s8 3.5 8 7.5c0 4.5-3.5 8-8 8z" stroke="#405F59"/><path d="M12 2v4M9 4.5l3 1.5 3-1.5" stroke="#549e39"/><path d="M8.5 9.5c1-1 2.5-1.5 3.5-1.5" stroke="#405F59"/></svg>`,
-            "pdt": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 9C9 3 18 3 21 7C24 11 21 16 17 16C14 16 13 15 11 9Z"/><path d="M4 14C3 8 12 9 17 12C22 15 20 22 14 22C8 22 5 20 4 14Z"/><path d="M14 6v.01M18 9v.01M16 13v.01M8 13v.01M13 15v.01M7 18v.01M15 19v.01" stroke="#549e39" stroke-width="2"/></svg>`,
-            "carotte": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6.5L13.5 20c-.3 1.5-2.7 1.5-3 0L9 6.5c-.5-2 3.5-3 6 0z"/><path d="M12 4v2.5M14 3l-1.5 3.5M10 3l1.5 3.5M10.5 11h3M11 15h2" stroke="#549e39"/></svg>`,
-            "oignon": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.5 0-8-3.5-8-8 0-3 2-6 5-8 1-1 2-2 3-2s2 1 3 2c3 2 5 5 5 8 0 4.5-3.5 8-8 8z"/><path d="M12 21v2M10 21l-1.5 1.5M14 21l1.5 1.5M7 13c1.5 4 4.5 6 9 3M12 3v3" stroke="#549e39"/></svg>`,
-            "ail": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c1.5 1.5 3 2.5 5 4 2 1.5 3 4 3 6 0 4-3.5 6-8 6s-8-2-8-6c0-2 1-4.5 3-6 2-1.5 3.5-2.5 5-4z"/><path d="M12 5v15M8 10c0 3 1 6 4 9M16 10c0 3-1 6-4 9M12 5V2" stroke="#549e39"/></svg>`,
-            "poireau": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13h4v8a2 2 0 0 1-4 0v-8z"/><path d="M10 13V5c-2.5 1-4 4-4 7M12 13V3M14 13V5c2.5 1 4 4 4 7" stroke="#549e39"/></svg>`,
-            "courgette": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 18.5c-2-2-2-5 0-7l7-7c2-2 5-2 7 0 2 2 2 5 0 7l-7 7c-2 2-5 2-7 0z"/><path d="M19.5 4.5l2-2M8.5 15.5l3 3M11.5 12.5l3 3M14.5 9.5l3 3" stroke="#549e39"/></svg>`,
-            "aubergine": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 10.5c1.5 2 2.5 4.5 2.5 7.5 0 4.5-3.5 6-7 6s-7-1.5-7-6c0-3 1-5.5 2.5-7.5C9.5 8 10 5 12 5s2.5 3 4.5 5.5z"/><path d="M12 2v3M9 5h6l-1 4-2-1-2 1-1-4z" stroke="#549e39" fill="#549e39" fill-opacity="0.2"/></svg>`,
-            "poivron": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9c0-3 2-4 4-4 1 0 2 .5 2 2 0-1.5 1-2 2-2 2 0 4 1 4 4v8c0 3-2 4-4 4-1 0-2-.5-2-2 0 1.5-1 2-2 2-2 0-4-1-4-4V9z"/><path d="M12 5V2M12 7v12M8 8v10M16 8v10" stroke="#549e39"/></svg>`,
-            "salade": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-5 0-9-3-9-8 0-3 1.5-5.5 4-7 1.5-4 5-5 9-3s6 4 6 8c0 5-4 10-10 10z"/><path d="M12 22c-3 0-5-2-5-5 0-1.5 1-3 2.5-4 1-2 2.5-3 4.5-3s3.5 1 4.5 3c1.5 1 2.5 2.5 2.5 4 0 3-2 5-5 5" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 18v-5M10 15l2-1M14 15l-2-1" stroke="#549e39"/></svg>`,
-            "epinard": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15c-4 0-8-2.5-8-7 0-3 3-5 8-5s8 2 8 5c0 4.5-4 7-8 7z"/><path d="M12 22v-9M9 10l3-2M15 10l-3-2M10 12l2-1.5M14 12l-2-1.5" stroke="#549e39"/></svg>`,
-            "blette": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12C4 11 3 7 5 4C7 1 17 1 19 4C21 7 20 11 15 12Z" fill="#549e39" fill-opacity="0.2" stroke="#405F59"/><path d="M9 12v10M15 12v10M8 22h8" stroke="#405F59"/><path d="M12 22V4M12 10L8 8M12 8l4-2M12 6L9 4" stroke="#549e39"/></svg>`,
-            "chou": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="8" fill="#549e39" fill-opacity="0.2" stroke="#405F59"/><path d="M6 16c-2 2-3 4-2 6 2 1 6 1 8 1s6 0 8-1c1-2 0-4-2-6" stroke="#405F59"/><path d="M6 8c3 4 9 4 12 0M5 13c3-4 9-4 14 0M8 18l-1 2M16 18l1 2M12 19v3" stroke="#549e39"/></svg>`,
-            "choufleur": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-5 0-7-2-7-5 0-3 2-4 4-4 0-2 2-4 4-4s4 2 4 4c2 0 4 1 4 4 0 3-2 5-7 5z"/><path d="M5 16c-1-3 1-5 4-5M19 16c1-3-1-5-4-5" stroke="#549e39"/><path d="M12 20c-4 0-6-1.5-6-4 0-2 2-3 4-3 0-2 1.5-3 3-3s3 1 3 3c2 0 4 1 4 3 0 2.5-2 4-6 4z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M9 13a2 2 0 0 1 3-1 2 2 0 0 1 3 1" stroke="#549e39"/></svg>`,
-            "brocoli": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22v-6c-1.5 0-2.5-1-2.5-2M14 22v-6c1.5 0 2.5-1 2.5-2"/><path d="M12 16c-4 0-6-1.5-6-4 0-2 1.5-3 3-3 0-2 1.5-3 3-3s3 1 3 3c1.5 0 3 1 3 3 0 2.5-2 4-6 4z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 22v-6M12 14c-1-1.5-1-3 0-4M10 12a1 1 0 0 1 2-1 1 1 0 0 1 2 1" stroke="#549e39"/></svg>`,
-            "radis": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18c-3.5-2.5-5.5-6-5.5-9 0-3.5 2.5-5 5.5-5s5.5 1.5 5.5 5c0 3-2 6.5-5.5 9z"/><path d="M12 18v4M12 4c-1.5-2-2.5-2-2.5 0M12 4c1.5-2 2.5-2 2.5 0" stroke="#549e39"/></svg>`,
-            "navet": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18c-4.5 0-7.5-2.5-7.5-7 0-4 3.5-6 7.5-6s7.5 2 7.5 6c0 4.5-3 7-7.5 7z"/><path d="M12 18v4M4.5 11C7 13 11 13 12 11s5-2 7.5 0" stroke="#549e39"/><path d="M12 5V2M10 5l-1-3M14 5l1-3" stroke="#549e39"/></svg>`,
-            "celeri": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22V10M15 22V10M12 22V6"/><path d="M9 10c-1.5-2-3-1-1 1M15 10c1.5-2 3-1 1 1M12 6c-2-2-4-1-1 1M12 6c2-2 4-1 1 1" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
-            "courge": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="9" ry="7"/><ellipse cx="12" cy="14" rx="4" ry="7" stroke="#549e39"/><path d="M12 7v14M12 7V3c1 0 2.5 1 2.5 2" stroke="#549e39"/></svg>`,
-            "haricot_vert": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19c4 4 11 4 16-1 3-3 3-8 1-11"/><path d="M6 21c5 4 13 3 17-2 3-3 3-9 1-13-1-1-3-1-4 0M4 19l2 2" stroke="#405F59"/><path d="M19 5l3-3" stroke="#549e39"/></svg>`,
-            "petit_pois": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c4.5 2 11.5 0 15.5-6.5M5 20c5.5 3 13 1 17-6.5"/><circle cx="9" cy="16" r="1.5" fill="#549e39" stroke="none"/><circle cx="13" cy="13" r="1.5" fill="#549e39" stroke="none"/><circle cx="16" cy="9" r="1.5" fill="#549e39" stroke="none"/><path d="M19.5 11.5l2-2" stroke="#549e39"/></svg>`,
-            "asperge": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22V8l2-4 2 4v14h-4z"/><path d="M10 12l2-1 2 1M10 16l2-1 2 1M10 20l2-1 2 1M12 4l-3 4h6z" stroke="#549e39" fill="#549e39" fill-opacity="0.2"/></svg>`,
-            "champignon": `<svg viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12c0-4.5 3.5-8 7-8s7 3.5 7 8z"/><path d="M10 12v8c0 1 1 2 2 2s2-1 2-2v-8"/><path d="M12 12v-2M8 12v-1.5M16 12v-1.5" stroke="#549e39"/></svg>`,
-
+            // FRUITS
+            "pomme": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 5v-3" stroke="#549e39"/><path d="M12 3.5c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
+            "poire": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.5 0-3 2-3 4s-2 4-2 8a7 7 0 0 0 14 0c0-4-2-6-2-8s-1.5-4-3-4z"/><path d="M12 3v-2" stroke="#549e39"/><path d="M12 2c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
+            "peche": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 5v16M12 5v-2" stroke="#549e39"/><path d="M12 4c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
+            "abricot": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M12 8v12M12 8v-2" stroke="#549e39"/><path d="M12 7c1-2 3-3 4-2-1 1-3 2-4 2z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
+            "prune": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="6" ry="8"/><path d="M12 5v16M12 5v-2" stroke="#549e39"/></svg>`,
+            "cerise": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="4"/><circle cx="17" cy="17" r="4"/><path d="M7 13c0-6 3-8 5-10 2 2 5 4 5 10" stroke="#549e39"/></svg>`,
+            "fraise": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C8 20 5 15 5 11C5 7 8 5 12 5c4 0 7 2 7 6c0 4-3 9-7 11z"/><path d="M12 5v-3m-3 3 1-2m5 2-1-2" stroke="#549e39"/><path d="M12 8.5v.01M9.5 11v.01M14.5 11v.01M7.5 14v.01M12 13.5v.01M16.5 14v.01M10 17v.01M14 17v.01M12 19.5v.01" stroke="#549e39" stroke-width="2"/></svg>`,
+            "framboise": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="2.5"/><circle cx="8" cy="11" r="2.5"/><circle cx="16" cy="11" r="2.5"/><circle cx="10" cy="15" r="2.5"/><circle cx="14" cy="15" r="2.5"/><circle cx="12" cy="19" r="2.5"/><path d="M12 4.5v-2" stroke="#549e39"/></svg>`,
+            "myrtille": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><circle cx="7" cy="15" r="4"/><circle cx="17" cy="15" r="4"/><path d="M11 5.5l1 1 1-1M6 12.5l1 1 1-1M16 12.5l1 1 1-1" stroke="#549e39"/><path d="M12 4c-1-2-3-2-5-1 0 2 2 3 5 1z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
+            "raisin": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/><circle cx="10" cy="16" r="3"/><circle cx="14" cy="16" r="3"/><circle cx="12" cy="20" r="3"/><path d="M12 7v-4m0 0c2 0 3 1 3 2" stroke="#549e39"/></svg>`,
+            "melon": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18m-4.5-1.5c-3-3-3-10 0-15m9 15c3-3 3-10 0-15" stroke="#549e39"/></svg>`,
+            "pasteque": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L21 16A10 10 0 0 1 3 16Z"/><path d="M12 8v2m-3 2v2m6-2v2" stroke="#549e39"/></svg>`,
+            "kiwi": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.5" stroke="#549e39"/><path d="M12 8.5v.01M14.5 9.5v.01M15.5 12v.01M14.5 14.5v.01M12 15.5v.01M9.5 14.5v.01M8.5 12v.01M9.5 9.5v.01" stroke="#549e39" stroke-width="2"/></svg>`,
+            "agrume": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="9"/><circle cx="12" cy="13" r="2" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 4c2-1 4 1 2 3c-2 1-4-1-2-3z" fill="#549e39" stroke="#549e39"/><path d="M12 4v8M12 22v-8M19.8 8.5l-6.1 3.5M4.2 17.5l6.1-3.5M19.8 17.5l-6.1-3.5M4.2 8.5l6.1 3.5" stroke="#549e39"/></svg>`,
+            "citron": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5h18a9 9 0 0 1-18 0z"/><path d="M10 7.5a2 2 0 0 0 4 0z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 9.5v7M13 9.2l3.5 6.1M11 9.2l-3.5 6.1" stroke="#549e39"/></svg>`,
+            "compote": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0 4 3 8 8 8s8-4 8-8z"/><path d="M6 12c1-3 4-4 6-4s5 1 6 4" stroke="#549e39"/></svg>`,
+            "jus": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="8" width="10" height="14" rx="2"/><path d="M9 8V4h6v4M7 14h10" stroke="#549e39"/></svg>`,
+            "noix": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="7" ry="9"/><path d="M12 3v18"/><path d="M8.5 6c2 1 2 3 0 4 2 1 2 3 0 4 2 1 2 3 0 4M15.5 6c-2 1-2 3 0 4-2 1-2 3 0 4-2 1-2 3 0 4" stroke="#549e39"/></svg>`,
+            // LÉGUMES
+            "tomate": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.5 0-8-3.5-8-8 0-4 3.5-7.5 8-7.5s8 3.5 8 7.5c0 4.5-3.5 8-8 8z" stroke="#405F59"/><path d="M12 2v4M9 4.5l3 1.5 3-1.5" stroke="#549e39"/><path d="M8.5 9.5c1-1 2.5-1.5 3.5-1.5" stroke="#405F59"/></svg>`,
+            "pdt": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 9C9 3 18 3 21 7C24 11 21 16 17 16C14 16 13 15 11 9Z"/><path d="M4 14C3 8 12 9 17 12C22 15 20 22 14 22C8 22 5 20 4 14Z"/><path d="M14 6v.01M18 9v.01M16 13v.01M8 13v.01M13 15v.01M7 18v.01M15 19v.01" stroke="#549e39" stroke-width="2"/></svg>`,
+            "carotte": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6.5L13.5 20c-.3 1.5-2.7 1.5-3 0L9 6.5c-.5-2 3.5-3 6 0z"/><path d="M12 4v2.5M14 3l-1.5 3.5M10 3l1.5 3.5M10.5 11h3M11 15h2" stroke="#549e39"/></svg>`,
+            "oignon": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.5 0-8-3.5-8-8 0-3 2-6 5-8 1-1 2-2 3-2s2 1 3 2c3 2 5 5 5 8 0 4.5-3.5 8-8 8z"/><path d="M12 21v2M10 21l-1.5 1.5M14 21l1.5 1.5M7 13c1.5 4 4.5 6 9 3M12 3v3" stroke="#549e39"/></svg>`,
+            "ail": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c1.5 1.5 3 2.5 5 4 2 1.5 3 4 3 6 0 4-3.5 6-8 6s-8-2-8-6c0-2 1-4.5 3-6 2-1.5 3.5-2.5 5-4z"/><path d="M12 5v15M8 10c0 3 1 6 4 9M16 10c0 3-1 6-4 9M12 5V2" stroke="#549e39"/></svg>`,
+            "poireau": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13h4v8a2 2 0 0 1-4 0v-8z"/><path d="M10 13V5c-2.5 1-4 4-4 7M12 13V3M14 13V5c2.5 1 4 4 4 7" stroke="#549e39"/></svg>`,
+            "courgette": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 18.5c-2-2-2-5 0-7l7-7c2-2 5-2 7 0 2 2 2 5 0 7l-7 7c-2 2-5 2-7 0z"/><path d="M19.5 4.5l2-2M8.5 15.5l3 3M11.5 12.5l3 3M14.5 9.5l3 3" stroke="#549e39"/></svg>`,
+            "aubergine": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 10.5c1.5 2 2.5 4.5 2.5 7.5 0 4.5-3.5 6-7 6s-7-1.5-7-6c0-3 1-5.5 2.5-7.5C9.5 8 10 5 12 5s2.5 3 4.5 5.5z"/><path d="M12 2v3M9 5h6l-1 4-2-1-2 1-1-4z" stroke="#549e39" fill="#549e39" fill-opacity="0.2"/></svg>`,
+            "poivron": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9c0-3 2-4 4-4 1 0 2 .5 2 2 0-1.5 1-2 2-2 2 0 4 1 4 4v8c0 3-2 4-4 4-1 0-2-.5-2-2 0 1.5-1 2-2 2-2 0-4-1-4-4V9z"/><path d="M12 5V2M12 7v12M8 8v10M16 8v10" stroke="#549e39"/></svg>`,
+            "salade": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-5 0-9-3-9-8 0-3 1.5-5.5 4-7 1.5-4 5-5 9-3s6 4 6 8c0 5-4 10-10 10z"/><path d="M12 22c-3 0-5-2-5-5 0-1.5 1-3 2.5-4 1-2 2.5-3 4.5-3s3.5 1 4.5 3c1.5 1 2.5 2.5 2.5 4 0 3-2 5-5 5" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 18v-5M10 15l2-1M14 15l-2-1" stroke="#549e39"/></svg>`,
+            "epinard": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15c-4 0-8-2.5-8-7 0-3 3-5 8-5s8 2 8 5c0 4.5-4 7-8 7z"/><path d="M12 22v-9M9 10l3-2M15 10l-3-2M10 12l2-1.5M14 12l-2-1.5" stroke="#549e39"/></svg>`,
+            "blette": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12C4 11 3 7 5 4C7 1 17 1 19 4C21 7 20 11 15 12Z" fill="#549e39" fill-opacity="0.2" stroke="#405F59"/><path d="M9 12v10M15 12v10M8 22h8" stroke="#405F59"/><path d="M12 22V4M12 10L8 8M12 8l4-2M12 6L9 4" stroke="#549e39"/></svg>`,
+            "chou": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="8" fill="#549e39" fill-opacity="0.2" stroke="#405F59"/><path d="M6 16c-2 2-3 4-2 6 2 1 6 1 8 1s6 0 8-1c1-2 0-4-2-6" stroke="#405F59"/><path d="M6 8c3 4 9 4 12 0M5 13c3-4 9-4 14 0M8 18l-1 2M16 18l1 2M12 19v3" stroke="#549e39"/></svg>`,
+            "choufleur": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-5 0-7-2-7-5 0-3 2-4 4-4 0-2 2-4 4-4s4 2 4 4c2 0 4 1 4 4 0 3-2 5-7 5z"/><path d="M5 16c-1-3 1-5 4-5M19 16c1-3-1-5-4-5" stroke="#549e39"/><path d="M12 20c-4 0-6-1.5-6-4 0-2 2-3 4-3 0-2 1.5-3 3-3s3 1 3 3c2 0 4 1 4 3 0 2.5-2 4-6 4z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M9 13a2 2 0 0 1 3-1 2 2 0 0 1 3 1" stroke="#549e39"/></svg>`,
+            "brocoli": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22v-6c-1.5 0-2.5-1-2.5-2M14 22v-6c1.5 0 2.5-1 2.5-2"/><path d="M12 16c-4 0-6-1.5-6-4 0-2 1.5-3 3-3 0-2 1.5-3 3-3s3 1 3 3c1.5 0 3 1 3 3 0 2.5-2 4-6 4z" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/><path d="M12 22v-6M12 14c-1-1.5-1-3 0-4M10 12a1 1 0 0 1 2-1 1 1 0 0 1 2 1" stroke="#549e39"/></svg>`,
+            "radis": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18c-3.5-2.5-5.5-6-5.5-9 0-3.5 2.5-5 5.5-5s5.5 1.5 5.5 5c0 3-2 6.5-5.5 9z"/><path d="M12 18v4M12 4c-1.5-2-2.5-2-2.5 0M12 4c1.5-2 2.5-2 2.5 0" stroke="#549e39"/></svg>`,
+            "navet": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18c-4.5 0-7.5-2.5-7.5-7 0-4 3.5-6 7.5-6s7.5 2 7.5 6c0 4.5-3 7-7.5 7z"/><path d="M12 18v4M4.5 11C7 13 11 13 12 11s5-2 7.5 0" stroke="#549e39"/><path d="M12 5V2M10 5l-1-3M14 5l1-3" stroke="#549e39"/></svg>`,
+            "celeri": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22V10M15 22V10M12 22V6"/><path d="M9 10c-1.5-2-3-1-1 1M15 10c1.5-2 3-1 1 1M12 6c-2-2-4-1-1 1M12 6c2-2 4-1 1 1" fill="#549e39" fill-opacity="0.2" stroke="#549e39"/></svg>`,
+            "courge": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="9" ry="7"/><ellipse cx="12" cy="14" rx="4" ry="7" stroke="#549e39"/><path d="M12 7v14M12 7V3c1 0 2.5 1 2.5 2" stroke="#549e39"/></svg>`,
+            "haricot_vert": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19c4 4 11 4 16-1 3-3 3-8 1-11"/><path d="M6 21c5 4 13 3 17-2 3-3 3-9 1-13-1-1-3-1-4 0M4 19l2 2" stroke="#405F59"/><path d="M19 5l3-3" stroke="#549e39"/></svg>`,
+            "petit_pois": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c4.5 2 11.5 0 15.5-6.5M5 20c5.5 3 13 1 17-6.5"/><circle cx="9" cy="16" r="1.5" fill="#549e39" stroke="none"/><circle cx="13" cy="13" r="1.5" fill="#549e39" stroke="none"/><circle cx="16" cy="9" r="1.5" fill="#549e39" stroke="none"/><path d="M19.5 11.5l2-2" stroke="#549e39"/></svg>`,
+            "asperge": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22V8l2-4 2 4v14h-4z"/><path d="M10 12l2-1 2 1M10 16l2-1 2 1M10 20l2-1 2 1M12 4l-3 4h6z" stroke="#549e39" fill="#549e39" fill-opacity="0.2"/></svg>`,
+            "champignon": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12c0-4.5 3.5-8 7-8s7 3.5 7 8z"/><path d="M10 12v8c0 1 1 2 2 2s2-1 2-2v-8"/><path d="M12 12v-2M8 12v-1.5M16 12v-1.5" stroke="#549e39"/></svg>`,
             // 🐂 LE BŒUF
-            "bavette": `<svg viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9c3-2 10-2 15 0 2 3 0 7-1 9-5 2-12 1-15-1-2-2-2-6 1-8z"/><path d="M6 11c3 1 8 1 12 0M5 14c4 1 10 1 14 0M7 17c3 1 7 1 10 0" stroke="#D95C5C"/></svg>`,
-            "brochette_boeuf": `<svg viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21L21 3" stroke="#5C2C2C"/><rect x="8" y="10" width="4" height="4" transform="rotate(-45 10 12)" stroke="#5C2C2C"/><rect x="13" y="5" width="4" height="4" transform="rotate(-45 15 7)" stroke="#5C2C2C"/><circle cx="13" cy="13" r="1.5" stroke="#D95C5C"/><circle cx="8" cy="18" r="1.5" stroke="#D95C5C"/></svg>`,
+            "bavette": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9c3-2 10-2 15 0 2 3 0 7-1 9-5 2-12 1-15-1-2-2-2-6 1-8z"/><path d="M6 11c3 1 8 1 12 0M5 14c4 1 10 1 14 0M7 17c3 1 7 1 10 0" stroke="#D95C5C"/></svg>`,
+            "brochette_boeuf": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21L21 3" stroke="#5C2C2C"/><rect x="8" y="10" width="4" height="4" transform="rotate(-45 10 12)" stroke="#5C2C2C"/><rect x="13" y="5" width="4" height="4" transform="rotate(-45 15 7)" stroke="#5C2C2C"/><circle cx="13" cy="13" r="1.5" stroke="#D95C5C"/><circle cx="8" cy="18" r="1.5" stroke="#D95C5C"/></svg>`,
             "daube_boeuf": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16l-4-2v-4l4 2 4-2v4l-4 2z"/><path d="M10 12l-4-2 4-2 4 2-4 2z"/><path d="M18 14l-4-2v-4l4 2 4-2v4l-4 2z"/><path d="M18 10l-4-2 4-2 4 2-4 2z"/><path d="M14 10l-4-2v-4l4 2 4-2v4l-4 2z"/><path d="M14 6l-4-2 4-2 4 2-4 2z"/></svg>`,
             "pot_au_feu": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.5" fill="#D95C5C" stroke="none"/><path d="M12 4c-3 0-5 2-5 4v8c0 2 2 4 5 4s5-2 5-4V8c0-2-2-4-5-4z"/><path d="M7 12h10M12 4v16" stroke="#D95C5C"/></svg>`,
             "roti_boeuf": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="3"/><path d="M8 6v12M12 6v12M16 6v12M4 10h16M4 14h16" stroke="#D95C5C"/></svg>`,
@@ -736,7 +753,6 @@
             "entrecote": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4c4 1 6 5 6 9 0 5-4 8-9 8-6 0-8-5-8-9 0-3 3-7 6-8 2-1 4-1 5 0z"/><path d="M10 11c1-1 3-1 4 1 1 1 1 3-1 4-1 1-3 1-4-1-1-1-1-3 1-4z" fill="#D95C5C" fill-opacity="0.2" stroke="#D95C5C"/></svg>`,
             "burger": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M8 11v.01M12 10v.01M16 11v.01M10 13v.01M14 13v.01M7 14v.01M17 14v.01M12 15v.01" stroke="#D95C5C" stroke-width="2.5"/></svg>`,
             "onglet": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-3 3-5 8-5s8 2 8 5-3 5-8 5-8-2-8-5z"/><path d="M4 12h16" stroke="#D95C5C"/></svg>`,
-
             // 🐄 LE VEAU
             "blanquette": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16c-3 0-5-2-5-5s2-5 5-5 5 2 5 5-2 5-5 5z"/><path d="M15 20c-2.5 0-4-1.5-4-4s1.5-4 4-4 4 1.5 4 4-1.5 4-4 4z"/><path d="M15 10c-2 0-3-1.5-3-3s1-3 3-3 3 1.5 3 3-1 3-3 3z"/></svg>`,
             "cote_veau": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20C5 20 3 16 4 11C5 7 10 6 15 8C18 9 18 15 15 18C13 20 11 20 10 20Z"/><path d="M15 10l5-3c1-1 2 0 1 1l-3 5" stroke="#D95C5C"/></svg>`,
@@ -746,7 +762,6 @@
             "foie_veau": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 8c2 3 2 7 0 10-3 4-7 4-11 2-3-1-5-4-5-7 0-4 4-8 10-6 3 1 5 0 6 1z" fill="#D95C5C" fill-opacity="0.2" stroke="#5C2C2C"/></svg>`,
             "roti_veau": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="14" height="10" rx="3"/><path d="M9 7v10M15 7v10M5 12h14" stroke="#D95C5C"/><path d="M5 9h14M5 15h14" stroke="#D95C5C"/></svg>`,
             "paupiette": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M12 5v14M5 12h14" stroke="#D95C5C"/><path d="M10 5c1-1 3-1 4 0M10 19c1 1 3 1 4 0" stroke="#5C2C2C"/></svg>`,
-
             // 🐖 LE PORC & LA CHARCUTERIE
             "roti_porc": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="7" cy="12" rx="3" ry="5" fill="#D95C5C" fill-opacity="0.2" stroke="#D95C5C"/><path d="M7 7h11a3 3 0 0 1 0 10H7"/><path d="M12 7v10M16 7v10" stroke="#D95C5C"/></svg>`,
             "rouelle": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2" stroke="#5C2C2C"/><circle cx="12" cy="12" r="8" stroke="#D95C5C" stroke-dasharray="2 4"/></svg>`,
@@ -755,7 +770,6 @@
             "travers_porc": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8c0-2 14-2 14 0v8c0 2-14 2-14 0z"/><path d="M7 6v12M12 6v12M17 6v12" stroke="#D95C5C" stroke-width="2"/></svg>`,
             "choucroute": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18c0-4 4-7 9-7s9 3 9 7H3z" stroke-dasharray="2 3"/><path d="M7 11c1-3 5-5 10-3" stroke="#5C2C2C" stroke-width="2"/><rect x="12" y="3" width="6" height="4" rx="1" transform="rotate(-15 15 5)" stroke="#D95C5C"/></svg>`,
             "croque_monsieur_jambon": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19L20 3v16H4z"/><path d="M7 16L17 6M7 18L18 7" stroke="#D95C5C"/></svg>`,
-
             // 🐔 LA VOLAILLE (Poulet, Dinde, Coq)
             "poulet_entier": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 15c0 3-3 5-7 5s-7-2-7-5c0-4 2-6 7-6s7 2 7 6z"/><path d="M5 15c-2 0-3-1-3-3 0-2 2-2 3-2M19 15c2 0 3-1 3-3 0-2-2-2-3-2"/><path d="M10 9C10 5 6 3 5 5C4 7 7 9 8 11M14 9C14 5 18 3 19 5C20 7 17 9 16 11" stroke="#D95C5C"/></svg>`,
             "demi_coquelet": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18c-5 0-9-4-9-9 0-4 3-7 6-8 1 0 2-1 3-1z"/><path d="M12 10c-2 0-3 1-3 3 0 1 1 2 2 2M6 15l-2 3" stroke="#D95C5C"/></svg>`,
@@ -771,7 +785,6 @@
             "couscous_poulet": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c0 4 4 6 8 6s8-2 8-6H4z"/><path d="M5 15c0-4 3-6 7-6s7 2 7 6" stroke="#D95C5C" stroke-dasharray="2 3"/><path d="M12 9l3-5a1 1 0 1 1 2 1l-1 2" stroke="#5C2C2C"/></svg>`,
             "paella_poulet": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15h20M4 15c0 3 3 5 8 5s8-2 8-5"/><circle cx="8" cy="13" r="1.5" fill="#D95C5C" stroke="none"/><circle cx="16" cy="12" r="1.5" fill="#D95C5C" stroke="none"/><path d="M12 15l4-5a1 1 0 1 1 2 1l-2 4" stroke="#5C2C2C"/></svg>`,
             "gigot": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5C2C2C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18C3 15 3 9 7 5s10-2 13 3-1 10-5 13-6 0-9-3z"/><path d="M17 16l4 4a2 2 0 0 1-2 3 2 2 0 0 1-3-2l-1-1" stroke="#549e39"/></svg>`,
-
             // LAITAGES
             "lait_brique": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2A4365" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V8"/><path d="M6 8l3-4h6l3 4z"/><path d="M12 14v.01" stroke="#4299E1" stroke-width="2"/></svg>`,
             "lait_bouteille": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2A4365" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5v3c0 2-2 3-2 6v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-5c0-3-2-4-2-6V5"/><rect x="8" y="3" width="8" height="2" rx="1"/><path d="M7 14h10" stroke="#4299E1"/></svg>`,
@@ -784,13 +797,11 @@
             "buche_chevre": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2A4365" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="12" height="14" rx="2"/><path d="M8 5v14M16 5v14" stroke="#4299E1"/></svg>`,
             "palet_chevre": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2A4365" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="9" rx="6" ry="3"/><path d="M6 9v6c0 2 3 3 6 3s6-1 6-3V9"/><path d="M9 13v.01M12 15v.01" stroke="#4299E1" stroke-width="2"/></svg>`,
             "rape": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2A4365" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16c2-4 6-2 8 0 2 2 4 0 6-3M8 20c2-2 5 0 7-2 2-2 3-5 5-4M16 18c-3 1-5-2-7 0-2 2-4 1-4-2" stroke="#2A4365"/><path d="M4 12c3 2 5-1 7 1 2 2 5 0 7-2M10 7c-2 2-1 5-3 6-2 1-4 3-2 6M15 8c2 3 0 5 2 7 2 2 4 1 5 3" stroke="#4299E1"/></svg>`,
-
             // ŒUFS
             "oeuf": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#926C4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-4 0-6-3-6-8 0-6 4-10 6-10s6 4 6 10c0 5-2 8-6 8z"/><path d="M14 8c-1-1-3-1-4 0" stroke="#F5B041"/></svg>`,
             "boite_oeufs": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#926C4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="8" rx="1"/><path d="M7 8v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><path d="M7 16a2 2 0 0 0 4 0 2 2 0 0 0 4 0" stroke="#F5B041"/></svg>`,
             "bidon_oeuf": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#926C4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="14" rx="2"/><path d="M9 8V5c0-1 1-2 2-2h2c1 0 2 1 2 2v3"/><path d="M12 14v.01" stroke="#F5B041" stroke-width="3"/></svg>`,
             "seau_oeuf": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#926C4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l2 12c0 1 1 2 3 2h4c2 0 3-1 3-2l2-12"/><path d="M4 8h16M7 8c0-3 2-5 5-5s5 2 5 5" stroke="#F5B041"/></svg>`,
-
             // ÉPICERIE ET LÉGUMINEUSES
             "lentilles": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19v.01M8.5 19.5v.01M13 19v.01M17.5 19v.01M6.5 17.5v.01M10.5 17v.01M15 17.5v.01M19 17v.01M4.5 15.5v.01M9 15v.01M12.5 15.5v.01M17 15v.01M7 13.5v.01M11.5 13v.01M15 13.5v.01M9 11.5v.01M13.5 11v.01M11 9.5v.01" stroke="#405F59" stroke-width="2.5"/><path d="M6 19.5v.01M10.5 19v.01M15.5 19.5v.01M20 19v.01M4.5 17.5v.01M8.5 17v.01M13 17v.01M17 17.5v.01M6.5 15.5v.01M11 15.5v.01M14.5 15v.01M19 15.5v.01M5 14v.01M9.5 14v.01M13.5 14.5v.01M16.5 14v.01M8 12.5v.01M12 12v.01M15.5 12.5v.01M10 11v.01M14 11.5v.01M12 9.5v.01M11 8v.01M13 8.5v.01" stroke="#549e39" stroke-width="2.5"/></svg>`,
             "pois_chiche": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="19" r="2"/><circle cx="10" cy="19" r="2"/><circle cx="15" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="4" cy="16" r="2"/><circle cx="8" cy="16" r="2"/><circle cx="13" cy="16" r="2"/><circle cx="17" cy="16" r="2"/><circle cx="7" cy="13" r="2"/><circle cx="11" cy="13" r="2"/><circle cx="16" cy="13" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="14" cy="10" r="2"/><circle cx="12" cy="7" r="2"/><path d="M5.5 18.5v.01M10.5 18.5v.01M15.5 18.5v.01M19.5 18.5v.01M4.5 15.5v.01M8.5 15.5v.01M13.5 15.5v.01M17.5 15.5v.01M7.5 12.5v.01M11.5 12.5v.01M16.5 12.5v.01M10.5 9.5v.01M14.5 9.5v.01M12.5 6.5v.01" stroke="#549e39" stroke-width="2"/></svg>`,
@@ -805,27 +816,24 @@
             "vinaigre": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6l-2-6V3h-6v5l-2 6z"/><path d="M8 16h8" stroke="#549e39"/></svg>`,
             "moutarde": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10"/><path d="M7 10V8c0-1 1-2 2-2h6c1 0 2 1 2 2v2"/><path d="M12 15v.01" stroke="#549e39" stroke-width="2"/></svg>`,
             "sel": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="6" width="10" height="16" rx="2"/><path d="M7 10h10M10 3v3M14 3v3" stroke="#549e39"/></svg>`,
-
             // BOULANGERIE
             "baguette": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l13-13c2-2 4 0 5 1s-1 3-3 5L6 23c-2 2-4 0-5-1s1-3 3-5z"/><path d="M8 12l2 2M12 8l2 2M15 5l2 2" stroke="#549e39"/></svg>`,
             "pain": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M6 12h12" stroke="#549e39"/></svg>`,
             "croissant": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c2-6 8-8 13-3 2 2 3 5 3 8 0 1-1 2-2 2-4 0-6-3-9-4-3-1-5-1-5-3z"/><path d="M7 10c2 1 4 2 8 2" stroke="#549e39"/></svg>`,
-
             // AUTRES / GÉNÉRIQUE
             "conserve": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="12" height="14" rx="2"/><path d="M6 10h12M6 14h12" stroke="#549e39"/></svg>`,
             "bocal": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7v13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V7"/><path d="M6 7h12V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v3z"/><path d="M12 13v.01" stroke="#549e39" stroke-width="2"/></svg>`,
             "surgele": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M5 8h14l-2-4H7L5 8z"/><path d="M12 12v6M9 15h6M10 13l4 4M10 17l4-4" stroke="#549e39"/></svg>`,
             "barquette": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="8" rx="2"/><path d="M5 10V8c0-1 1-2 2-2h10c1 0 2 1 2 2v2" stroke="#549e39"/></svg>`,
-            
-            "dyn_default": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" stroke-dasharray="2 2"/><circle cx="12" cy="12" r="3" stroke="#549e39"/></svg>`
+            "dyn_default": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#405F59" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" stroke="#549e39" stroke-dasharray="2 4"/></svg>`
         };
 
         function getIconHtml(iconName, arg2, arg3) {
             let customClasses = arg3 !== undefined ? arg3 : arg2;
             let lucideFallback = arg3 !== undefined ? arg2 : iconName;
             let actualIconName = iconName;
-
             if (customSvgIcons && customSvgIcons[actualIconName]) {
+                // TAILLES FIXES INJECTÉES : Empêche le SVG de devenir géant en attendant que le CSS de Tailwind charge
                 let sizeStyle = "width: 2rem; height: 2rem;"; 
                 if (customClasses && customClasses.includes('w-6')) sizeStyle = "width: 1.5rem; height: 1.5rem;";
                 else if (customClasses && customClasses.includes('w-8')) sizeStyle = "width: 2rem; height: 2rem;";
@@ -846,7 +854,6 @@
                 let cleanKey = key.replace(/_/g, ' '); 
                 if (val.includes(cleanKey)) return key;
             }
-
             const keywords = {
                 'couscous': 'couscous_poulet', 'paella': 'paella_poulet', 'choucroute': 'choucroute',
                 'croque': 'croque_monsieur_jambon', 'burger': 'burger', 'bavette': 'bavette',
@@ -863,7 +870,6 @@
                 'aubergine': 'aubergine', 'veau': 'escalope_veau', 'agneau': 'gigot',
                 'mouton': 'gigot', 'viande': 'steack'
             };
-
             for (let kw in keywords) {
                 if (val.includes(kw)) return keywords[kw];
             }
@@ -877,10 +883,8 @@
             else if (cat === 'legumes') globalInputName = 'leg_total_kg';
             else if (cat === 'viandes') globalInputName = 'viande_total_kg';
             else return;
-
             const globalInput = document.querySelector(`input[name="${globalInputName}"]`);
             if (!globalInput) return;
-
             const targetVol = parseFloat(globalInput.value) || 0;
             let currentSum = 0;
             
@@ -892,31 +896,30 @@
                     currentSum += parseFloat(inp.value) || 0;
                 }
             };
-
+            
             if (container1) container1.querySelectorAll('input[type="number"]').forEach(processInput);
             if (container2) container2.querySelectorAll('input[type="number"]').forEach(processInput);
-
+            
             const tracker = document.getElementById(`tracker_${cat}`);
             const sumEl = document.getElementById(`sum_${cat}`);
             const targetEl = document.getElementById(`target_${cat}`);
             const msgEl = document.getElementById(`tracker_msg_${cat}`);
             const iconBox = document.getElementById(`tracker_icon_${cat}`);
-
+            
             if(!tracker || !sumEl || !targetEl || !msgEl || !iconBox) return;
-
+            
             if (targetVol > 0 || currentSum > 0) {
                 tracker.classList.remove('hidden');
             } else {
                 tracker.classList.add('hidden');
                 return;
             }
-
+            
             sumEl.textContent = currentSum;
             targetEl.textContent = targetVol;
-
             tracker.className = "mb-6 p-5 rounded-xl shadow-sm transition-all duration-300 border ";
             iconBox.className = "w-12 h-12 rounded-full flex items-center justify-center shrink-0 ";
-
+            
             if (currentSum > targetVol && targetVol > 0) {
                 tracker.classList.add('bg-red-50', 'border-red-200');
                 iconBox.classList.add('bg-red-100', 'text-red-600');
@@ -997,13 +1000,17 @@
                     (displayId ? 'text-red-500' : 'text-sm font-bold px-3 py-1.5 rounded bg-red-100 text-red-700');
             }
         }
+
         function updateGammeTotal(changedInput) { updateGammeTotalBase('leg_gamme', 'gamme_legume_total_display', true, 5, changedInput); }
+        function updateVegGamme(vegId, changedInput) { updateGammeTotalBase(`leg_${vegId}`, `total_${vegId}`, false, 5, changedInput); }
+        function updateDynamicVegGamme(legId, changedInput) { updateGammeTotalBase(`autre_leg_g${changedInput.name.split('_g')[1].split('_')[0]}_${legId}`.replace(/_g\d+/, ''), `total_autre_leg_${legId}`, false, 5, changedInput); } 
         function updateMeatGammeTotal(changedInput) { updateGammeTotalBase('viande_gamme', 'gamme_viande_total_display', true, 5, changedInput); }
+        function updateMeatGamme(meatId, changedInput) { updateGammeTotalBase(`viande_${meatId}`, `total_${meatId}`, false, 5, changedInput); }
+        function updateDynamicMeatGamme(meatId, changedInput) { updateGammeTotalBase(`autre_viande_g${changedInput.name.split('_g')[1].split('_')[0]}_${meatId}`.replace(/_g\d+/, ''), `total_autre_viande_${meatId}`, false, 5, changedInput); }
 
         function toggleProductCard(cardId, btnId) {
             const card = document.getElementById(cardId);
             const btn = document.getElementById(btnId);
-            if(!card) return;
             const isOpening = card.classList.contains('hidden');
             const stepContainer = card.closest('.wizard-step');
             stepContainer.querySelectorAll('[id^="card_"]').forEach(c => c.classList.add('hidden'));
@@ -1031,8 +1038,7 @@
         }
 
         function validerProduit(cardId, btnId, checkId) {
-            const card = document.getElementById(cardId);
-            if(card) card.classList.add('hidden');
+            document.getElementById(cardId).classList.add('hidden');
             const btn = document.getElementById(btnId);
             if(btn) {
                 btn.classList.remove('border-[#549e39]', 'bg-green-50', 'ring-2', 'ring-green-200', 'border-rose-400', 'bg-rose-50', 'ring-rose-200', 'border-blue-400', 'bg-blue-50', 'ring-blue-200', 'border-yellow-400', 'bg-yellow-50', 'ring-yellow-200', 'border-gray-200', 'bg-white');
@@ -1044,10 +1050,8 @@
         
         function supprimerProduit(cardId, btnId) {
             if(confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
-                const card = document.getElementById(cardId);
-                if(card) card.remove();
-                const btn = document.getElementById(btnId);
-                if(btn) btn.remove();
+                document.getElementById(cardId).remove();
+                if(btnId) document.getElementById(btnId).remove();
             }
         }
 
@@ -1057,7 +1061,6 @@
             let headerText = document.getElementById('text_header_' + cId);
             if(btnText) { btnText.textContent = val; btnText.title = val; }
             if(headerText) headerText.textContent = val;
-
             let detectedKey = autoDetectIcon(val);
             let btnIconNode = document.getElementById('icon_btn_' + cId);
             let headerIconNode = document.getElementById('icon_header_' + cId);
@@ -1065,12 +1068,11 @@
             if(btnIconNode) btnIconNode.innerHTML = getIconHtml(detectedKey, 'circle', 'w-8 h-8 text-[#405F59] mb-1');
             if(headerIconNode) headerIconNode.innerHTML = getIconHtml(detectedKey, 'circle', 'w-8 h-8');
             
-            if(window.lucide) lucide.createIcons();
+            lucide.createIcons();
         }
 
         function toggleVisibility(divId, isChecked) {
             const div = document.getElementById(divId);
-            if(!div) return;
             if (isChecked) {
                 div.classList.remove('hidden'); div.style.opacity = 0;
                 setTimeout(() => { div.style.transition = 'opacity 0.3s'; div.style.opacity = 1; }, 10);
@@ -1086,8 +1088,9 @@
             else if(prefix === 'viande') category = 'viandes';
             else if(prefix === 'fruit') category = 'fruits';
             let onInputTracker = category ? `oninput="updateVolumeTracker('${category}')"` : '';
-
-           let h = `<div class="flex justify-between items-start mb-5 border-b pb-3"><div><h4 class="font-oswald text-${theme}-500 text-2xl m-0 flex items-center gap-3">${getIconHtml(item.icon, 'circle', 'w-8 h-8')} ${item.name}</h4>${item.sub ? `<p class="text-sm text-gray-500 mt-1">${item.sub}</p>` : ''}</div><button type="button" onclick="toggleProductCard('card_${item.id}', 'btn_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x" class="w-8 h-8"></i></button></div>`;
+            
+            let h = `<div class="flex justify-between items-start mb-5 border-b pb-3"><div><h4 class="font-oswald text-${theme}-500 text-2xl m-0 flex items-center gap-3">${getIconHtml(item.icon, 'circle', 'w-8 h-8')} ${item.name}</h4>${item.sub ? `<p class="text-sm text-gray-500 mt-1">${item.sub}</p>` : ''}</div><button type="button" onclick="toggleProductCard('card_${item.id}', 'btn_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x" class="w-8 h-8"></i></button></div>`;
+            
             if(gammes) {
                 h += `<div class="flex flex-col md:flex-row gap-6 mb-5"><div class="input-group md:w-1/4 mb-0"><label class="text-base">Volume annuel (kg)</label><input type="number" name="${prefix}_${item.id}_vol" step="50" value="0" placeholder="${item.pl||''}" class="text-lg font-bold text-[#405F59]" ${onInputTracker}></div><div class="input-group md:w-3/4 mb-0"><label class="text-base font-bold text-[#405F59]">Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
                 h += `<div class="input-group border-t border-gray-100 pt-5 mb-0"><div class="flex justify-between items-end mb-3"><label class="text-base font-bold text-[#405F59]">Répartition par gammes</label><span id="total_${item.id}" class="text-sm font-bold px-3 py-1.5 rounded bg-red-100 text-red-700">0%</span></div><div class="w-full h-3 bg-gray-200 rounded-full flex overflow-hidden mb-5">${gammes.map((_,i)=>`<div id="bar_${prefix}_${item.id}_g${i+1}" class="h-full bg-${colors[i]||'gray-400'} transition-all" style="width: 0%;"></div>`).join('')}</div><div class="grid grid-cols-${gammes.length} gap-3">${gammes.map((g,i)=>`<div class="text-center"><label class="text-sm text-gray-800 font-bold mb-1 leading-tight block">${g[0]}</label><p class="text-sm text-gray-600 font-medium leading-tight mb-3 min-h-[36px] flex items-center justify-center px-1">${g[1]}</p><output id="out_${prefix}_${item.id}_g${i+1}" class="block text-base font-bold text-${colors[i]||'gray-500'} mb-2">0%</output><input type="range" name="${prefix}_${item.id}_g${i+1}" value="0" min="0" max="100" step="5" class="mini-slider slider-g${i+1}" oninput="updateGammeTotalBase('${prefix}_${item.id}', 'total_${item.id}', false, ${gammes.length}, this)"></div>`).join('')}</div></div>`;
@@ -1097,7 +1100,7 @@
                 let pMax = item.max !== undefined ? item.max : 10.0;
                 let pLimit = item.limit !== undefined ? item.limit : maxLimit;
                 let pStep = item.step !== undefined ? item.step : 0.1;
-
+                
                 h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5 items-end"><div class="input-group mb-0"><label class="text-base">Volume annuel (${item.unit||''})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl || 'Ex: 100'}" class="text-lg font-bold text-[#405F59]" ${onInputTracker}></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-2"><label class="text-base m-0 font-bold text-[#405F59]">Prix acceptable (€/${(item.unit||'').split(' ')[0]})</label><span class="text-sm font-bold px-3 py-1.5 rounded bg-${theme}-100 text-${theme}-700"><span id="price_min_val_${item.id}">${pMin.toFixed(2)}</span>€ - <span id="price_max_val_${item.id}">${pMax.toFixed(2)}</span>€</span></div><div class="range-slider ${theme} mt-4 mb-2"><div class="progress absolute h-full rounded bg-${theme}-500" id="price_progress_${item.id}" style="left: ${(pMin/pLimit)*100}%; right: ${100-(pMax/pLimit)*100}%;"></div><input type="range" name="prix_min_${item.id}" id="price_min_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMin}" oninput="updatePriceRange('${item.id}', this, true, ${pLimit})"><input type="range" name="prix_max_${item.id}" id="price_max_${item.id}" min="0" max="${pLimit}" step="${pStep}" value="${pMax}" oninput="updatePriceRange('${item.id}', this, false, ${pLimit})"></div><div class="flex justify-between text-xs text-${theme}-700 mt-2"><span>0 €</span><span>${pLimit} €+</span></div></div></div>`;
                 h += `<div class="input-group mt-4 border-t border-gray-100 pt-5"><label class="text-base font-bold text-[#405F59]">Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
             }
@@ -1120,7 +1123,7 @@
             const hsLegu = document.getElementById('head_icon_legumineuse_section'); if(hsLegu) hsLegu.innerHTML = getIconHtml('lentilles', 'circle', 'w-8 h-8');
             const hsMeu = document.getElementById('head_icon_meu_section'); if(hsMeu) hsMeu.innerHTML = getIconHtml('farine', 'circle', 'w-8 h-8');
             const hsBou = document.getElementById('head_icon_bou_section'); if(hsBou) hsBou.innerHTML = getIconHtml('baguette', 'circle', 'w-8 h-8');
-
+            
             const icnPommes = document.getElementById('icon_pommes'); if (icnPommes) icnPommes.outerHTML = getIconHtml('pomme', 'circle', 'w-10 h-10 text-[#405F59] mb-1');
             const icnPoires = document.getElementById('icon_poires'); if (icnPoires) icnPoires.outerHTML = getIconHtml('poire', 'circle', 'w-10 h-10 text-[#405F59] mb-1');
             const hdPommes = document.getElementById('head_pommes'); if (hdPommes) hdPommes.outerHTML = getIconHtml('pomme', 'circle', 'w-8 h-8');
@@ -1131,7 +1134,7 @@
                 const cont = document.getElementById(contId);
                 if(!mosaic || !cont) return;
                 
-                const btnAdd = mosaic.lastElementChild; 
+                const btnAdd = mosaic.lastElementChild;
                 
                 list.forEach(item => {
                     const btn = document.createElement('button');
@@ -1182,7 +1185,13 @@
                 const card = document.createElement('div');
                 card.id = `card_${prefix}_${item.id}`;
                 card.className = "hidden animate-fadeIn bg-white p-6 rounded-3xl border border-gray-100 shadow-sm ring-4 ring-gray-50";
-                card.innerHTML = `<div class="flex justify-between items-start mb-5 border-b pb-3"><div><h4 class="font-oswald text-[#549e39] text-2xl m-0 flex items-center gap-3">${getIconHtml(item.icon, 'circle', 'w-8 h-8')} ${item.name}</h4></div><button type="button" onclick="toggleProductCard('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x" class="w-8 h-8"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5 items-end"><div class="input-group mb-0"><label class="text-base">Volume annuel (${item.unit})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl}" class="text-lg font-bold text-[#405F59]"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-2"><label class="text-base m-0 font-bold text-[#405F59]">Prix acceptable (€/${item.unit.split('/')[0]||item.unit.split(' ')[0]})</label><span class="text-sm font-bold px-3 py-1.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${prefix}_${item.id}">2.00</span>€ - <span id="price_max_val_${prefix}_${item.id}">8.00</span>€</span></div><div class="range-slider mt-4 mb-2"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${prefix}_${item.id}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${prefix}_${item.id}" id="price_min_${prefix}_${item.id}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${prefix}_${item.id}', this, true, 20)"><input type="range" name="prix_max_${prefix}_${item.id}" id="price_max_${prefix}_${item.id}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${prefix}_${item.id}', this, false, 20)"></div><div class="flex justify-between text-xs text-gray-400 mt-2"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-4 border-t border-gray-100 pt-5"><label class="text-base font-bold text-[#405F59]">Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-5 flex justify-end"><button type="button" onclick="validerProduit('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}', 'check_${prefix}_${item.id}')" class="px-6 py-3 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-3 text-base shadow-sm"><i data-lucide="check-circle" class="w-6 h-6"></i> Valider ce produit</button></div>`;
+                
+                let h = `<div class="flex justify-between items-start mb-5 border-b pb-3"><div><h4 class="font-oswald text-[#549e39] text-2xl m-0 flex items-center gap-3">${getIconHtml(item.icon, 'circle', 'w-8 h-8')} ${item.name}</h4></div><button type="button" onclick="toggleProductCard('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x" class="w-8 h-8"></i></button></div>`;
+                h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5 items-end"><div class="input-group mb-0"><label class="text-base">Volume annuel (${item.unit})</label><input type="number" name="${prefix}_${item.id}_vol" step="10" value="0" placeholder="${item.pl}" class="text-lg font-bold text-[#405F59]"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-2"><label class="text-base m-0 font-bold text-[#405F59]">Prix acceptable (€/${item.unit.split('/')[0]||item.unit.split(' ')[0]})</label><span class="text-sm font-bold px-3 py-1.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${prefix}_${item.id}">2.00</span>€ - <span id="price_max_val_${prefix}_${item.id}">8.00</span>€</span></div><div class="range-slider mt-4 mb-2"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${prefix}_${item.id}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${prefix}_${item.id}" id="price_min_${prefix}_${item.id}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${prefix}_${item.id}', this, true, 20)"><input type="range" name="prix_max_${prefix}_${item.id}" id="price_max_${prefix}_${item.id}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${prefix}_${item.id}', this, false, 20)"></div><div class="flex justify-between text-xs text-gray-400 mt-2"><span>0 €</span><span>20 €+</span></div></div></div>`;
+                h += `<div class="input-group mt-4 border-t border-gray-100 pt-5"><label class="text-base font-bold text-[#405F59]">Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_bio" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_egalim" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_conv" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${item.id}_int_deja" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div>`;
+                h += `<div class="mt-6 border-t border-gray-100 pt-5 flex justify-end"><button type="button" onclick="validerProduit('card_${prefix}_${item.id}', 'btn_${prefix}_${item.id}', 'check_${prefix}_${item.id}')" class="px-6 py-3 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-3 text-base shadow-sm"><i data-lucide="check-circle" class="w-6 h-6"></i> Valider ce produit</button></div>`;
+                
+                card.innerHTML = h;
                 container.appendChild(card);
             });
         }
@@ -1200,8 +1209,10 @@
                 'chevre': 'dynamic-chevre-container',
                 'oeuf': 'dynamic-oeuf-container'
             };
+            
             const containerId = containerIdMap[type] || `dynamic-${type}-container`;
             const mosaicId = `mosaic-${type==='viande'?'viandes':type==='leg'?'legumes':type==='fruit'?'fruits':type}`;
+            
             const mosaic = document.getElementById(mosaicId);
             const container = document.getElementById(containerId);
             const btnAdd = mosaic.lastElementChild;
@@ -1213,7 +1224,7 @@
             tileBtn.innerHTML = `<div id="check_${cId}" class="hidden absolute -top-3 -right-3 bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md"><i data-lucide="check" class="w-5 h-5"></i></div><span id="icon_btn_${cId}">${getIconHtml('dyn_default', 'circle', 'w-10 h-10 text-[#405F59] mb-1')}</span><span id="text_btn_${cId}" class="font-bold text-sm text-center w-full truncate px-1" title="Nouveau produit">Nouveau produit</span>`;
             
             mosaic.insertBefore(tileBtn, btnAdd); 
-
+            
             const card = document.createElement('div');
             card.id = `card_${cId}`;
             card.className = `hidden animate-fadeIn bg-white p-6 rounded-3xl border border-gray-100 shadow-sm ring-4 ring-gray-50`;
@@ -1222,10 +1233,13 @@
             if(type === 'leg') category = 'legumes';
             else if(type === 'viande') category = 'viandes';
             else if(type === 'fruit') category = 'fruits';
+            
             let onInputTracker = category ? `oninput="updateProductName(this, '${cId}'); updateVolumeTracker('${category}')"` : `oninput="updateProductName(this, '${cId}')"`;
-
+            
             let h = `<div class="flex justify-between items-start mb-5 border-b pb-3"><div><h4 class="font-oswald text-${theme}-500 text-2xl m-0 flex items-center gap-3"><span id="icon_header_${cId}">${getIconHtml('dyn_default', 'circle', 'w-8 h-8')}</span> <span id="text_header_${cId}">Nouveau produit</span></h4></div><button type="button" onclick="toggleProductCard('card_${cId}', 'btn_${cId}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x" class="w-8 h-8"></i></button></div>`;
+            
             h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5 items-end"><div class="input-group mb-0"><label class="text-base">Nom du produit</label><input type="text" name="${cId}_nom" placeholder="${placeholder}" class="mb-5 text-lg" oninput="updateProductName(this, '${cId}')" required><label class="text-base">Volume annuel (${unit})</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0" class="text-lg font-bold text-[#405F59]" ${category ? `oninput="updateVolumeTracker('${category}')"` : ''}></div>`;
+            
             if(gammes) {
                 h += `<div class="input-group md:w-full mb-0"><label class="text-base font-bold text-[#405F59]">Si une offre locale existait, seriez-vous intéressé·e par :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_local" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Local</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_egalim" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_conv" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_deja" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Nous sommes déjà en local</span></label></div></div></div>`;
                 h += `<div class="input-group border-t border-gray-100 pt-5 mb-0"><div class="flex justify-between items-end mb-3"><label class="text-base font-bold text-[#405F59]">Répartition par gammes</label><span id="total_${cId}" class="text-sm font-bold px-3 py-1.5 rounded bg-red-100 text-red-700">0%</span></div><div class="w-full h-3 bg-gray-200 rounded-full flex overflow-hidden mb-5">${gammes.map((_,i)=>`<div id="bar_${prefix}_${cId}_g${i+1}" class="h-full bg-${colors[i]||'gray-400'} transition-all" style="width: 0%;"></div>`).join('')}</div><div class="grid grid-cols-${gammes.length} gap-3">${gammes.map((g,i)=>`<div class="text-center"><label class="text-sm text-gray-800 font-bold mb-1 leading-tight block">${g[0]}</label><p class="text-sm text-gray-600 font-medium leading-tight mb-3 min-h-[36px] flex items-center justify-center px-1">${g[1]}</p><output id="out_${prefix}_${cId}_g${i+1}" class="block text-base font-bold text-${colors[i]||'gray-500'} mb-2">0%</output><input type="range" name="${prefix}_${cId}_g${i+1}" value="0" min="0" max="100" step="5" class="mini-slider slider-g${i+1}" oninput="updateGammeTotalBase('${prefix}_${cId}', 'total_${cId}', false, ${gammes.length}, this)"></div>`).join('')}</div></div>`;
@@ -1238,10 +1252,13 @@
                 h += `<div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-2"><label class="text-base m-0 font-bold text-[#405F59]">Prix acceptable (€/${unit.split(' ')[0]})</label><span class="text-sm font-bold px-3 py-1.5 rounded bg-${theme}-100 text-${theme}-700"><span id="price_min_val_${cId}">${pMin.toFixed(2)}</span>€ - <span id="price_max_val_${cId}">${pMax.toFixed(2)}</span>€</span></div><div class="range-slider ${theme} mt-4 mb-2"><div class="progress absolute h-full rounded bg-${theme}-500" id="price_progress_${cId}" style="left: ${(pMin/pLimit)*100}%; right: ${100-(pMax/pLimit)*100}%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="${pLimit}" step="${pStep}" value="${pMin}" oninput="updatePriceRange('${cId}', this, true, ${pLimit})"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="${pLimit}" step="${pStep}" value="${pMax}" oninput="updatePriceRange('${cId}', this, false, ${pLimit})"></div><div class="flex justify-between text-xs text-${theme}-700 mt-2"><span>0 €</span><span>${pLimit} €+</span></div></div></div>`;
                 h += `<div class="input-group mt-4 border-t border-gray-100 pt-5"><label class="text-base font-bold text-[#405F59]">Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_egalim" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_conv" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_deja" value="Oui" class="w-5 h-5 text-${theme}-500 rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Déjà en local</span></label></div></div>`;
             }
+            
             h += `<div class="mt-6 border-t border-gray-100 pt-5 flex justify-between"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-5 py-3 text-red-500 hover:bg-red-50 rounded-xl text-base flex items-center gap-3"><i data-lucide="trash-2" class="w-5 h-5"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-6 py-3 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-xl font-bold hover:bg-emerald-600 hover:text-white flex items-center gap-3 text-base shadow-sm"><i data-lucide="check-circle" class="w-6 h-6"></i> Valider ce produit</button></div>`;
             card.innerHTML = h;
             container.appendChild(card);
-            lucide.createIcons(); toggleProductCard(`card_${cId}`, `btn_${cId}`);
+            
+            lucide.createIcons(); 
+            toggleProductCard(`card_${cId}`, `btn_${cId}`);
             setTimeout(() => { const inp = card.querySelector('input[type="text"]'); if(inp) inp.focus(); }, 50);
         }
 
@@ -1257,6 +1274,7 @@
             const cId = `${prefix}_dyn_${dynamicEpiCounter++}`;
             const mosaic = document.getElementById(mosaicId);
             const container = document.getElementById(containerId);
+            
             const btnAdd = mosaic.lastElementChild;
             const tileBtn = document.createElement('button');
             tileBtn.type = 'button'; tileBtn.id = `btn_${cId}`;
@@ -1271,10 +1289,16 @@
             card.className = "hidden animate-fadeIn bg-white p-6 rounded-3xl border border-gray-100 shadow-sm ring-4 ring-gray-50";
             
             let h = `<div class="flex justify-between items-start mb-5 border-b pb-3"><div><h4 class="font-oswald text-[#549e39] text-2xl m-0 flex items-center gap-3">${getIconHtml('dyn_default', 'circle', 'w-8 h-8')} <span id="text_header_${cId}">Nouveau produit</span></h4></div><button type="button" onclick="toggleProductCard('card_${cId}', 'btn_${cId}')" class="text-gray-400 hover:text-red-500 mt-1"><i data-lucide="x" class="w-8 h-8"></i></button></div>`;
-            h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5 items-end"><div class="input-group mb-0"><label class="text-base">Nom du produit</label><input type="text" name="${cId}_nom" placeholder="Ex: ${label}..." class="mb-5 text-lg" oninput="updateProductName(this, '${cId}')" required><label class="text-base">Volume annuel</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0" class="text-lg font-bold text-[#405F59]"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-2"><label class="text-base m-0 font-bold text-[#405F59]">Prix acceptable (€/unité)</label><span class="text-sm font-bold px-3 py-1.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${cId}">2.00</span>€ - <span id="price_max_val_${cId}">8.00</span>€</span></div><div class="range-slider mt-4 mb-2"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${cId}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${cId}', this, true, 20)"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${cId}', this, false, 20)"></div><div class="flex justify-between text-xs text-gray-400 mt-2"><span>0 €</span><span>20 €+</span></div></div></div><div class="input-group mt-4 border-t border-gray-100 pt-5"><label class="text-base font-bold text-[#405F59]">Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_egalim" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_conv" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_deja" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Déjà en local</span></label></div></div><div class="mt-6 border-t border-gray-100 pt-5 flex justify-between"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
+            
+            h += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5 items-end"><div class="input-group mb-0"><label class="text-base">Nom du produit</label><input type="text" name="${cId}_nom" placeholder="Ex: ${label}..." class="mb-5 text-lg" oninput="updateProductName(this, '${cId}')" required><label class="text-base">Volume annuel</label><input type="number" name="${prefix}_${cId}_vol" step="10" value="0" class="text-lg font-bold text-[#405F59]"></div><div class="input-group mb-0 w-full"><div class="flex justify-between items-end mb-2"><label class="text-base m-0 font-bold text-[#405F59]">Prix acceptable (€/unité)</label><span class="text-sm font-bold px-3 py-1.5 rounded bg-emerald-100 text-emerald-700"><span id="price_min_val_${cId}">2.00</span>€ - <span id="price_max_val_${cId}">8.00</span>€</span></div><div class="range-slider mt-4 mb-2"><div class="progress absolute h-full rounded bg-[#549e39]" id="price_progress_${cId}" style="left: 10%; right: 60%;"></div><input type="range" name="prix_min_${cId}" id="price_min_${cId}" min="0" max="20" step="0.5" value="2.0" oninput="updatePriceRange('${cId}', this, true, 20)"><input type="range" name="prix_max_${cId}" id="price_max_${cId}" min="0" max="20" step="0.5" value="8.0" oninput="updatePriceRange('${cId}', this, false, 20)"></div><div class="flex justify-between text-xs text-gray-400 mt-2"><span>0 €</span><span>20 €+</span></div></div></div>`;
+            h += `<div class="input-group mt-4 border-t border-gray-100 pt-5"><label class="text-base font-bold text-[#405F59]">Si offre locale existait, intérêt pour :</label><div class="flex flex-wrap gap-4 mt-2 bg-gray-50 p-4 border border-gray-200 rounded-lg"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${prefix}_${cId}_int_bio" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Bio</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_egalim" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Autre EGAlim</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_conv" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Conventionnel</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="${cId}_int_deja" value="Oui" class="w-5 h-5 text-[#549e39] rounded"> <span class="ml-2 text-sm font-bold text-gray-700">Déjà en local</span></label></div></div>`;
+            h += `<div class="mt-6 border-t border-gray-100 pt-5 flex justify-between"><button type="button" onclick="supprimerProduit('card_${cId}', 'btn_${cId}')" class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Supprimer</button><button type="button" onclick="validerProduit('card_${cId}', 'btn_${cId}', 'check_${cId}')" class="px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-600 rounded-lg font-bold hover:bg-emerald-600 hover:text-white flex items-center gap-2 text-sm shadow-sm"><i data-lucide="check-circle" class="w-5 h-5"></i> Valider ce produit</button></div>`;
+            
             card.innerHTML = h;
             container.appendChild(card);
-            lucide.createIcons(); toggleProductCard(`card_${cId}`, `btn_${cId}`);
+            
+            lucide.createIcons(); 
+            toggleProductCard(`card_${cId}`, `btn_${cId}`);
             setTimeout(() => { const inp = card.querySelector('input[type="text"]'); if(inp) inp.focus(); }, 50);
         }
 
@@ -1292,20 +1316,20 @@
             
             const progress = ((n + 1) / steps.length) * 100;
             progressBar.style.width = `${progress}%`;
-
+            
             Array.from(indicators).forEach((ind, index) => {
                 if (index === n) ind.className = "text-[#549e39] font-bold";
                 else if (index < n) ind.className = "text-[#405F59]";
                 else ind.className = "text-gray-400";
             });
-
+            
             document.getElementById("prevBtn").style.display = (n === 0) ? "none" : "block";
             
             if (n === (steps.length - 1)) {
                 document.getElementById("nextBtn").style.display = "none";
                 document.getElementById("submitBtn").style.display = "flex";
             } else {
-                document.getElementById("nextBtn").style.display = "block";
+                document.getElementById("nextBtn").style.display = "flex"; // C'est ici ! Remplacé "block" par "flex"
                 document.getElementById("submitBtn").style.display = "none";
             }
         }
@@ -1329,15 +1353,18 @@
             document.getElementById("prevBtn").style.display = "none";
             document.getElementById("submitBtn").style.display = "none";
             document.getElementById("loading").style.display = "block";
-
+            
             const form = document.getElementById("filiereForm");
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
-
+            
             fetch(googleScriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    // Modification CRITIQUE ici : text/plain évite le preflight CORS (OPTIONS) sur Github Pages
+                    'Content-Type': 'text/plain;charset=utf-8' 
+                },
                 body: JSON.stringify(data)
             }).then(() => {
                 document.getElementById("loading").style.display = "none";

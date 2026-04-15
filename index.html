@@ -112,33 +112,32 @@
             </div>
         </div>
 
-       <!-- Navigation principale -->
+      <!-- Navigation principale -->
         <div class="border-t border-gray-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <nav class="flex flex-wrap items-center justify-between pt-4 pb-2 gap-y-4">
+            <!-- Modification ici : max-w-7xl au lieu de max-w-4xl pour donner toute la place -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <nav class="flex flex-wrap lg:flex-nowrap items-center justify-between pt-4 pb-2 gap-y-4">
                     
                     <!-- Groupe des onglets (à gauche) -->
-                    <div class="flex items-center space-x-8">
-                        <button onclick="switchTab('enquete')" id="tab-enquete" class="nav-tab active text-lg flex items-center gap-2">
+                    <div class="flex items-center space-x-4 lg:space-x-8 overflow-x-auto pb-2 lg:pb-0">
+                        <button onclick="switchTab('enquete')" id="tab-enquete" class="nav-tab active text-base lg:text-lg flex items-center gap-2 whitespace-nowrap">
                             <i class="ph ph-clipboard-text text-xl"></i> L'Enquête Flash
                         </button>
-                        <button onclick="switchTab('vitrine')" id="tab-vitrine" class="nav-tab text-lg flex items-center gap-2">
+                        <button onclick="switchTab('vitrine')" id="tab-vitrine" class="nav-tab text-base lg:text-lg flex items-center gap-2 whitespace-nowrap">
                             <i class="ph ph-book-open text-xl"></i> Le Carnet d'initiatives
                         </button>
-                        <!-- Espace pro réactivé -->
-                        <button onclick="switchTab('pro')" id="tab-pro" class="nav-tab text-lg flex items-center gap-2">
+                        <button onclick="switchTab('pro')" id="tab-pro" class="nav-tab text-base lg:text-lg flex items-center gap-2 whitespace-nowrap">
                             <i class="ph ph-users text-xl"></i> Espace Pro
                         </button>
                     </div>
 
                     <!-- Séparateur et Bouton (à droite) -->
                     <div class="flex items-center gap-4 ml-auto">
-                        <!-- Petite barre latérale de séparation (masquée sur mobile pour gagner de la place) -->
-                        <div class="hidden md:block w-px h-8 bg-gray-300"></div>
+                        <!-- Petite barre latérale de séparation -->
+                        <div class="hidden lg:block w-px h-8 bg-gray-300"></div>
                         
-                        <!-- Bouton transparent qui fonce au survol -->
-                        <a href="https://pierrealainmory-hue.github.io/reseau-cantines-pilat/formulaire-filieres.html" target="_blank" class="group flex items-center gap-2 bg-dixDark/5 border border-dixDark/20 text-dixDark px-5 py-2 rounded-lg font-oswald text-sm hover:bg-dixDark hover:text-white hover:border-dixDark transition-all shadow-sm">
-                            <!-- L'icône est vert clair par défaut, et devient blanche au survol -->
+                        <!-- Bouton avec whitespace-nowrap pour empêcher le texte de passer à la ligne -->
+                        <a href="https://pierrealainmory-hue.github.io/reseau-cantines-pilat/formulaire-filieres.html" target="_blank" class="group flex items-center gap-2 bg-dixDark/5 border border-dixDark/20 text-dixDark px-5 py-2 rounded-lg font-oswald text-sm hover:bg-dixDark hover:text-white hover:border-dixDark transition-all shadow-sm whitespace-nowrap">
                             <i class="ph ph-chart-pie-slice text-lg text-dixLight group-hover:text-white transition-colors"></i>
                             Partager ses volumes d'achats
                         </a>

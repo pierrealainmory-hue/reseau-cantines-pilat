@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartographie des Producteur·rice·s - CCMP</title>
+    
+    <!-- Tailwind CSS pour la charte DIX -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500&family=Georgia&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Leaflet CSS & JS pour la carte interactive -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dixDark: '#405F59', 
+                        dixLight: '#549e39', 
+                        dixBg: '#f3f3f3',
+                        filiereLait: '#3b82f6', // Bleu
+                        filiereViande: '#f43f5e', // Rose
+                        filiereEpi: '#eab308', // Jaune
+                        filiereMar: '#10b981', // Vert
+                        nonInteresse: '#9ca3af' // Gris
+                    },
+                    fontFamily: {
+                        oswald: ['Oswald', 'sans-serif'],
+                        georgia: ['Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Georgia', serif; background-color: #f3f3f3; color: #405F59; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
+        h1, h2, h3, .font-oswald { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+        #map { flex-grow: 1; width: 100%; z-index: 1; border-radius: 0.5rem; border: 2px solid #e5e7eb; }
+        
+        .leaflet-popup-content-wrapper { border-radius: 0.5rem; padding: 0; overflow: hidden; }
+        .leaflet-popup-content { margin: 0; }
+        .popup-header { background-color: #405F59; color: white; padding: 10px 15px; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 14px; }
+        .popup-body { padding: 15px; font-size: 13px; }
+        
+        /* Légende personnalisée */
+        .legend-container { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; font-family: 'Georgia', serif; font-size: 12px;}
+        .legend-item { display: flex; items-center; gap: 8px; margin-bottom: 5px; }
+        .legend-color { width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 2px rgba(0,0,0,0.3);}
+        
+        /* Style pour les repères groupés (Pie chart SVG) */
+        .pie-marker { background: transparent; border: none; }
+        .pie-marker svg { drop-shadow: 0px 2px 4px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <!-- En-tête DIX Autrement -->
+    <header class="bg-white shadow-md border-b-4 border-dixLight z-10 relative">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="bg-green-50 p-3 rounded-full text-dixLight">
+                    <i class="fa-solid fa-map-location-dot text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl text-dixDark leading-none mb-1">Ancrage Territorial de l'Offre</h1>
+                    <p class="text-sm text-gray-500 italic">Répartition des 27 producteur·rice·s par filière et niveau d'intérêt</p>
+                </div>
+            </div>
+            <div class="hidden md:flex flex-col text-right">
+                <span class="font-oswald text-dixLight text-lg">DIX Autrement</span>
+                <span class="text-xs text-gray-400 uppercase tracking-widest">Restauration Collective CCMP</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="flex-grow flex flex-col md:flex-row max-w-7xl mx-auto w-full p-4 gap-6 overflow-hidden">
+        
+        <!-- Panneau latéral d'analyse -->
+        <aside class="w-full md:w-1/3 flex flex-col gap-6 overflow-y-auto pr-2 pb-4">
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h2 class="text-xl text-dixDark mb-4 border-b-2 border-dixLight pb-2 inline-block">Lecture de la Carte</h2>
+                <p class="text-sm text-gray-600 mb-4">
+                    Chaque point représente une exploitation. <br>
+                    <strong>La couleur</strong> indique la filière principale. <br>
+                    <strong>Les points gris</strong> désignent les acteur·rice·s qui ne souhaitent pas s'engager pour le moment (barrières réglementaires, volume, etc.).
+                </p>
+                
+                <!-- Légende intégrée -->
+                <div class="grid grid-cols-2 gap-2 text-sm mt-4">
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-blue-500"></div><span>Lait / Fromage</span></div>
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-rose-500"></div><span>Viande</span></div>
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-emerald-500"></div><span>Maraîchage</span></div>
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-yellow-500"></div><span>Épicerie / Boul.</span></div>
+                    <div class="flex items-center gap-2 col-span-2 pt-2 border-t border-gray-100"><div class="w-4 h-4 rounded-full bg-gray-400"></div><span class="italic text-gray-500">Non intéressé(e) actuellement</span></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex-grow">
+                <h2 class="text-xl text-dixDark mb-4 flex items-center justify-between">
+                    <span>Répartition par Pôle</span>
+                    <span class="bg-dixLight text-white px-3 py-1 rounded-full text-sm font-oswald">N = 27</span>
+                </h2>
+                
+                <ul class="space-y-3" id="ranking-list">
+                    <!-- Généré par JS -->
+                </ul>
+            </div>
+
+        </aside>
+
+        <!-- Conteneur de la Carte -->
+        <section class="w-full md:w-2/3 h-[50vh] md:h-full relative flex flex-col">
+            <div id="map" class="shadow-md"></div>
+        </section>
+
+    </main>
+
+    <script>
+        // 1. Les données extraites du CSV (Détaillées par producteur pour le clustering)
+        // Filières : 'lait', 'viande', 'mar', 'epi'
+        const producteursData = [
+            // Saint-Genest-Malifaux (10)
+            { nom: "Earl des épinettes", commune: "Saint-Genest-Malifaux", filiere: "viande", interesse: true, lat: 45.3403, lng: 4.4189 },
+            { nom: "ei courbon stephane", commune: "Saint-Genest-Malifaux", filiere: "viande", interesse: true, lat: 45.3410, lng: 4.4200 },
+            { nom: "LA FERME MARGOT", commune: "Saint-Genest-Malifaux", filiere: "viande", interesse: true, lat: 45.3390, lng: 4.4150 },
+            { nom: "gaec de montravel", commune: "Saint-Genest-Malifaux", filiere: "lait", interesse: false, lat: 45.3420, lng: 4.4170 },
+            { nom: "EPLEFPA CAMPUS AGRONOVA", commune: "Saint-Genest-Malifaux", filiere: "viande", interesse: true, lat: 45.3430, lng: 4.4120 },
+            { nom: "Ferme de bel air", commune: "Saint-Genest-Malifaux", filiere: "lait", interesse: false, lat: 45.3380, lng: 4.4220 },
+            { nom: "EARL FERME ODOUARD", commune: "Saint-Genest-Malifaux", filiere: "viande", interesse: true, lat: 45.3450, lng: 4.4100 },
+            { nom: "EARL du perusel", commune: "Saint-Genest-Malifaux", filiere: "viande", interesse: true, lat: 45.3370, lng: 4.4250 },
+            { nom: "Patrick Angenieux", commune: "Saint-Genest-Malifaux", filiere: "epi", interesse: true, lat: 45.3440, lng: 4.4190 },
+            { nom: "GIRERD CLAUDE", commune: "Saint-Genest-Malifaux", filiere: "viande", interesse: false, lat: 45.3415, lng: 4.4160 },
+            
+            // Saint-Sauveur-en-Rue (4)
+            { nom: "gaec la ferme de taillard", commune: "Saint-Sauveur-en-Rue", filiere: "viande", interesse: true, lat: 45.2711, lng: 4.4950 },
+            { nom: "Gaec des Chaletous", commune: "Saint-Sauveur-en-Rue", filiere: "viande", interesse: false, lat: 45.2730, lng: 4.4920 },
+            { nom: "ROUX Aurélien", commune: "Saint-Sauveur-en-Rue", filiere: "lait", interesse: true, lat: 45.2690, lng: 4.4980 },
+            { nom: "La miellerie du pilat", commune: "Saint-Sauveur-en-Rue", filiere: "epi", interesse: true, lat: 45.2720, lng: 4.4960 },
+
+            // Burdignes (4)
+            { nom: "Les 4 fermes", commune: "Burdignes", filiere: "lait", interesse: true, lat: 45.2719, lng: 4.5614 },
+            { nom: "Ferme du chant des cloches", commune: "Burdignes", filiere: "lait", interesse: true, lat: 45.2740, lng: 4.5590 },
+            { nom: "EARL LA FERME DES AYGUEES", commune: "Burdignes", filiere: "lait", interesse: true, lat: 45.2700, lng: 4.5640 },
+            { nom: "gaec de la source", commune: "Burdignes", filiere: "lait", interesse: true, lat: 45.2730, lng: 4.5620 },
+
+            // La Versanne (2)
+            { nom: "les délices de l'ouvrière", commune: "La Versanne", filiere: "epi", interesse: true, lat: 45.3183, lng: 4.5322 },
+            { nom: "la ferme des pommeaux blancs", commune: "La Versanne", filiere: "lait", interesse: true, lat: 45.3200, lng: 4.5300 },
+
+            // St-Julien-Molin-Molette (2)
+            { nom: "Semeur de pains", commune: "St-Julien-Molin-Molette", filiere: "epi", interesse: true, lat: 45.3211, lng: 4.6186 },
+            { nom: "EARL Rivoire et cagette", commune: "St-Julien-Molin-Molette", filiere: "mar", interesse: true, lat: 45.3230, lng: 4.6160 },
+
+            // St-Romain-les-Atheux (2)
+            { nom: "EARL DU PRE CHAMANT", commune: "St-Romain-les-Atheux", filiere: "viande", interesse: false, lat: 45.3619, lng: 4.3758 },
+            { nom: "Verot", commune: "St-Romain-les-Atheux", filiere: "lait", interesse: true, lat: 45.3640, lng: 4.3730 },
+
+            // Colombier (1)
+            { nom: "gaec du vernollon", commune: "Colombier", filiere: "lait", interesse: false, lat: 45.3347, lng: 4.6008 },
+
+            // Planfoy (1)
+            { nom: "GAEC Bonnet", commune: "Planfoy", filiere: "lait", interesse: true, lat: 45.3831, lng: 4.4503 },
+
+            // Jonzieux (1)
+            { nom: "FOURNEL CULTIVERT", commune: "Jonzieux", filiere: "mar", interesse: true, lat: 45.3139, lng: 4.3622 }
+        ];
+
+        // 2. Palette de couleurs
+        const colors = {
+            'lait': '#3b82f6', // Bleu
+            'viande': '#f43f5e', // Rose
+            'mar': '#10b981', // Vert
+            'epi': '#eab308', // Jaune
+            'non_interesse': '#9ca3af' // Gris
+        };
+
+        const icons = {
+            'lait': 'fa-cheese',
+            'viande': 'fa-drumstick-bite',
+            'mar': 'fa-carrot',
+            'epi': 'fa-jar-wheat'
+        }
+        
+        const filiereNoms = {
+            'lait': 'Lait / Fromages',
+            'viande': 'Élevage / Viande',
+            'mar': 'Maraîchage',
+            'epi': 'Épicerie / Boulangerie'
+        }
+
+        // 3. Initialisation de la carte
+        const map = L.map('map').setView([45.32, 4.48], 11);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // 4. Agrégation des données par commune pour la liste latérale
+        const communesAgregees = {};
+        
+        producteursData.forEach(prod => {
+            if(!communesAgregees[prod.commune]) {
+                communesAgregees[prod.commune] = { nom: prod.commune, total: 0, interesses: 0, filieres: {} };
+            }
+            communesAgregees[prod.commune].total++;
+            if (prod.interesse) communesAgregees[prod.commune].interesses++;
+            
+            let colorKey = prod.interesse ? prod.filiere : 'non_interesse';
+            if(!communesAgregees[prod.commune].filieres[colorKey]) communesAgregees[prod.commune].filieres[colorKey] = 0;
+            communesAgregees[prod.commune].filieres[colorKey]++;
+        });
+
+        // 5. Ajout des marqueurs individuels sur la carte
+        // J'ajoute un léger décalage (jitter) pour que les points d'une même commune ne se superposent pas complètement
+        producteursData.forEach(prod => {
+            // Jitter calculé : +/- 0.005 degrés
+            let jitterLat = (Math.random() - 0.5) * 0.01;
+            let jitterLng = (Math.random() - 0.5) * 0.01;
+            
+            // S'il n'y a qu'un producteur, on ne décale pas
+            let finalLat = communesAgregees[prod.commune].total > 1 ? prod.lat + jitterLat : prod.lat;
+            let finalLng = communesAgregees[prod.commune].total > 1 ? prod.lng + jitterLng : prod.lng;
+
+            let markerColor = prod.interesse ? colors[prod.filiere] : colors['non_interesse'];
+            let iconClass = icons[prod.filiere];
+            let statutText = prod.interesse ? "<span class='text-emerald-600 font-bold'>Intéressé·e</span>" : "<span class='text-gray-500 italic'>Non intéressé·e actuellement</span>";
+
+            // Utilisation de L.circleMarker pour un affichage propre
+            let marker = L.circleMarker([finalLat, finalLng], {
+                radius: 8,
+                fillColor: markerColor,
+                color: "#ffffff",
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.9
+            }).addTo(map);
+
+            let popupContent = `
+                <div class="popup-header" style="background-color: ${markerColor}">
+                    <i class="fa-solid ${iconClass}"></i> ${filiereNoms[prod.filiere]}
+                </div>
+                <div class="popup-body">
+                    <strong class="font-oswald text-lg text-dixDark">${prod.nom}</strong><br>
+                    <span class="text-sm text-gray-500"><i class="fa-solid fa-location-dot"></i> ${prod.commune}</span><br>
+                    <div class="mt-2 pt-2 border-t border-gray-100">
+                        ${statutText}
+                    </div>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+        });
+
+
+        // 6. Remplissage du classement latéral
+        const rankingList = document.getElementById('ranking-list');
+        const communesArray = Object.values(communesAgregees);
+        
+        communesArray.sort((a, b) => b.total - a.total).forEach(commune => {
+            let widthPercent = (commune.total / 10) * 100;
+            
+            // Préparer les mini-badges de couleurs pour la commune
+            let badgesHtml = '';
+            for (let filiere in commune.filieres) {
+                for(let i=0; i<commune.filieres[filiere]; i++) {
+                     badgesHtml += `<div class="w-2 h-2 rounded-full inline-block mr-0.5" style="background-color: ${colors[filiere]};"></div>`;
+                }
+            }
+            
+            let li = document.createElement('li');
+            li.className = "relative bg-gray-50 p-3 rounded-lg overflow-hidden border border-gray-100 flex justify-between items-center";
+            li.innerHTML = `
+                <div class="absolute top-0 left-0 h-full bg-green-100/30 -z-0" style="width: ${widthPercent}%;"></div>
+                <div class="relative z-10 flex flex-col">
+                    <span class="font-bold text-gray-700">${commune.nom}</span>
+                    <div class="mt-1">${badgesHtml}</div>
+                </div>
+                <div class="relative z-10 text-right">
+                    <span class="bg-white border border-gray-300 text-dixDark font-oswald font-bold px-2 py-1 rounded text-sm shadow-sm inline-block mb-1">
+                        ${commune.total} prod.
+                    </span><br>
+                    <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">${commune.interesses} Intéressé·e·s</span>
+                </div>
+            `;
+            rankingList.appendChild(li);
+        });
+
+        // Ajustement de la vue
+        let group = new L.featureGroup(producteursData.map(c => L.marker([c.lat, c.lng])));
+        map.fitBounds(group.getBounds().pad(0.1));
+
+    </script>
+</body>
+</html>

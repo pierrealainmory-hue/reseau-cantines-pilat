@@ -12,6 +12,7 @@
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -77,6 +78,7 @@
             }
             @media (min-width: 768px) { .masonry { column-count: 2; } }
             @media (min-width: 1024px) { .masonry { column-count: 3; } }
+            
             .masonry-item {
                 break-inside: avoid;
                 margin-bottom: 1.5rem;
@@ -95,6 +97,88 @@
         input[type=range]::-webkit-slider-thumb {
             @apply appearance-none w-6 h-6 rounded-full bg-dixLight cursor-pointer shadow-md;
         }
+
+        /* ==========================================
+           NOUVEAUX STYLES CORRIGÉS POUR LE FLYER
+           ========================================== */
+        .flyer-wrapper {
+            @apply w-full pb-8 pt-4 flex justify-center;
+        }
+        
+        .flyer-wrapper .page-a4 {
+            width: 100%;
+            max-width: 750px; /* Largeur web optimisée au lieu de mm */
+            height: 100%; /* Pour équilibrer les deux pages côte à côte */
+            background-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(#549e39 0.5px, transparent 0.5px), radial-gradient(#549e39 0.5px, #ffffff 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+
+        .flyer-wrapper .page-a4::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.95); z-index: 0; border-radius: 8px;
+        }
+        
+        .flyer-wrapper .page-content { position: relative; z-index: 1; padding: 40px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+        .flyer-wrapper h1, .flyer-wrapper h2, .flyer-wrapper h3, .flyer-wrapper h4 { font-family: 'Oswald', sans-serif; text-transform: uppercase; margin: 0; color: #405F59; }
+        .flyer-wrapper p, .flyer-wrapper li { color: #405F59; font-family: 'Georgia', serif; line-height: 1.5; }
+
+        /* Header Recto */
+        .flyer-wrapper .header-recto { text-align: center; border-bottom: 4px solid #549e39; padding-bottom: 15px; margin-bottom: 25px; }
+        .flyer-wrapper .header-recto i { font-size: 40px; color: #549e39; margin-bottom: 10px; }
+        .flyer-wrapper .header-recto h1 { font-size: 28px; letter-spacing: 1px; }
+        .flyer-wrapper .header-recto .subtitle { font-size: 16px; color: #549e39; margin-top: 5px; }
+        .flyer-wrapper .intro-text { font-size: 15px; line-height: 1.6; margin-bottom: 20px; font-style: italic; text-align: center; }
+        .flyer-wrapper .section-title { font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;}
+
+        /* Engouement Collectif Box */
+        .flyer-wrapper .engouement-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #549e39; padding: 15px 20px; margin-bottom: 20px; border-radius: 4px; }
+        .flyer-wrapper .engouement-list { list-style: none; padding: 0; margin: 0; }
+        .flyer-wrapper .engouement-list li { margin-bottom: 10px; padding-left: 30px; position: relative; font-size: 14px; color: #475569; }
+        .flyer-wrapper .engouement-list li:last-child { margin-bottom: 0; }
+        .flyer-wrapper .engouement-list li i { position: absolute; left: 0; top: 2px; font-size: 16px; color: #549e39; }
+        .flyer-wrapper .engouement-list li strong { color: #405F59; font-weight: bold; font-family: 'Oswald', sans-serif; font-size: 15px; letter-spacing: 0.5px; }
+
+        /* Diagnostics */
+        .flyer-wrapper .diag-box { background: #ffffff; border-left: 4px solid #549e39; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); border-radius: 0 4px 4px 0; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+        .flyer-wrapper .diag-box.dark { background-color: #405F59; border-left-color: #549e39; border-color: #405F59; }
+        .flyer-wrapper .diag-box strong { font-family: 'Oswald', sans-serif; font-size: 16px; display: block; margin-bottom: 6px; color: #405F59; letter-spacing: 0.5px;}
+        .flyer-wrapper .diag-box.dark strong { color: #ffffff; }
+        .flyer-wrapper .diag-box p { margin: 0; font-size: 13px; line-height: 1.5; color: #475569;}
+        .flyer-wrapper .diag-box.dark p { color: #e2e8f0; }
+        
+        .flyer-wrapper .grid-diag { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px; }
+        @media (min-width: 640px) { .flyer-wrapper .grid-diag { grid-template-columns: 1fr 1fr; } }
+
+        /* VERSO STYLES */
+        .flyer-wrapper .verso-header { text-align: center; margin-bottom: 25px; }
+        .flyer-wrapper .verso-header h2 { font-size: 26px; color: #549e39; }
+        .flyer-wrapper .verso-header p { font-size: 15px; margin-top: 10px; font-style: italic; color: #475569;}
+        
+        .flyer-wrapper .solutions-grid { display: grid; grid-template-columns: 1fr; gap: 20px; flex-grow: 1; }
+        @media (min-width: 640px) { .flyer-wrapper .solutions-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .flyer-wrapper .solution-card { background: #f8fafc; border: 1px solid #e2e8f0; border-top: 4px solid #549e39; padding: 20px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .flyer-wrapper .solution-card.dark { border-top-color: #405F59; background: #ffffff; }
+        .flyer-wrapper .solution-icon { font-size: 30px; color: #549e39; margin-bottom: 15px; width: 60px; height: 60px; background: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .flyer-wrapper .solution-card.dark .solution-icon { color: #405F59; background: #f8fafc; }
+        .flyer-wrapper .solution-card h3 { font-size: 17px; margin-bottom: 10px; color: #405F59; }
+        .flyer-wrapper .solution-card p { font-size: 13px; line-height: 1.5; color: #475569; margin: 0;}
+
+        /* CTA Bottom */
+        .flyer-wrapper .cta-box { background: #405F59; color: white; padding: 20px; text-align: center; border-radius: 8px; margin-top: 20px; border-bottom: 5px solid #549e39; }
+        .flyer-wrapper .cta-box h3 { color: white; font-size: 22px; margin-bottom: 8px; }
+        .flyer-wrapper .cta-box p { margin: 0 0 12px 0; font-size: 15px; color: #e2e8f0; }
+        .flyer-wrapper .cta-details { font-family: 'Oswald', sans-serif; font-size: 18px; color: #549e39; background: white; padding: 8px 15px; display: inline-block; border-radius: 4px; }
+        
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -112,9 +196,8 @@
             </div>
         </div>
 
-      <!-- Navigation principale -->
+        <!-- Navigation principale -->
         <div class="border-t border-gray-100">
-            <!-- Modification ici : max-w-7xl au lieu de max-w-4xl pour donner toute la place -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <nav class="flex flex-wrap lg:flex-nowrap items-center justify-between pt-4 pb-2 gap-y-4">
                     
@@ -126,6 +209,7 @@
                         <button onclick="switchTab('vitrine')" id="tab-vitrine" class="nav-tab text-base lg:text-lg flex items-center gap-2 whitespace-nowrap">
                             <i class="ph ph-book-open text-xl"></i> Le Carnet d'initiatives
                         </button>
+                        <!-- ONGLET : ESPACE PRO -->
                         <button onclick="switchTab('pro')" id="tab-pro" class="nav-tab text-base lg:text-lg flex items-center gap-2 whitespace-nowrap">
                             <i class="ph ph-users text-xl"></i> Espace Pro
                         </button>
@@ -136,13 +220,12 @@
                         <!-- Petite barre latérale de séparation -->
                         <div class="hidden lg:block w-px h-8 bg-gray-300"></div>
                         
-                        <!-- Bouton avec whitespace-nowrap pour empêcher le texte de passer à la ligne -->
+                        <!-- Bouton Partager Volumes -->
                         <a href="https://pierrealainmory-hue.github.io/reseau-cantines-pilat/formulaire-filieres.html" target="_blank" class="group flex items-center gap-2 bg-dixDark/5 border border-dixDark/20 text-dixDark px-5 py-2 rounded-lg font-oswald text-sm hover:bg-dixDark hover:text-white hover:border-dixDark transition-all shadow-sm whitespace-nowrap">
                             <i class="ph ph-chart-pie-slice text-lg text-dixLight group-hover:text-white transition-colors"></i>
                             Partager ses volumes d'achats
                         </a>
                     </div>
-
                 </nav>
             </div>
         </div>
@@ -184,7 +267,6 @@
                                 <option value="Mixte">Gestion Mixte</option>
                             </select>
                         </div>
-
                         <div class="bg-dixBg p-4 rounded-xl border border-gray-200">
                             <label class="form-label text-dixLight" for="repasAn">Nombre de repas produis par an *</label>
                             <input type="number" id="repasAn" name="repasAn" class="form-input font-bold text-lg" placeholder="Ex: 25000" min="0" required>
@@ -208,7 +290,6 @@
                                 <option value="Livre">Repas livrés (Cuisine centrale)</option>
                             </select>
                         </div>
-
                         <div>
                             <label class="form-label mb-3">Type de liaison</label>
                             <div class="flex flex-col gap-3 mt-2">
@@ -287,7 +368,6 @@
                                 <input type="number" step="0.01" id="coutRepas" name="coutRepas" class="form-input pl-10" placeholder="0.00">
                             </div>
                         </div>
-
                         <div>
                             <label class="form-label" for="logiciels">Logiciels utilisés (menus, achats...)</label>
                             <input type="text" id="logiciels" name="logiciels" class="form-input" placeholder="Ex: EMapp, Salamandre...">
@@ -317,7 +397,6 @@
                                 </label>
                             </div>
                         </div>
-
                         <div>
                             <label class="form-label mb-3">Télédéclaration *</label>
                             <div class="flex flex-col gap-3">
@@ -332,7 +411,6 @@
                                 </label>
                             </div>
                         </div>
-
                         <div class="md:col-span-2">
                             <label class="form-label" for="suiviEgalim">Niveau de suivi des indicateurs EGAlim en interne *</label>
                             <select id="suiviEgalim" name="suiviEgalim" class="form-input" required>
@@ -393,10 +471,10 @@
                     
                     <div class="bg-green-50 p-6 rounded-xl border border-dixLight/30">
                         <h3 class="text-lg font-bold text-dixDark mb-2 flex items-center gap-2 font-oswald uppercase">
-                            <i class="ph ph-star-fill text-yellow-500 text-xl"></i> Partagez une expérience innovante
+                            <i class="ph ph-star-fill text-yellow-500 text-xl"></i> Racontez-nous une réussite
                         </h3>
                         <p class="text-sm text-gray-600 mb-6 font-georgia">
-                            Racontez-nous une réussite ! Avez-vous mis en place une organisation, une méthode ou un partenariat innovant qui a facilité vos approvisionnements locaux et que vous accepteriez de partager ? Cette histoire a vocation à alimenter notre <strong>Carnet d'initiatives</strong> pour inspirer l'ensemble du réseau !
+                            Avez-vous mis en place une organisation, une méthode ou un partenariat innovant qui a facilité vos approvisionnements locaux et que vous accepteriez de partager ? Cette histoire a vocation à alimenter notre <strong>Carnet d'initiatives</strong> pour inspirer l'ensemble du réseau !
                         </p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -487,6 +565,7 @@
                     </div>
                 </section>
 
+                <!-- Bouton de Soumission -->
                 <div class="flex flex-col items-center justify-center mt-8 space-y-4">
                     <button type="submit" class="btn-primary w-full md:w-auto text-xl flex items-center justify-center gap-2" id="submitBtn">
                         <i class="ph ph-paper-plane-tilt text-2xl"></i> Transmettre mes informations
@@ -508,7 +587,7 @@
                 </p>
             </div>
 
-            <!-- NOUVEAU BLOC FILTRES -->
+            <!-- BLOC FILTRES -->
             <div class="max-w-4xl mx-auto mb-8 flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex items-center gap-3 w-full sm:w-auto">
                     <i class="ph ph-funnel text-xl text-dixLight"></i>
@@ -544,52 +623,150 @@
             </div>
         </div>
 
-        <!-- ONGLET 3 : ESPACE PRO -->
-        <div id="section-pro" class="hidden animate-fade-in flex flex-col items-center justify-center py-20">
-            <div class="bg-white p-12 rounded-3xl shadow-xl text-center max-w-2xl border border-gray-100 relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-2 bg-dixDark"></div>
-                <div class="bg-white p-6 rounded-full shadow-sm mb-6 inline-block border-4 border-dixLight/20">
-                    <i class="ph ph-hard-hat text-7xl text-dixDark"></i>
-                </div>
-                <h2 class="text-4xl mb-4 text-dixDark text-center">Espace Pro</h2>
-                <div class="h-1 w-20 bg-dixLight mx-auto mb-6"></div>
-                <p class="text-xl text-gray-600 mb-8 font-georgia italic leading-relaxed text-center">
-                    "Espace de mutualisation des données en cours de développement partagé."
-                </p>
-                <p class="text-gray-500 text-sm font-georgia mb-8 text-center">
-                    Cet espace sécurisé permettra aux décideur·euse·s et chef·fe·s de visualiser la cartographie des approvisionnements locaux et de croiser les besoins du territoire.
-                </p>
-                <div class="inline-block bg-green-50 text-dixDark font-oswald uppercase tracking-wider px-6 py-2 rounded-full border border-green-200">
-                    Bientôt disponible
+        <!-- ONGLET 3 : ESPACE PRO (AVEC LE FLYER) -->
+        <div id="section-pro" class="hidden animate-fade-in flex flex-col items-center justify-center">
+            
+            <div class="text-center mb-6 mt-10 print-hide">
+                <h2 class="text-3xl font-oswald text-dixDark mb-3">Espace Professionnels : Ateliers de co-construction</h2>
+                <p class="text-gray-600 text-lg font-georgia italic mb-6">Le diagnostic est validé ! Découvrez nos conclusions et inscrivez-vous pour bâtir avec nous la logistique de demain.</p>
+                
+                <!-- BOUTONS D'ACTION MISE EN AVANT -->
+                <div class="flex justify-center mt-6 mb-8">
+                    <a href="#" onclick="alert('Lien d\'inscription bientôt disponible !')" class="inline-flex items-center justify-center gap-3 bg-dixLight text-white font-oswald uppercase text-lg px-10 py-4 rounded-xl shadow-lg hover:bg-green-700 transition-all hover:-translate-y-1">
+                        <i class="ph ph-calendar-plus text-2xl"></i> Confirmer ma présence à l'Atelier
+                    </a>
                 </div>
             </div>
+
+            <!-- CONTENEUR DU FLYER INTÉGRÉ -->
+            <div class="flyer-wrapper">
+                <!-- Wrapper flex pour rendre le Recto et Verso parfaitement responsifs en colonne -->
+                <div class="flex flex-col xl:flex-row gap-8 w-full max-w-6xl mx-auto items-stretch">
+                    
+                    <!-- FLYER PAGE 1 (RECTO) -->
+                    <div class="page-a4">
+                        <div class="page-content">
+                            <div class="header-recto">
+                                <i class="fa-solid fa-seedling"></i>
+                                <h1>Projet Alimentaire Territorial</h1>
+                                <div class="subtitle">Monts du Pilat • Restauration Collective (Gestion Directe)</div>
+                            </div>
+
+                            <p class="intro-text">
+                                Suite à la grande enquête menée auprès de vos cuisines et des exploitations du territoire, le diagnostic révèle une dynamique extrêmement positive. Les flux alimentaires existent et l'envie de coopérer est unanime.
+                            </p>
+
+                            <h2 class="section-title"><i class="fa-solid fa-fire" style="color: #f97316;"></i> Un véritable engouement collectif</h2>
+
+                            <div class="engouement-box">
+                                <ul class="engouement-list">
+                                    <li><i class="fa-solid fa-circle-check"></i> <strong>100 % des établissements</strong> interrogés ont la volonté de travailler des produits locaux !</li>
+                                    <li><i class="fa-solid fa-circle-check"></i> Ces achats représentent entre <strong>150 et 300 Tonnes</strong>, soit 2 à 3 palettes par jour maximum !</li>
+                                    <li><i class="fa-solid fa-circle-check"></i> <strong>La production agricole</strong> du territoire semble combler facilement ces besoins.</li>
+                                    <li><i class="fa-solid fa-circle-check"></i> <strong>La moitié des producteurs</strong> interrogés sont prêts à réfléchir aux moyens de répondre aux besoins de la restauration collective du territoire.</li>
+                                </ul>
+                            </div>
+
+                            <h2 class="section-title"><i class="fa-solid fa-chart-line"></i> Tendances globales : Les dynamiques du réseau</h2>
+
+                            <div class="diag-box">
+                                <strong>1. L'ancrage fort du produit brut</strong>
+                                <p>Près de 20 établissements sur 23 privilégient l'approvisionnement en produits bruts. Loin d'être perçue comme une contrainte, la cuisine de produits frais semble être un levier de valorisation professionnelle et de motivation pour les équipes en place.</p>
+                            </div>
+                            
+                            <div class="grid-diag">
+                                <div class="diag-box dark" style="margin-bottom: 0;">
+                                    <strong>2. Le "Local" plébiscité face au "Bio"</strong>
+                                    <p>Si les objectifs EGAlim sont connus, la majorité des structures (20 sur 23) donne un crédit bien plus fort à l'achat hyper-local (Monts du Pilat). Le "Bio" reste prioritaire principalement dans la Petite Enfance (3 crèches sur 7), sous l'impulsion parentale.</p>
+                                </div>
+                                
+                                <div class="diag-box" style="margin-bottom: 0;">
+                                    <strong>3. L'efficacité logistique</strong>
+                                    <p>L'excellence technique des grossistes a fixé un niveau de service élevé (interface, livraison en A pour B). Le développement des filières agricoles locales doit désormais se penser au prisme d'une efficacité comparable.</p>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: auto; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                                Communauté de Communes des Monts du Pilat - Phase 2 (Co-construction)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FLYER PAGE 2 (VERSO) -->
+                    <div class="page-a4">
+                        <div class="page-content">
+                            <div class="verso-header">
+                                <h2>La Fabrique à Projets</h2>
+                                <p>Lors de notre prochain atelier, nous allons travailler concrètement sur les 4 solutions directement issues de vos entretiens terrains.</p>
+                            </div>
+
+                            <div class="solutions-grid">
+                                <div class="solution-card">
+                                    <div class="solution-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+                                    <h3>1. Catalogue Producteurs</h3>
+                                    <p>Création d'un annuaire clair pour recenser l'offre disponible sur le territoire et rendre les produits des agriculteurs du Pilat <strong>enfin visibles</strong> pour vos cuisines.</p>
+                                </div>
+
+                                <div class="solution-card dark">
+                                    <div class="solution-icon"><i class="fa-solid fa-drumstick-bite"></i></div>
+                                    <h3>2. Conditionnements Carnés</h3>
+                                    <p>Trouver des solutions opérationnelles pour adapter la viande (sous-vide, portions, prêt-à-cuisiner) à vos contraintes matérielles et de temps.</p>
+                                </div>
+
+                                <div class="solution-card dark">
+                                    <div class="solution-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                                    <h3>3. Outil d'Intermédiation</h3>
+                                    <p>Scénarisation d'un espace numérique de type <strong>Drive / Plateforme</strong> pour centraliser vos commandes, fluidifier la livraison et alléger la facturation.</p>
+                                </div>
+
+                                <div class="solution-card">
+                                    <div class="solution-icon"><i class="fa-solid fa-people-arrows"></i></div>
+                                    <h3>4. Décloisonnement</h3>
+                                    <p>Mettre fin à l'isolement des cuisines. Créer du lien entre vous, échanger sur les bonnes pratiques et identifier les besoins en <strong>formation</strong>.</p>
+                                </div>
+                            </div>
+
+                            <!-- CTA dans le Flyer -->
+                            <div class="cta-box">
+                                <h3>Participez au 1er Atelier !</h3>
+                                <p>En tant qu'établissements autonomes, vous avez les clés en main. Votre expertise du quotidien est indispensable pour bâtir ces outils.</p>
+                                <div class="cta-details">
+                                    <i class="fa-regular fa-calendar-check"></i> Jeudi 28 mai à 15h00<br>
+                                    <span style="font-size: 16px; color: #475569;"><i class="fa-solid fa-location-dot"></i> Bourg-Argental</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: auto; text-align: center; font-size: 12px; color: #94a3b8;">
+                                Inscrivez-vous via le bouton en haut de page.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
         </div>
 
     </main>
 
     <!-- BANDEAU PARTENAIRES -->
-    <section class="bg-dixMuted py-10 border-t border-gray-200">
+    <section class="bg-dixMuted py-10 border-t border-gray-200 mt-auto print-hide">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-80">
-                <img src="logo-ccmp.png" alt="Logo CCMP" class="h-14 w-auto object-contain">
-                <img src="logo-inrae.png" alt="Logo INRAE" class="h-14 w-auto object-contain">
-                <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-12 w-auto object-contain">
+                <img src="logo-ccmp.png" alt="Logo CCMP" class="h-14 w-auto object-contain" onerror="this.style.display='none'">
+                <img src="logo-inrae.png" alt="Logo INRAE" class="h-14 w-auto object-contain" onerror="this.style.display='none'">
+                <img src="logo-dix.png" alt="Logo DIX Autrement" class="h-12 w-auto object-contain" onerror="this.style.display='none'">
                 
-                <!-- Nouveaux logos -->
-                <img src="2026_bandeau_logos_pat.png" alt="Partenaires Institutionnels" class="h-14 md:h-16 w-auto object-contain">
-                
-                <!-- Logos individuels (laissés en commentaire si vous préférez ne pas utiliser le bandeau combiné) -->
-                <!--
-                <img src="Bandeau_AG-Charte_Region-Europe_bleu.png" alt="Région et Europe" class="h-14 w-auto object-contain">
-                <img src="logo Préfet Région.jpg" alt="Préfète de la Région" class="h-14 w-auto object-contain">
-                <img src="FranceNationVerte_Logo_CMJN-1.pdf" alt="France Nation Verte" class="h-14 w-auto object-contain">
-                -->
+                <!-- Fallbacks visuels si les images ne chargent pas -->
+                <div class="font-oswald text-xl text-dixDark/50 tracking-widest uppercase">CC Monts du Pilat</div>
+                <div class="font-oswald text-xl text-dixDark/50 tracking-widest uppercase">INRAE</div>
+                <div class="font-oswald text-xl text-dixDark/50 tracking-widest uppercase">DIX Autrement</div>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-white border-t border-gray-100 py-10">
+    <footer class="bg-white border-t border-gray-100 py-10 shrink-0 print-hide">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                 <!-- Contact 1 : Email -->
@@ -600,7 +777,6 @@
                     </div>
                     <a href="mailto:pierre.alain.mory@dix-autrement.fr" class="text-sm text-gray-600 hover:text-dixLight transition-colors">pierre.alain.mory@dix-autrement.fr</a>
                 </div>
-
                 <!-- Contact 2 : Web -->
                 <div class="flex flex-col items-center md:items-start gap-2">
                     <div class="flex items-center gap-3 text-dixDark font-bold font-oswald uppercase">
@@ -609,7 +785,6 @@
                     </div>
                     <a href="https://www.dix-autrement.fr" target="_blank" class="text-sm text-gray-600 hover:text-dixLight transition-colors">www.dix-autrement.fr</a>
                 </div>
-
                 <!-- Contact 3 : Assistance -->
                 <div class="flex flex-col items-center md:items-start gap-2">
                     <div class="flex items-center gap-3 text-dixDark font-bold font-oswald uppercase">
@@ -625,8 +800,6 @@
                 <p>Projet Alimentaire Territorial - CC Monts du Pilat</p>
                 <div class="flex items-center gap-3">
                     <p>&copy; 2026 Réalisé par Cabinet DIX Autrement</p>
-                    <!-- COMPTEUR DE VISITE -->
-                    <img src="https://visitor-badge.laobi.icu/badge?page_id=pierrealainmory-cantines-pilat&left_text=Visites&left_color=%232c3e50&right_color=%23e67e22" alt="Compteur de visites" class="h-4 opacity-75 hover:opacity-100 transition-opacity" title="Nombre de visites">
                 </div>
             </div>
         </div>

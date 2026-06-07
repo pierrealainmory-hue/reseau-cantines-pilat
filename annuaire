@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail PAT Monts du Pilat - Producteurs & Cantines</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Leaflet JS (Cartographie interactive) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        :root {
+            --dark-green: #405F59;
+            --light-green: #549e39;
+            --bg-gray: #e2e8f0;
+            --card-gray: #f8fafc;
+            --text-dark: #1e293b;
+            --border-color: #cbd5e1;
+            --prod-color: #d97706; /* Amber for producers to distinguish */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* HEADER ANNUAIRE */
+        .directory-header {
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            padding: 40px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 8px solid var(--dark-green);
+        }
+
+        .directory-header h1 {
+            font-family: 'Oswald', sans-serif;
+            color: var(--dark-green);
+            font-size: 42px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .directory-header p {
+            font-size: 18px;
+            color: #64748b;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* SYSTÈME D'ONGLETS */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            background-color: #ffffff;
+            border: 2px solid var(--border-color);
+            color: #64748b;
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--light-green);
+            color: var(--light-green);
+        }
+
+        .tab-btn.active {
+            background-color: var(--light-green);
+            border-color: var(--light-green);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(84, 158, 57, 0.3);
+        }
+
+        .tab-btn.active#tab-prod {
+            background-color: var(--prod-color);
+            border-color: var(--prod-color);
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+        }
+
+        /* CONTENU DES ONGLETS */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* GRILLE DES FICHES */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+        }
+
+        /* CARTE COMMUNE */
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            padding: 20px;
+            position: relative;
+            color: #ffffff;
+        }
+
+        /* Couleurs d'en-tête selon le type */
+        .card.cantine .card-header { background-color: var(--dark-green); }
+        .card.producteur .card-header { background-color: var(--prod-color); }
+
+        .card-header h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            margin-bottom: 5px;
+            padding-right: 100px;
+        }
+
+        .card-header .location {
+            font-size: 15px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Badges */
+        .badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        /* Badges Producteurs */
+        .badge.legumes { background-color: #15803d; color: white; }
+        .badge.viande { background-color: #b91c1c; color: white; }
+        .badge.laitages { background-color: #0369a1; color: white; }
+        /* Badges Cantines */
+        .badge.scolaire { background-color: #3b82f6; color: white; }
+        .badge.medico { background-color: #8b5cf6; color: white; }
+        .badge.enfance { background-color: #f59e0b; color: white; }
+
+        /* Corps de la carte */
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex-grow: 1;
+        }
+
+        .info-section {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        .info-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .info-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card.cantine .info-title { color: var(--light-green); }
+        .card.producteur .info-title { color: var(--prod-color); }
+
+        .info-list {
+            list-style: none;
+            font-size: 14px;
+        }
+
+        .info-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .info-list i {
+            color: #94a3b8;
+            margin-top: 3px;
+            width: 14px;
+            text-align: center;
+        }
+
+        /* Tags pour les caractéristiques */
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .tag {
+            background-color: var(--bg-gray);
+            color: var(--dark-green);
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .tag.bio { background-color: #dcfce7; color: #15803d; border: 1px solid #4ade80;}
+        .tag.alert { background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171;}
+
+        /* Footer de la carte (Besoin / Produit Phare) */
+        .card-footer {
+            padding: 20px;
+        }
+        
+        .card.cantine .card-footer {
+            background-color: #fefce8;
+            border-top: 2px dashed #facc15;
+        }
+        
+        .card.producteur .card-footer {
+            background-color: #f0fdf4;
+            border-top: 2px dashed #4ade80;
+        }
+
+        .footer-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card.cantine .footer-title { color: #a16207; }
+        .card.producteur .footer-title { color: #166534; }
+
+        .footer-text {
+            font-size: 15px;
+            font-style: italic;
+            font-weight: 500;
+        }
+        
+        .card.cantine .footer-text { color: #713f12; }
+        .card.producteur .footer-text { color: #14532d; }
+
+        /* BOUTON CATALOGUE PRODUCTEUR */
+        .catalog-btn {
+            display: block;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #ffffff;
+            color: var(--prod-color);
+            border: 2px solid var(--prod-color);
+            text-decoration: none;
+            border-radius: 6px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .catalog-btn:hover {
+            background-color: var(--prod-color);
+            color: #ffffff;
+        }
+
+        /* Barre de recherche (Factice pour le design) */
+        .search-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .search-input {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 300px;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .filter-tags span {
+            font-size: 13px;
+            background: var(--bg-gray);
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* STYLES DES CARTES INTERACTIVES (LEAFLET) */
+        .map-container {
+            height: 350px;
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid var(--border-color);
+            z-index: 1; /* Rester sous les menus déroulants éventuels */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .custom-leaflet-icon {
+            background: transparent;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* MODAL STYLES POUR LE CATALOGUE */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000; /* Au-dessus des cartes Leaflet */
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+        }
+        .modal-overlay.active { display: flex; }
+        
+        .modal-content {
+            background: #ffffff;
+            width: 90%; max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp { 
+            from { transform: translateY(30px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        
+        .modal-header {
+            background: var(--prod-color);
+            color: white;
+            padding: 20px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .modal-header h2 { font-family: 'Oswald', sans-serif; font-size: 26px; margin: 0; }
+        
+        .close-modal {
+            background: none; border: none; color: white; font-size: 26px; cursor: pointer; transition: transform 0.2s;
+        }
+        .close-modal:hover { transform: scale(1.2); }
+        
+        .modal-body { padding: 25px; max-height: 70vh; overflow-y: auto; }
+
+        /* TABLEAU DE LA MERCURIALE */
+        .mercuriale-table { width: 100%; border-collapse: collapse; }
+        .mercuriale-table th { 
+            background: var(--bg-gray); color: var(--dark-green); padding: 12px 15px; 
+            text-align: left; font-family: 'Oswald', sans-serif; text-transform: uppercase; 
+            border-bottom: 2px solid var(--border-color); font-size: 16px;
+        }
+        .mercuriale-table td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; color: var(--text-dark); font-size: 15px; }
+        .mercuriale-table tr:hover { background: #f8fafc; }
+        .price-col { font-weight: bold; color: var(--prod-color); font-size: 16px; }
+
+        /* INFORMATIONS COMPLÉMENTAIRES MODAL (DISPO & ZONE) */
+        .modal-meta-info {
+            background-color: var(--card-gray);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--prod-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .modal-meta-info p {
+            font-size: 15px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+        }
+        
+        .modal-meta-info i {
+            color: var(--prod-color);
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- EN-TÊTE DU PORTAIL -->
+        <header class="directory-header">
+            <h1><i class="fa-solid fa-handshake-angle"></i> Plateforme Territoriale</h1>
+            <p>Projet Alimentaire Territorial - Monts du Pilat<br>
+            <em>Le carrefour numérique pour croiser l'offre agricole locale et les besoins de la restauration collective.</em></p>
+        </header>
+
+        <!-- NAVIGATION ONGLETS -->
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-prod" onclick="switchTab('producteurs', 'tab-prod')">
+                <i class="fa-solid fa-tractor"></i> Catalogue des Producteurs
+            </button>
+            <button class="tab-btn" id="tab-cant" onclick="switchTab('cantines', 'tab-cant')">
+                <i class="fa-solid fa-utensils"></i> Annuaire des Cantines
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ONGLET 1 : LES PRODUCTEURS                 -->
+        <!-- ========================================== -->
+        <div id="producteurs" class="tab-content active">
+            
+            <!-- CARTE DES PRODUCTEURS -->
+            <div id="map-prod" class="map-container"></div>
+
+            <div class="search-bar">
+                <div><i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; margin-right: 10px;"></i><input type="text" class="search-input" placeholder="Rechercher un produit, une ferme..."></div>
+                <div class="filter-tags">
+                    <span>Légumes</span><span>Viande</span><span>Fruits</span><span>Bio (AB)</span>
+                </div>
+            </div>
+
+            <div class="grid">
+                
+                <!-- Producteur 1 -->
+                <article class="card producteur">
+                    <div class="card-header">
+                        <span class="badge legumes">Légumes</span>
+                        <h2>Ferme du Crêt Bio</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> La Versanne</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Le Contact</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Antoine Morel</strong> (Maraîcher)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>06 12 34 56 78 <em>(Entre 12h et 14h)</em></span></li>
+                                <li><i class="fa-solid fa-leaf"></i> <span><em>"Des légumes de saison cultivés sur sol vivant, sans chimie."</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-box-open"></i> Offre & Logistique</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-carrot"></i> <span><strong>Légumes lavés</strong> (Caisses de 10kg)</span></li>
+                                <li><i class="fa-solid fa-truck"></i> <span>Livre les cantines : <strong>Mar, Jeu</strong></span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag bio"><i class="fa-solid fa-leaf"></i> Certifié AB</span>
+                                <span class="tag"><i class="fa-solid fa-file-invoice-dollar"></i> Sur Chorus Pro</span>
+                                <span class="tag"><i class="fa-solid fa-bell"></i> Alerte surplus anti-gaspi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Produit "Découverte"</div>
+                        <div class="footer-text">"Testez notre courge Butternut ! Parfaite pour les veloutés d'automne, vendue en palox ou caisse, excellente conservation."</div>
+                        <a href="#" class="catalog-btn" onclick="event.preventDefault(); openModal('Ferme du Crêt Bio')"><i class="fa-solid fa-file-invoice" style="margin-right: 8px;"></i> Voir le catalogue détaillé</a>
+                    </div>
+                </article>
+
+                <!-- Producteur 2 -->
+                <article class="card producteur">
+                    <div class="card-header">
+                        <span class="badge viande">Viande</span>
+                        <h2>GAEC des Pâturages</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Saint-Genest-Malifaux</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Le Contact</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Sophie & Luc Martin</strong> (Éleveurs)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>06 98 76 54 32 <em>(Fin de journée)</em></span></li>
+                                <li><i class="fa-solid fa-leaf"></i> <span><em>"Élevage plein air, respect du bien-être animal."</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-box-open"></i> Offre & Logistique</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-drumstick-bite"></i> <span><strong>Prêt-à-cuire</strong> (Sous-vide 5kg)</span></li>
+                                <li><i class="fa-solid fa-truck"></i> <span>Livre en direct : <strong>Mercredi</strong></span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag bio"><i class="fa-solid fa-award"></i> Label HVE</span>
+                                <span class="tag alert"><i class="fa-solid fa-clock"></i> Commande J-7 min.</span>
+                                <span class="tag"><i class="fa-solid fa-money-bill"></i> Accepte Mandat Admin.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Produit "Découverte"</div>
+                        <div class="footer-text">"Notre sauté de boeuf sous-vide. Les morceaux sont déjà parés, la perte à la cuisson est minime, idéal pour les gros volumes."</div>
+                        <a href="#" class="catalog-btn" onclick="event.preventDefault(); openModal('GAEC des Pâturages')"><i class="fa-solid fa-file-invoice" style="margin-right: 8px;"></i> Voir le catalogue détaillé</a>
+                    </div>
+                </article>
+
+                <!-- Producteur 3 -->
+                <article class="card producteur">
+                    <div class="card-header">
+                        <span class="badge laitages">Laitages</span>
+                        <h2>Laiterie du Pilat</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Pélussin</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Le Contact</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Claire Durand</strong> (Transformatrice)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>04 77 22 33 44 <em>(Matin 8h-12h)</em></span></li>
+                                <li><i class="fa-solid fa-leaf"></i> <span><em>"Le goût du lait de nos montagnes en direct à la cantine."</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-box-open"></i> Offre & Logistique</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-cheese"></i> <span><strong>Laitages pasteurisés</strong> (Seaux 5L)</span></li>
+                                <li><i class="fa-solid fa-truck"></i> <span>Livre en direct : <strong>Lun, Jeu</strong></span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag alert"><i class="fa-solid fa-cart-arrow-down"></i> Franco : 80€</span>
+                                <span class="tag"><i class="fa-solid fa-file-invoice-dollar"></i> Sur Chorus Pro</span>
+                                <span class="tag"><i class="fa-solid fa-chart-line"></i> Mercuriale stable (6 mois)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Produit "Découverte"</div>
+                        <div class="footer-text">"Le yaourt brassé nature en seau de 5 litres. Pratique pour le service à la cuillère, génère moins de déchets plastiques."</div>
+                        <a href="#" class="catalog-btn" onclick="event.preventDefault(); openModal('Laiterie du Pilat')"><i class="fa-solid fa-file-invoice" style="margin-right: 8px;"></i> Voir le catalogue détaillé</a>
+                    </div>
+                </article>
+
+                <!-- Producteur 4 (Nouveau) -->
+                <article class="card producteur">
+                    <div class="card-header">
+                        <span class="badge" style="background-color: #d946ef; color: white;">Fruits</span>
+                        <h2>Les Vergers de la Brume</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Maclas</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Le Contact</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Paul Henry</strong> (Arboriculteur)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>06 77 88 99 00 <em>(Lundi matin)</em></span></li>
+                                <li><i class="fa-solid fa-leaf"></i> <span><em>"Des fruits croquants, gorgés de soleil, en direct de l'arbre."</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-box-open"></i> Offre & Logistique</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-apple-whole"></i> <span><strong>Fruits frais & Jus</strong> (Palox, Bag-in-Box)</span></li>
+                                <li><i class="fa-solid fa-truck"></i> <span>Livre les cantines : <strong>Mardi</strong></span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag bio"><i class="fa-solid fa-leaf"></i> En conversion Bio</span>
+                                <span class="tag"><i class="fa-solid fa-money-bill"></i> Mandat Administratif OK</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Produit "Découverte"</div>
+                        <div class="footer-text">"Notre jus de pomme-poire artisanal en Bag-in-Box de 10L, idéal et économique pour les goûters des centres de loisirs !"</div>
+                        <a href="#" class="catalog-btn" onclick="event.preventDefault(); openModal('Les Vergers de la Brume')"><i class="fa-solid fa-file-invoice" style="margin-right: 8px;"></i> Voir le catalogue détaillé</a>
+                    </div>
+                </article>
+
+                <!-- Producteur 5 (Nouveau) -->
+                <article class="card producteur">
+                    <div class="card-header">
+                        <span class="badge" style="background-color: #8b5cf6; color: white;">Épicerie</span>
+                        <h2>Le Fournil Paysan</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Bourg-Argental</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Le Contact</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Céline & Thomas</strong> (Paysans-Boulangers)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>04 77 11 22 33 <em>(Après 15h)</em></span></li>
+                                <li><i class="fa-solid fa-leaf"></i> <span><em>"Du grain au pain : farines de variétés anciennes moulues à la meule de pierre."</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-box-open"></i> Offre & Logistique</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-wheat-awn"></i> <span><strong>Pains & Farines</strong> (Grosses miches au poids)</span></li>
+                                <li><i class="fa-solid fa-truck"></i> <span>Livre en point relais : <strong>Mar, Ven</strong></span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag bio"><i class="fa-solid fa-leaf"></i> Certifié AB</span>
+                                <span class="tag alert"><i class="fa-solid fa-file-invoice-dollar"></i> Pas de Chorus Pro</span>
+                                <span class="tag alert"><i class="fa-solid fa-clock"></i> Commande J-2 min.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Produit "Découverte"</div>
+                        <div class="footer-text">"La meule paysanne de 2kg tranchée. Elle se conserve parfaitement 3 à 4 jours sans sécher dans les cuisines collectives."</div>
+                        <a href="#" class="catalog-btn" onclick="event.preventDefault(); openModal('Le Fournil Paysan')"><i class="fa-solid fa-file-invoice" style="margin-right: 8px;"></i> Voir le catalogue détaillé</a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+
+        <!-- ========================================== -->
+        <!-- ONGLET 2 : LES CANTINES                    -->
+        <!-- ========================================== -->
+        <div id="cantines" class="tab-content">
+            
+            <!-- CARTE DES CANTINES -->
+            <div id="map-cant" class="map-container"></div>
+
+            <div class="search-bar">
+                <div><i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; margin-right: 10px;"></i><input type="text" class="search-input" placeholder="Rechercher une cantine, une commune..."></div>
+                <div class="filter-tags">
+                    <span>Scolaire</span><span>Petite Enfance</span><span>Médico-Social</span><span>Loisirs</span>
+                </div>
+            </div>
+
+            <div class="grid">
+
+                <!-- Cantine 1 -->
+                <article class="card cantine">
+                    <div class="card-header">
+                        <span class="badge scolaire">Scolaire</span>
+                        <h2>Collège Les Hauts du Pilat</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Pélussin</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Contact & Volume</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-utensils"></i> <span><span style="font-weight:bold; color:var(--dark-green);">450</span> repas / jour</span></li>
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Marc Lefèvre</strong> (Chef de cuisine)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>04 77 00 11 22 <em>(Matin avant 10h)</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-truck"></i> Réception & Contraintes</div>
+                            <ul class="info-list">
+                                <li><i class="fa-regular fa-clock"></i> <span><strong>Lun, Mer, Ven</strong> de 6h à 10h</span></li>
+                                <li><i class="fa-solid fa-kitchen-set"></i> <span><strong>Légumerie sur place</strong> (produits terreux OK)</span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag"><i class="fa-solid fa-check"></i> Fromages Lait cru OK</span>
+                                <span class="tag"><i class="fa-solid fa-calendar-check"></i> Menus flexibles sous 48h</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Le Besoin du moment</div>
+                        <div class="footer-text">"Nous cherchons urgemment un producteur de pommes de terre bio (env. 200kg/mois) et des yaourts natures."</div>
+                    </div>
+                </article>
+
+                <!-- Cantine 2 -->
+                <article class="card cantine">
+                    <div class="card-header">
+                        <span class="badge medico">Médico-Social</span>
+                        <h2>EHPAD Les Tilleuls</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Bourg-Argental</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Contact & Volume</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-utensils"></i> <span><span style="font-weight:bold; color:var(--dark-green);">120</span> repas / jour (x3)</span></li>
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Julie Roux</strong> (Économe)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>04 77 33 44 55 <em>(Lun et Jeu)</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-truck"></i> Réception & Contraintes</div>
+                            <ul class="info-list">
+                                <li><i class="fa-regular fa-clock"></i> <span><strong>Mar, Jeu</strong> de 8h à 11h30</span></li>
+                                <li><i class="fa-solid fa-kitchen-set"></i> <span><strong>Pas de légumerie</strong> (4ème gamme requise)</span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag alert"><i class="fa-solid fa-xmark"></i> Lait cru interdit</span>
+                                <span class="tag alert"><i class="fa-solid fa-truck-ramp-box"></i> Pas de quai (Véhicule Léger)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Le Besoin du moment</div>
+                        <div class="footer-text">"Des légumes de saison déjà épluchés et lavés (carottes, poireaux). Des compotes artisanales locales."</div>
+                    </div>
+                </article>
+
+                <!-- Cantine 3 (Nouveau) -->
+                <article class="card cantine">
+                    <div class="card-header">
+                        <span class="badge enfance">Petite Enfance</span>
+                        <h2>Micro-crèche La Rainette</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Marlhes</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Contact & Volume</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-utensils"></i> <span><span style="font-weight:bold; color:var(--dark-green);">25</span> repas / jour</span></li>
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Thomas Bernard</strong> (Directeur)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>04 77 66 77 88 <em>(Sieste 13h-14h)</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-truck"></i> Réception & Contraintes</div>
+                            <ul class="info-list">
+                                <li><i class="fa-regular fa-clock"></i> <span><strong>Lundi uniquement</strong> de 7h à 9h</span></li>
+                                <li><i class="fa-solid fa-kitchen-set"></i> <span><strong>Légumerie OK</strong> (Petit matériel)</span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag alert"><i class="fa-solid fa-xmark"></i> Lait cru interdit</span>
+                                <span class="tag"><i class="fa-solid fa-box-archive"></i> Stockage caisses producteur OK</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Le Besoin du moment</div>
+                        <div class="footer-text">"Nous aimerions introduire des petits fruits rouges tendres en saison (fraises, framboises) et cherchons des œufs fermiers."</div>
+                    </div>
+                </article>
+
+                <!-- Cantine 4 (Nouveau) -->
+                <article class="card cantine">
+                    <div class="card-header">
+                        <span class="badge scolaire">Scolaire</span>
+                        <h2>Lycée de la Vallée</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Saint-Julien-Molin-Molette</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Contact & Volume</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-utensils"></i> <span><span style="font-weight:bold; color:var(--dark-green);">650</span> repas / jour</span></li>
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Martine Dubois</strong> (Gestionnaire)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>04 77 99 88 77 <em>(Après-midi)</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-truck"></i> Réception & Contraintes</div>
+                            <ul class="info-list">
+                                <li><i class="fa-regular fa-clock"></i> <span><strong>Lun, Mar, Jeu</strong> de 6h à 9h</span></li>
+                                <li><i class="fa-solid fa-truck-ramp-box"></i> <span><strong>Plateforme logistique</strong> (Palettes Europe OK)</span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag"><i class="fa-solid fa-file-invoice-dollar"></i> Chorus Pro obligatoire</span>
+                                <span class="tag alert"><i class="fa-solid fa-cart-arrow-down"></i> Franco de port : 150€ min.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Le Besoin du moment</div>
+                        <div class="footer-text">"Produits laitiers locaux (tommes, yaourts) pour le plateau de fromages de nos internes. Légumes de garde (gros conditionnement)."</div>
+                    </div>
+                </article>
+
+                <!-- Cantine 5 (Nouveau) -->
+                <article class="card cantine">
+                    <div class="card-header">
+                        <span class="badge enfance" style="background-color: #f97316;">Loisirs</span>
+                        <h2>Centre Les Écureuils</h2>
+                        <div class="location"><i class="fa-solid fa-location-dot"></i> Châteauneuf</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-address-card"></i> Contact & Volume</div>
+                            <ul class="info-list">
+                                <li><i class="fa-solid fa-utensils"></i> <span><span style="font-weight:bold; color:var(--dark-green);">150</span> repas / jour <em>(Mercredis)</em></span></li>
+                                <li><i class="fa-solid fa-user-tie"></i> <span><strong>Élodie Poncet</strong> (Directrice)</span></li>
+                                <li><i class="fa-solid fa-phone"></i> <span>04 77 12 34 56 <em>(Mardis)</em></span></li>
+                            </ul>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-title"><i class="fa-solid fa-truck"></i> Réception & Contraintes</div>
+                            <ul class="info-list">
+                                <li><i class="fa-regular fa-clock"></i> <span><strong>Mar, Jeu</strong> de 14h à 16h</span></li>
+                                <li><i class="fa-solid fa-triangle-exclamation"></i> <span><strong>Accès par cour d'école</strong> (fermé à 16h15 pile)</span></li>
+                            </ul>
+                            <div class="tag-group">
+                                <span class="tag alert"><i class="fa-solid fa-xmark"></i> Pas de légumerie</span>
+                                <span class="tag"><i class="fa-solid fa-bullhorn"></i> Affichage noms des fermes OK</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer-title"><i class="fa-solid fa-star"></i> Le Besoin du moment</div>
+                        <div class="footer-text">"Des produits pour nos goûters locaux ! Jus de fruits en Bag-in-Box, biscuits secs ou confitures pour nos ateliers crêpes."</div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DU CATALOGUE DÉTAILLÉ -->
+    <div id="catalog-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modal-title">Catalogue Producteur</h2>
+                <button class="close-modal" onclick="closeModal(event)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Le contenu du tableau sera injecté ici par JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE GESTION DES ONGLETS ET DES CARTES -->
+    <script>
+        // DONNÉES FICTIVES POUR LES CATALOGUES (Mises à jour avec Dispo et Zone)
+        const catalogData = {
+            'Ferme du Crêt Bio': {
+                disponibilite: "Toute l'année (Légumes de garde en hiver, primeurs au printemps)",
+                zoneLivraison: "Pilat Est, Vallée du Rhône (rayon de 30km maximum)",
+                produits: [
+                    { produit: 'Courge Butternut Bio', conditionnement: 'Caisse 10kg', prix: '1.40 € / kg' },
+                    { produit: 'Courge Butternut Bio', conditionnement: 'Palox 300kg', prix: '1.20 € / kg' },
+                    { produit: 'Carottes lavées Bio', conditionnement: 'Caisse 10kg', prix: '1.80 € / kg' },
+                    { produit: 'Pommes de terre Agata Bio', conditionnement: 'Sac 25kg', prix: '0.90 € / kg' },
+                    { produit: 'Poireaux d\'hiver Bio', conditionnement: 'Botte 5kg', prix: '2.10 € / kg' }
+                ]
+            },
+            'GAEC des Pâturages': {
+                disponibilite: "Abattage toutes les 3 semaines (Sur pré-commande uniquement)",
+                zoneLivraison: "Livraison sur tout le territoire du PAT Monts du Pilat",
+                produits: [
+                    { produit: 'Sauté de Boeuf (Prêt-à-cuire)', conditionnement: 'Sous-vide 5kg', prix: '11.50 € / kg' },
+                    { produit: 'Steak haché surgelé (15% MG)', conditionnement: 'Carton 10kg', prix: '13.80 € / kg' },
+                    { produit: 'Bourguignon (Prêt-à-cuire)', conditionnement: 'Sous-vide 5kg', prix: '10.50 € / kg' },
+                    { produit: 'Rôti de Boeuf', conditionnement: 'Sous-vide 2.5kg', prix: '18.00 € / kg' }
+                ]
+            },
+            'Laiterie du Pilat': {
+                disponibilite: "Production continue toute l'année",
+                zoneLivraison: "Loire (Sud), Vallée du Rhône et agglomération stéphanoise",
+                produits: [
+                    { produit: 'Yaourt Brassé Nature', conditionnement: 'Seau 5L', prix: '2.50 € / L' },
+                    { produit: 'Yaourt aux fruits (Fraise/Abricot)', conditionnement: 'Seau 5L', prix: '3.10 € / L' },
+                    { produit: 'Tomme des Monts (Vache)', conditionnement: 'Meule ~1.8kg', prix: '14.00 € / kg' },
+                    { produit: 'Fromage Blanc Lissé', conditionnement: 'Seau 5L', prix: '3.00 € / L' },
+                    { produit: 'Beurre Doux en motte', conditionnement: 'Plaque 2kg', prix: '9.50 € / kg' }
+                ]
+            },
+            'Les Vergers de la Brume': {
+                disponibilite: "Récolte de septembre à novembre. Stockage jusqu'en mai.",
+                zoneLivraison: "Maclas, Pélussin, Bourg-Argental et communes limitrophes",
+                produits: [
+                    { produit: 'Pommes Golden/Gala', conditionnement: 'Caisse 15kg', prix: '1.30 € / kg' },
+                    { produit: 'Jus de Pomme Artisanal', conditionnement: 'Bag-in-Box 10L', prix: '18.00 € / unité' },
+                    { produit: 'Jus Pomme-Poire', conditionnement: 'Bag-in-Box 10L', prix: '20.00 € / unité' },
+                    { produit: 'Compote Pomme sans sucre ajouté', conditionnement: 'Seau 5kg', prix: '3.50 € / kg' }
+                ]
+            },
+            'Le Fournil Paysan': {
+                disponibilite: "Fournées les mardis et vendredis matin",
+                zoneLivraison: "Dépôt en points relais uniquement (Bourg-Argental, St-Julien)",
+                produits: [
+                    { produit: 'Meule Paysanne Tranchée Bio', conditionnement: 'Pièce 2kg', prix: '6.50 € / pièce' },
+                    { produit: 'Pain Complet Tranché Bio', conditionnement: 'Pièce 1.5kg', prix: '5.20 € / pièce' },
+                    { produit: 'Farine T80 Meule de pierre Bio', conditionnement: 'Sac 25kg', prix: '1.60 € / kg' },
+                    { produit: 'Biscuits secs (Goûter)', conditionnement: 'Vrac 5kg', prix: '12.00 € / kg' }
+                ]
+            }
+        };
+
+        // FONCTIONS POUR LE MODAL (CATALOGUE)
+        function openModal(producerName) {
+            document.getElementById('modal-title').innerText = "Catalogue détaillé : " + producerName;
+            
+            const prodData = catalogData[producerName];
+            let html = '';
+            
+            if (prodData) {
+                // Ajout de l'encart d'informations de disponibilité et zone
+                html += `
+                    <div class="modal-meta-info">
+                        <p><i class="fa-solid fa-calendar-check"></i> <strong>Disponibilité :</strong> ${prodData.disponibilite}</p>
+                        <p><i class="fa-solid fa-map-location-dot"></i> <strong>Zone de livraison :</strong> ${prodData.zoneLivraison}</p>
+                    </div>
+                `;
+
+                // Construction du tableau de la mercuriale
+                const data = prodData.produits || [];
+                html += '<table class="mercuriale-table"><tr><th>Produit</th><th>Conditionnement</th><th>Tarif Pro (HT)</th></tr>';
+                
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        html += `<tr>
+                                    <td>${item.produit}</td>
+                                    <td>${item.conditionnement}</td>
+                                    <td class="price-col">${item.prix}</td>
+                                 </tr>`;
+                    });
+                } else {
+                    html += '<tr><td colspan="3" style="text-align: center; font-style: italic;">Catalogue en cours de mise à jour.</td></tr>';
+                }
+                
+                html += '</table>';
+            } else {
+                html = '<p style="text-align: center; font-style: italic; padding: 20px;">Catalogue introuvable.</p>';
+            }
+            
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('catalog-modal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page arrière
+        }
+
+        function closeModal(event) {
+            if (event) event.preventDefault();
+            document.getElementById('catalog-modal').classList.remove('active');
+            document.body.style.overflow = 'auto'; // Réactiver le défilement
+        }
+
+        let mapProd, mapCant;
+        let mapProdInitialized = false;
+        let mapCantInitialized = false;
+
+        // Création d'icônes personnalisées avec les couleurs de la charte
+        const prodIcon = L.divIcon({
+            className: 'custom-leaflet-icon',
+            html: '<i class="fa-solid fa-location-dot fa-2x" style="color: var(--prod-color); text-shadow: 2px 2px 4px rgba(0,0,0,0.4);"></i>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30]
+        });
+
+        const cantIcon = L.divIcon({
+            className: 'custom-leaflet-icon',
+            html: '<i class="fa-solid fa-location-dot fa-2x" style="color: var(--dark-green); text-shadow: 2px 2px 4px rgba(0,0,0,0.4);"></i>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30]
+        });
+
+        function initMapProd() {
+            if (mapProdInitialized) return;
+            // Centre approximatif sur le Parc Naturel Régional du Pilat
+            mapProd = L.map('map-prod').setView([45.36, 4.55], 11);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            }).addTo(mapProd);
+
+            // Ajout des marqueurs (données fictives basées sur l'exemple)
+            L.marker([45.316, 4.516], {icon: prodIcon}).addTo(mapProd).bindPopup("<b>Ferme du Crêt Bio</b><br>La Versanne");
+            L.marker([45.340, 4.418], {icon: prodIcon}).addTo(mapProd).bindPopup("<b>GAEC des Pâturages</b><br>Saint-Genest-Malifaux");
+            L.marker([45.418, 4.676], {icon: prodIcon}).addTo(mapProd).bindPopup("<b>Laiterie du Pilat</b><br>Pélussin");
+            L.marker([45.360, 4.680], {icon: prodIcon}).addTo(mapProd).bindPopup("<b>Les Vergers de la Brume</b><br>Maclas");
+            L.marker([45.297, 4.560], {icon: prodIcon}).addTo(mapProd).bindPopup("<b>Le Fournil Paysan</b><br>Bourg-Argental");
+
+            mapProdInitialized = true;
+        }
+
+        function initMapCant() {
+            if (mapCantInitialized) return;
+            mapCant = L.map('map-cant').setView([45.36, 4.55], 11);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            }).addTo(mapCant);
+
+            // Ajout des marqueurs
+            L.marker([45.418, 4.670], {icon: cantIcon}).addTo(mapCant).bindPopup("<b>Collège Les Hauts du Pilat</b><br>Pélussin");
+            L.marker([45.290, 4.555], {icon: cantIcon}).addTo(mapCant).bindPopup("<b>EHPAD Les Tilleuls</b><br>Bourg-Argental");
+            L.marker([45.280, 4.390], {icon: cantIcon}).addTo(mapCant).bindPopup("<b>Micro-crèche La Rainette</b><br>Marlhes");
+            L.marker([45.350, 4.490], {icon: cantIcon}).addTo(mapCant).bindPopup("<b>Lycée de la Vallée</b><br>Saint-Julien-Molin-Molette");
+            L.marker([45.380, 4.620], {icon: cantIcon}).addTo(mapCant).bindPopup("<b>Centre Les Écureuils</b><br>Châteauneuf");
+
+            mapCantInitialized = true;
+        }
+
+        function switchTab(tabId, btnId) {
+            // Cacher tous les contenus
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Retirer l'état actif de tous les boutons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Afficher le contenu ciblé et activer le bouton
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById(btnId).classList.add('active');
+
+            // Gérer l'affichage correct des cartes lors du changement d'onglet
+            if (tabId === 'producteurs') {
+                setTimeout(() => {
+                    initMapProd();
+                    if(mapProd) mapProd.invalidateSize(); // Force le recalcul de la taille
+                }, 100);
+            } else if (tabId === 'cantines') {
+                setTimeout(() => {
+                    initMapCant();
+                    if(mapCant) mapCant.invalidateSize();
+                }, 100);
+            }
+        }
+
+        // Initialisation de la carte au chargement de la page (onglet par défaut)
+        window.onload = () => {
+            initMapProd();
+        };
+    </script>
+
+</body>
+</html>

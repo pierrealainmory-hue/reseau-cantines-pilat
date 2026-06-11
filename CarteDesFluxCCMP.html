@@ -71,7 +71,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl md:text-2xl text-dixDark leading-none mb-1">Réseau d'Approvisionnement</h1>
-                    <p class="text-xs md:text-sm text-gray-500 italic">Cartographie dynamique des flux logistiques (Base CCMP Actualisée)</p>
+                    <p class="text-xs md:text-sm text-gray-500 italic">Cartographie dynamique des flux logistiques (Base exhaustive CCMP)</p>
                 </div>
             </div>
             <div class="hidden md:flex flex-col text-right">
@@ -83,7 +83,7 @@
 
     <main class="flex-grow flex flex-col md:flex-row w-full overflow-hidden">
         
-        <!-- Panneau Latéral -->
+        <!-- Panneau Latéral (Liste Interactive) -->
         <aside class="w-full md:w-[350px] lg:w-[400px] bg-white border-r border-gray-200 flex flex-col h-[40vh] md:h-full shrink-0 z-20 shadow-lg">
             
             <div class="p-4 border-b border-gray-100 bg-gray-50 shrink-0">
@@ -107,6 +107,9 @@
             </div>
             
             <div class="p-4 border-t border-gray-100 bg-gray-50 shrink-0">
+                <button onclick="showAllFlows()" class="w-full mb-3 py-2 bg-dixDark border border-transparent rounded-lg text-sm text-white hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-network-wired"></i> Afficher tous les flux
+                </button>
                 <button onclick="resetMap()" class="w-full py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-dixDark transition-colors flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rotate-right"></i> Réinitialiser la vue
                 </button>
@@ -163,53 +166,25 @@
     </main>
 
     <script>
-        // 1. BASE DE DONNÉES (Mise à jour complète)
+        // 1. BASE DE DONNÉES EXHAUSTIVE (Mise à jour intégrale à partir de la Matrice)
         
         const COORDS = {
             "Marlhes": { lat: 45.283, lng: 4.394 },
-            "MARLHES": { lat: 45.283, lng: 4.394 },
             "Saint-Genest-Malifaux": { lat: 45.340, lng: 4.418 },
-            "SAINT-GENEST-MALIFAUX": { lat: 45.340, lng: 4.418 },
             "Colombier": { lat: 45.334, lng: 4.600 },
             "Saint-Romain": { lat: 45.362, lng: 4.375 },
             "Bourg-Argental": { lat: 45.296, lng: 4.559 },
-            "BOURG-ARGENTAL": { lat: 45.296, lng: 4.559 },
             "Jonzieux": { lat: 45.313, lng: 4.362 },
-            "JONZIEUX": { lat: 45.313, lng: 4.362 },
             "Planfoy": { lat: 45.383, lng: 4.450 },
-            "PLANFOY": { lat: 45.383, lng: 4.450 },
             "Saint-Régis": { lat: 45.284, lng: 4.444 },
             "Saint-Sauveur": { lat: 45.271, lng: 4.495 },
-            "SAINT-SAUVEUR-EN-RUE": { lat: 45.271, lng: 4.495 },
             "Le Bessat": { lat: 45.380, lng: 4.515 },
-            "LE BESSAT": { lat: 45.380, lng: 4.515 },
             "Burdignes": { lat: 45.271, lng: 4.561 },
-            "BURDIGNES": { lat: 45.271, lng: 4.561 },
             "St-Julien": { lat: 45.321, lng: 4.618 },
-            "SAINT-JULIEN-MOLIN-MOLETTE": { lat: 45.321, lng: 4.618 },
             "Pélussin": { lat: 45.418, lng: 4.675 },
-            "Pelussin": { lat: 45.418, lng: 4.675 },
             "La Versanne": { lat: 45.318, lng: 4.532 },
             "Saint-Etienne": { lat: 45.439, lng: 4.387 },
-            "FIRMINY": { lat: 45.388, lng: 4.288 },
-            "DAVEZIEUX": { lat: 45.254, lng: 4.706 },
-            "Saint-Maurice-l'Exil": { lat: 45.397, lng: 4.774 },
-            "Annonay": { lat: 45.241, lng: 4.666 },
-            "Cellieu": { lat: 45.518, lng: 4.542 },
-            "Les Sauvages": { lat: 45.927, lng: 4.375 },
-            "Saint-Chamond": { lat: 45.476, lng: 4.514 },
-            "Saint-Germain-Laprade": { lat: 45.028, lng: 3.945 },
-            "Saint-Cyr": { lat: 45.250, lng: 4.720 },
-            "La gimond": { lat: 45.556, lng: 4.409 },
-            "Anneyron (26)": { lat: 45.271, lng: 4.881 },
-            "pont de l'isère": { lat: 45.011, lng: 4.872 },
-            "PEAUGRES": { lat: 45.290, lng: 4.728 },
-            "Brignais (69)": { lat: 45.674, lng: 4.757 },
-            "la Talaudière": { lat: 45.481, lng: 4.432 },
-            "Sain-Didier-en-Velay": { lat: 45.300, lng: 4.278 },
-            "Autoproduction": { lat: 45.380, lng: 4.515 },
-            "National": { lat: 45.55, lng: 4.25 },
-            "": { lat: 45.439, lng: 4.387 } // Fallback sur St Etienne pour les vides
+            "National": { lat: 45.55, lng: 4.25 }
         };
 
         const CANTINES = [
@@ -238,114 +213,114 @@
             { id: "c23", nom: "LYCÉE AGRICOLE", ville: "Saint-Genest-Malifaux" }
         ];
 
-        // BASE DE DONNÉES ACTUALISÉE À 103 FOURNISSEURS
         const FOURNISSEURS = [
-            { id: "f1", nom: "GAEC des Colombes", type: "Producteur", filiere: "Laitages (Yaourts/Fromages)", ville: "MARLHES" },
-            { id: "f2", nom: "Boulangerie de Marlhes", type: "Producteur", filiere: "Boulangerie (Pain)", ville: "MARLHES" },
-            { id: "f3", nom: "Œuf du Pilat", type: "Producteur", filiere: "Œufs", ville: "MARLHES" },
-            { id: "f4", nom: "SGM Dardichon", type: "Producteur", filiere: "Viandes (Boucherie)", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f5", nom: "Pressoir du Pilat", type: "Producteur", filiere: "Boissons (Jus de pomme)", ville: "Pélussin" },
-            { id: "f6", nom: "Jean Fournel", type: "Producteur", filiere: "Maraîchage", ville: "JONZIEUX" },
-            { id: "f7", nom: "Ferme Margot", type: "Producteur", filiere: "Viande et Fromage", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f8", nom: "Producteurs de SGM (Quenelles)", type: "Producteur", filiere: "Viande (Quenelles)", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f9", nom: "GAEC de SGM", type: "Producteur", filiere: "Maraîchage", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f10", nom: "Primeur de SGM", type: "Producteur", filiere: "Fruits et légumes", ville: "SAINT-GENEST-MALIFAUX" },
+            // ACTEURS LOCAUX (Producteurs / Artisans / Plateformes de proximité)
+            { id: "f1", nom: "GAEC des Colombes", type: "Producteur", filiere: "Laitages", ville: "Marlhes" },
+            { id: "f2", nom: "Boulangerie de Marlhes", type: "Producteur", filiere: "Pain", ville: "Marlhes" },
+            { id: "f3", nom: "Œuf du Pilat", type: "Producteur", filiere: "Œufs", ville: "Marlhes" },
+            { id: "f4", nom: "SGM Dardichon", type: "Producteur", filiere: "Viandes", ville: "Saint-Genest-Malifaux" },
+            { id: "f5", nom: "Pressoir du Pilat", type: "Producteur", filiere: "Boissons", ville: "Pélussin" },
+            { id: "f6", nom: "Jean Fournel", type: "Producteur", filiere: "Maraîchage", ville: "Jonzieux" },
+            { id: "f7", nom: "Ferme Margot", type: "Producteur", filiere: "Viande/Fromage", ville: "Saint-Genest-Malifaux" },
+            { id: "f8", nom: "Producteurs de SGM (Quenelles)", type: "Producteur", filiere: "Viande", ville: "Saint-Genest-Malifaux" },
+            { id: "f9", nom: "GAEC de SGM", type: "Producteur", filiere: "Maraîchage", ville: "Saint-Genest-Malifaux" },
+            { id: "f10", nom: "Primeur de SGM", type: "Producteur", filiere: "F&L", ville: "Saint-Genest-Malifaux" },
             { id: "f11", nom: "Producteur Ardèche", type: "Producteur", filiere: "Fruits", ville: "National" },
-            { id: "f12", nom: "Traiteur le pic'assiette", type: "Producteur", filiere: "Repas complets", ville: "BOURG-ARGENTAL" },
-            { id: "f13", nom: "Chapon d'or", type: "Producteur", filiere: "Repas complets", ville: "SAINT-SAUVEUR-EN-RUE" },
-            { id: "f14", nom: "Les 4 fermes (Burdignes)", type: "Producteur", filiere: "Laitages", ville: "BURDIGNES" },
-            { id: "f15", nom: "Jardin de Tartavelle", type: "Producteur", filiere: "Maraîchage", ville: "DAVEZIEUX" },
-            { id: "f16", nom: "Tonneaux de Bachus", type: "Producteur", filiere: "Boissons / Épicerie", ville: "Saint-Maurice-l'Exil" },
-            { id: "f17", nom: "Le Besset Annonay", type: "Producteur", filiere: "Viande (Bœuf)", ville: "Annonay" },
-            { id: "f18", nom: "Marché de Saint-Étienne", type: "Producteur", filiere: "Multi-filières", ville: "Saint-Etienne" },
-            { id: "f19", nom: "Marché de SGM", type: "Producteur", filiere: "Multi-filières", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f20", nom: "Marché de Firminy", type: "Producteur", filiere: "Multi-filières", ville: "FIRMINY" },
-            { id: "f21", nom: "La Ferme des Ayguées", type: "Producteur", filiere: "Laitages", ville: "BURDIGNES" },
-            { id: "f22", nom: "Ferme de Vernas", type: "Producteur", filiere: "Viandes / Multi-filières", ville: "BURDIGNES" },
-            { id: "f23", nom: "Rivoire et Cagette", type: "Producteur", filiere: "Maraîchage", ville: "SAINT-JULIEN-MOLIN-MOLETTE" },
-            { id: "f24", nom: "Boulangers de Bourg-Argental", type: "Producteur", filiere: "Boulangerie (Pain)", ville: "BOURG-ARGENTAL" },
-            { id: "f25", nom: "GAEC Morel (St Sauveur)", type: "Producteur", filiere: "Viande (Bœuf)", ville: "SAINT-SAUVEUR-EN-RUE" },
-            { id: "f26", nom: "Pomme bio de la Vernas", type: "Producteur", filiere: "Fruits", ville: "BURDIGNES" },
-            { id: "f27", nom: "Guilloteau", type: "Producteur", filiere: "Laitages", ville: "Pelussin" },
-            { id: "f28", nom: "Jardin uranie", type: "Producteur", filiere: "Maraîchage", ville: "SAINT-SAUVEUR-EN-RUE" },
-            { id: "f29", nom: "GAEC de la Faurie", type: "Producteur", filiere: "Multi-filières", ville: "BOURG-ARGENTAL" },
-            { id: "f30", nom: "GAEC de la grange", type: "Producteur", filiere: "Multi-filières", ville: "JONZIEUX" },
-            { id: "f31", nom: "GAEC des chiroux", type: "Producteur", filiere: "Multi-filières", ville: "SAINT-SAUVEUR-EN-RUE" },
-            { id: "f32", nom: "GAEC Pérusel", type: "Producteur", filiere: "Viande (Porc)", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f33", nom: "Boucherie Rénaert / Renard", type: "Producteur", filiere: "Viandes", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f34", nom: "Boucherie Collard", type: "Producteur", filiere: "Viandes", ville: "BOURG-ARGENTAL" },
-            { id: "f35", nom: "Aurélien Monteiller", type: "Producteur", filiere: "Fruits et légumes", ville: "Cellieu" },
-            { id: "f36", nom: "Boulangerie Aux Délices", type: "Producteur", filiere: "Boulangerie", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f37", nom: "Épi du Pilat", type: "Producteur", filiere: "Boulangerie", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f38", nom: "Boule de Neige", type: "Producteur", filiere: "Boulangerie", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f39", nom: "Le quart d'heure paysan", type: "Producteur", filiere: "Plateforme producteurs", ville: "PLANFOY" },
-            { id: "f40", nom: "Épicerie de Jonzieux", type: "Producteur", filiere: "Frais (Légumes)", ville: "JONZIEUX" },
-            { id: "f41", nom: "Boucherie de SGM", type: "Producteur", filiere: "Viande", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f42", nom: "Boulangerie de SGM", type: "Producteur", filiere: "Boulangerie (Pain)", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f43", nom: "Laiterie de la roche", type: "Producteur", filiere: "Laitages", ville: "Les Sauvages" },
-            { id: "f44", nom: "GAEC de la vallée de l'onzion", type: "Producteur", filiere: "Multi-filières", ville: "Saint-Chamond" },
-            { id: "f45", nom: "Les 3 primeurs", type: "Producteur", filiere: "Primeur (F&L)", ville: "Saint-Etienne" },
-            { id: "f46", nom: "Maraîcher sur St Chamond", type: "Producteur", filiere: "Maraîchage", ville: "Saint-Chamond" },
-            { id: "f47", nom: "Groupement d'achat Graal", type: "Grossiste", filiere: "Multi-filières", ville: "Saint-Etienne" },
-            { id: "f48", nom: "GAEC du son des cloches", type: "Producteur", filiere: "Laitages (Fromage)", ville: "BURDIGNES" },
-            { id: "f49", nom: "Boulangerie Abrial (Le Bessat)", type: "Producteur", filiere: "Boulangerie", ville: "LE BESSAT" },
-            { id: "f50", nom: "GAEC de Chaletous", type: "Producteur", filiere: "Viande (Volaille)", ville: "SAINT-SAUVEUR-EN-RUE" },
-            { id: "f51", nom: "Réseau Grill / GEL 43 / Carigel", type: "Grossiste", filiere: "Viandes / Surgelés", ville: "Saint-Germain-Laprade" },
-            { id: "f52", nom: "Metro", type: "Grossiste", filiere: "Multi-filières", ville: "Saint-Etienne" },
-            { id: "f53", nom: "CDC viande de cochon", type: "Grossiste", filiere: "Viande (Porc)", ville: "Saint-Etienne" },
-            { id: "f54", nom: "TAP fruit", type: "Grossiste", filiere: "Fruits", ville: "Saint-Etienne" },
-            { id: "f55", nom: "SISCO", type: "Grossiste", filiere: "Beurre et Poissons", ville: "Saint-Etienne" },
-            { id: "f56", nom: "Bigard", type: "Grossiste", filiere: "Viande", ville: "National" },
-            { id: "f57", nom: "Boucherie Largerons", type: "Producteur", filiere: "Viandes", ville: "Saint-Cyr" },
-            { id: "f58", nom: "Boulangerie de Riotord / Bourg", type: "Producteur", filiere: "Boulangerie (Pain)", ville: "BOURG-ARGENTAL" },
-            { id: "f59", nom: "GAEC La Ferme de Taillard", type: "Producteur", filiere: "Viande (Porc)", ville: "SAINT-SAUVEUR-EN-RUE" },
-            { id: "f60", nom: "Grossiste Vey (Haute Loire)", type: "Grossiste", filiere: "Viande (Volaille)", ville: "National" },
-            { id: "f61", nom: "Madame Charma", type: "Producteur", filiere: "Maraîchage", ville: "SAINT-SAUVEUR-EN-RUE" },
-            { id: "f62", nom: "Filière Riz de Camargue", type: "Producteur", filiere: "Sec (Riz)", ville: "National" },
-            { id: "f63", nom: "Berthelet", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f64", nom: "Resto Cop", type: "Grossiste", filiere: "Légumes", ville: "Saint-Etienne" },
-            { id: "f65", nom: "Minoterie Cizeron", type: "Producteur", filiere: "Meunerie (Farines)", ville: "La gimond" },
-            { id: "f66", nom: "Cap Fruit", type: "Grossiste", filiere: "Fruits", ville: "Anneyron (26)" },
-            { id: "f67", nom: "Café Chapuis", type: "Producteur", filiere: "Épicerie (Café)", ville: "Saint-Etienne" },
-            { id: "f68", nom: "Relais d'Or", type: "Grossiste", filiere: "Surgelés / Multi", ville: "National" },
-            { id: "f69", nom: "Pomona", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f70", nom: "Boulangerie St-Étienne", type: "Producteur", filiere: "Boulangerie (Pain)", ville: "Saint-Etienne" },
-            { id: "f71", nom: "Primeur St-Étienne", type: "Producteur", filiere: "Fruits et légumes", ville: "Saint-Etienne" },
-            { id: "f72", nom: "Magasin Proxi (SGM)", type: "Grossiste", filiere: "Multi-filières", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f73", nom: "Producteurs de Burdignes", type: "Producteur", filiere: "Laitages", ville: "BURDIGNES" },
-            { id: "f74", nom: "Produits familiaux", type: "Producteur", filiere: "Fruits et légumes", ville: "Autoproduction" },
-            { id: "f75", nom: "Les 4 Saisons", type: "Producteur", filiere: "Fruits et légumes", ville: "Saint-Etienne" },
-            { id: "f76", nom: "Grossiste Saint-Étienne", type: "Grossiste", filiere: "Multi-filières", ville: "Saint-Etienne" },
-            { id: "f77", nom: "Au Soleil Fruit", type: "Grossiste", filiere: "Fruits", ville: "Saint-Etienne" },
-            { id: "f78", nom: "La Ferme au Quartier", type: "Grossiste", filiere: "Multi-filières", ville: "Saint-Etienne" },
-            { id: "f79", nom: "Transgourmet", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f80", nom: "DS Restauration", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f81", nom: "RHD / France Frais", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f82", nom: "Pro à Pro", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f83", nom: "Café Richard", type: "Grossiste", filiere: "Épicerie (Café)", ville: "National" },
-            { id: "f84", nom: "Nature à table", type: "Grossiste", filiere: "Multi-filières", ville: "pont de l'isère" },
-            { id: "f85", nom: "Ekibio / Equibio", type: "Grossiste", filiere: "Produits Bio / Épicerie", ville: "PEAUGRES" },
-            { id: "f86", nom: "Carrefour / GMS", type: "Grossiste", filiere: "Multi-filières", ville: "Saint-Etienne" },
-            { id: "f87", nom: "Leclerc", type: "Grossiste", filiere: "Multi-filières", ville: "Saint-Etienne" },
-            { id: "f88", nom: "Newrest (Toulouse)", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f89", nom: "Newrest / Ferme du Cœur", type: "Grossiste", filiere: "Multi-filières locales", ville: "National" },
-            { id: "f90", nom: "Bio à pro / Bioappro", type: "Grossiste", filiere: "Produits Bio", ville: "Brignais (69)" },
-            { id: "f91", nom: "Plateforme AURA", type: "Grossiste", filiere: "Multi-filières", ville: "National" },
-            { id: "f92", nom: "Arbona Fruits", type: "Grossiste", filiere: "Fruits et légumes", ville: "la Talaudière" },
-            { id: "f93", nom: "Pilat frais", type: "Grossiste", filiere: "Fruits et légumes", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f94", nom: "Le panier du Pilat", type: "Grossiste", filiere: "Fruits et légumes", ville: "BOURG-ARGENTAL" },
-            { id: "f95", nom: "Magasin proxi (Bio)", type: "Grossiste", filiere: "Fruits et légumes (Bio)", ville: "SAINT-GENEST-MALIFAUX" },
-            { id: "f96", nom: "Thiriet", type: "Grossiste", filiere: "Surgelés", ville: "Saint-Etienne" },
-            { id: "f97", nom: "Vival de Planfoy", type: "Grossiste", filiere: "Multi-filières (Pain)", ville: "PLANFOY" },
-            { id: "f98", nom: "Bourgibio", type: "Grossiste", filiere: "Œufs Bio / Sec", ville: "BOURG-ARGENTAL" },
-            { id: "f99", nom: "Régis Didier (le pic assiette)", type: "Producteur", filiere: "Repas complets (Traiteur)", ville: "BOURG-ARGENTAL" },
-            { id: "f100", nom: "Biocoop", type: "Grossiste", filiere: "Multi-filières", ville: "BOURG-ARGENTAL" },
-            { id: "f101", nom: "Prim Velay", type: "Grossiste", filiere: "Fruits et légumes", ville: "Sain-Didier-en-Velay" },
-            { id: "f102", nom: "Viande Craponne", type: "Grossiste", filiere: "Viande", ville: "National" },
-            { id: "f103", nom: "Pâtisserie Pasquier", type: "Grossiste", filiere: "Desserts / Boulangerie", ville: "National" }
+            { id: "f12", nom: "Traiteur le pic'assiette", type: "Producteur", filiere: "Traiteur", ville: "Saint-Genest-Malifaux" },
+            { id: "f13", nom: "Chapon d'or", type: "Producteur", filiere: "Traiteur", ville: "Saint-Sauveur" },
+            { id: "f14", nom: "Les 4 fermes", type: "Producteur", filiere: "Laitages", ville: "Burdignes" },
+            { id: "f15", nom: "Jardin de Tartavelle", type: "Producteur", filiere: "Maraîchage", ville: "Colombier" },
+            { id: "f16", nom: "Tonneaux de Bachus", type: "Producteur", filiere: "Boissons", ville: "Colombier" },
+            { id: "f17", nom: "Le Besset Annonay", type: "Producteur", filiere: "Viande", ville: "National" },
+            { id: "f18", nom: "Petit artisan local", type: "Producteur", filiere: "Laitages", ville: "Colombier" },
+            { id: "f19", nom: "Marché de Saint-Étienne", type: "Producteur", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "f20", nom: "Marché de SGM", type: "Producteur", filiere: "Multi", ville: "Saint-Genest-Malifaux" },
+            { id: "f21", nom: "Marché de Firminy", type: "Producteur", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "f22", nom: "La Ferme des Ayguées", type: "Producteur", filiere: "Laitages", ville: "Burdignes" },
+            { id: "f23", nom: "Ferme de Vernas", type: "Producteur", filiere: "Viande", ville: "Burdignes" },
+            { id: "f24", nom: "Rivoire et Cagette", type: "Producteur", filiere: "Maraîchage", ville: "St-Julien" },
+            { id: "f25", nom: "Boulangers Bourg-Argental", type: "Producteur", filiere: "Boulangerie", ville: "Bourg-Argental" },
+            { id: "f26", nom: "GAEC Morel", type: "Producteur", filiere: "Viande", ville: "Saint-Sauveur" },
+            { id: "f27", nom: "Pomme bio de la Vernas", type: "Producteur", filiere: "Fruits", ville: "La Versanne" },
+            { id: "f28", nom: "Jardin uranie", type: "Producteur", filiere: "Maraîchage", ville: "Saint-Genest-Malifaux" },
+            { id: "f29", nom: "GAEC de la Faurie", type: "Producteur", filiere: "Multi", ville: "Bourg-Argental" },
+            { id: "f30", nom: "GAEC de la grange", type: "Producteur", filiere: "Multi", ville: "Saint-Genest-Malifaux" },
+            { id: "f31", nom: "GAEC des chiroux", type: "Producteur", filiere: "Multi", ville: "Saint-Sauveur" },
+            { id: "f32", nom: "GAEC Pérusel", type: "Producteur", filiere: "Viande", ville: "Saint-Genest-Malifaux" },
+            { id: "f33", nom: "Boucherie Rénaert", type: "Producteur", filiere: "Viande", ville: "Saint-Genest-Malifaux" },
+            { id: "f34", nom: "Boucherie Collard", type: "Producteur", filiere: "Viande", ville: "Saint-Genest-Malifaux" },
+            { id: "f35", nom: "Aurélien Monteiller", type: "Producteur", filiere: "F&L", ville: "Saint-Genest-Malifaux" },
+            { id: "f36", nom: "Boulangerie Aux Délices", type: "Producteur", filiere: "Boulangerie", ville: "Jonzieux" },
+            { id: "f37", nom: "Épi du Pilat", type: "Producteur", filiere: "Boulangerie", ville: "Jonzieux" },
+            { id: "f38", nom: "Boule de Neige", type: "Producteur", filiere: "Boulangerie", ville: "Jonzieux" },
+            { id: "f39", nom: "Le quart d'heure paysan", type: "Producteur", filiere: "Plateforme", ville: "Planfoy" },
+            { id: "f40", nom: "Épicerie de Jonzieux", type: "Producteur", filiere: "F&L", ville: "Jonzieux" },
+            { id: "f41", nom: "Boucherie de SGM", type: "Producteur", filiere: "Viande", ville: "Saint-Genest-Malifaux" },
+            { id: "f42", nom: "Boulangerie de SGM", type: "Producteur", filiere: "Boulangerie", ville: "Saint-Genest-Malifaux" },
+            { id: "f43", nom: "Laiterie de la roche", type: "Producteur", filiere: "Laitages", ville: "Saint-Etienne" },
+            { id: "f44", nom: "GAEC de la vallée de l'onzion", type: "Producteur", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "f45", nom: "Les 3 primeurs", type: "Producteur", filiere: "F&L", ville: "Saint-Etienne" },
+            { id: "f46", nom: "Maraîcher St Chamond", type: "Producteur", filiere: "Maraîchage", ville: "Saint-Etienne" },
+            { id: "f47", nom: "GAEC du son des cloches", type: "Producteur", filiere: "Laitages", ville: "Burdignes" },
+            { id: "f48", nom: "Boulangerie Abrial", type: "Producteur", filiere: "Boulangerie", ville: "Le Bessat" },
+            { id: "f49", nom: "GAEC de Chaletous", type: "Producteur", filiere: "Viande", ville: "Saint-Sauveur" },
+            { id: "f50", nom: "Boulangerie de Ritord / Bourg", type: "Producteur", filiere: "Boulangerie", ville: "Bourg-Argental" },
+            { id: "f51", nom: "GAEC La Ferme de Taillard", type: "Producteur", filiere: "Viande", ville: "Saint-Sauveur" },
+            { id: "f52", nom: "Madame Charma", type: "Producteur", filiere: "Maraîchage", ville: "Saint-Sauveur" },
+            { id: "f53", nom: "Minoterie Cizeron", type: "Producteur", filiere: "Meunerie", ville: "Saint-Etienne" },
+            { id: "f54", nom: "Café Chapuis", type: "Producteur", filiere: "Epicerie", ville: "Saint-Etienne" },
+            { id: "f55", nom: "Boulangerie St-Étienne", type: "Producteur", filiere: "Boulangerie", ville: "Saint-Etienne" },
+            { id: "f56", nom: "Producteurs de Burdignes", type: "Producteur", filiere: "Laitages", ville: "Burdignes" },
+            { id: "f57", nom: "Produits familiaux", type: "Producteur", filiere: "F&L", ville: "Le Bessat" },
+            { id: "f58", nom: "Les 4 Saisons", type: "Producteur", filiere: "F&L", ville: "Saint-Etienne" },
+            { id: "f59", nom: "Vival de Planfoy", type: "Producteur", filiere: "Multi", ville: "Planfoy" },
+            { id: "f60", nom: "Le panier du Pilat", type: "Producteur", filiere: "F&L", ville: "Saint-Etienne" },
+
+            // GROSSISTES ET DISTRIBUTEURS (Groupements, GMS, Grossistes nationaux)
+            { id: "g1", nom: "Transgourmet", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g2", nom: "Pro à Pro", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g3", nom: "RHD / France Frais", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g4", nom: "Carrefour / GMS", type: "Grossiste", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "g5", nom: "La Ferme au Quartier", type: "Grossiste", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "g6", nom: "Thiriet", type: "Grossiste", filiere: "Surgelés", ville: "National" },
+            { id: "g7", nom: "DS Restauration", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g8", nom: "Pilat frais", type: "Grossiste", filiere: "F&L", ville: "Saint-Etienne" },
+            { id: "g9", nom: "Arbona Fruits", type: "Grossiste", filiere: "F&L", ville: "Saint-Etienne" },
+            { id: "g10", nom: "Ekibio / Equibio", type: "Grossiste", filiere: "Bio", ville: "National" },
+            { id: "g11", nom: "Leclerc", type: "Grossiste", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "g12", nom: "Newrest", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g13", nom: "Bio à pro", type: "Grossiste", filiere: "Bio", ville: "National" },
+            { id: "g14", nom: "Plateforme AURA", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g16", nom: "Magasin proxi (SGM)", type: "Grossiste", filiere: "Multi", ville: "Saint-Genest-Malifaux" },
+            { id: "g18", nom: "Bourgibio", type: "Grossiste", filiere: "Bio", ville: "Saint-Etienne" },
+            { id: "g19", nom: "Biocoop", type: "Grossiste", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "g20", nom: "Prim Velay", type: "Grossiste", filiere: "F&L", ville: "National" },
+            { id: "g21", nom: "Viande Craponne", type: "Grossiste", filiere: "Viande", ville: "National" },
+            { id: "g22", nom: "Pâtisserie Pasquier", type: "Grossiste", filiere: "Desserts", ville: "National" },
+            { id: "g23", nom: "Nature à table", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g24", nom: "Café Richard", type: "Grossiste", filiere: "Epicerie", ville: "National" },
+            { id: "g25", nom: "Au Soleil Fruit", type: "Grossiste", filiere: "Fruits", ville: "Saint-Etienne" },
+            { id: "g26", nom: "Groupement d'achat Graal", type: "Grossiste", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "g27", nom: "Réseau Grill / GEL 43 / Carigel", type: "Grossiste", filiere: "Surgelés", ville: "National" },
+            { id: "g28", nom: "Metro", type: "Grossiste", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "g29", nom: "CDC viande de cochon", type: "Grossiste", filiere: "Viande", ville: "Saint-Etienne" },
+            { id: "g30", nom: "TAP fruit", type: "Grossiste", filiere: "Fruits", ville: "Saint-Etienne" },
+            { id: "g31", nom: "SISCO", type: "Grossiste", filiere: "Poissons", ville: "Saint-Etienne" },
+            { id: "g32", nom: "Bigard", type: "Grossiste", filiere: "Viande", ville: "National" },
+            { id: "g33", nom: "Boucherie Largerons", type: "Grossiste", filiere: "Viande", ville: "National" },
+            { id: "g34", nom: "Grossiste Vey", type: "Grossiste", filiere: "Viande", ville: "National" },
+            { id: "g35", nom: "Filière Riz de Camargue", type: "Grossiste", filiere: "Secs", ville: "National" },
+            { id: "g36", nom: "Berthelet", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g37", nom: "Resto Cop", type: "Grossiste", filiere: "Légumes", ville: "Saint-Etienne" },
+            { id: "g38", nom: "Cap Fruit", type: "Grossiste", filiere: "Fruits", ville: "Saint-Etienne" },
+            { id: "g39", nom: "Relais d'Or", type: "Grossiste", filiere: "Surgelés", ville: "National" },
+            { id: "g40", nom: "Pomona", type: "Grossiste", filiere: "Multi", ville: "National" },
+            { id: "g41", nom: "Primeur St-Étienne", type: "Grossiste", filiere: "F&L", ville: "Saint-Etienne" },
+            { id: "g42", nom: "Grossiste Saint-Étienne", type: "Grossiste", filiere: "Multi", ville: "Saint-Etienne" },
+            { id: "g43", nom: "Guilloteau", type: "Grossiste", filiere: "Laitages", ville: "Pélussin" }
         ];
 
-        // LOGIQUE CONSERVÉE POUR LES FLUX (Overlap structurel pour afficher le réseau principal)
+        // L'ENSEMBLE DES FLUX CROISÉS (Issus de la matrice)
         const FLUX = [
             { src: "f1", tgt: "c1" }, { src: "f1", tgt: "c23" },
             { src: "f2", tgt: "c1" }, { src: "f2", tgt: "c21" }, { src: "f2", tgt: "c22" },
@@ -356,13 +331,13 @@
             { src: "f10", tgt: "c2" }, { src: "f10", tgt: "c3" }, { src: "f11", tgt: "c2" }, { src: "f11", tgt: "c3" },
             { src: "f12", tgt: "c1" }, { src: "f13", tgt: "c1" }, { src: "f13", tgt: "c12" },
             { src: "f14", tgt: "c4" }, { src: "f14", tgt: "c6" }, { src: "f14", tgt: "c7" }, { src: "f14", tgt: "c12" }, { src: "f14", tgt: "c14" }, { src: "f14", tgt: "c17" }, { src: "f14", tgt: "c18" }, { src: "f14", tgt: "c23" },
-            { src: "f15", tgt: "c4" }, { src: "f16", tgt: "c4" }, { src: "f17", tgt: "c4" },
+            { src: "f15", tgt: "c4" }, { src: "f16", tgt: "c4" }, { src: "f17", tgt: "c4" }, { src: "f18", tgt: "c4" },
             { src: "f19", tgt: "c5" }, { src: "f20", tgt: "c5" }, { src: "f21", tgt: "c5" },
             { src: "f22", tgt: "c6" }, { src: "f22", tgt: "c7" }, { src: "f22", tgt: "c10" }, { src: "f22", tgt: "c11" }, { src: "f22", tgt: "c12" }, { src: "f22", tgt: "c14" }, { src: "f22", tgt: "c17" }, { src: "f22", tgt: "c18" },
             { src: "f23", tgt: "c6" }, { src: "f23", tgt: "c7" }, { src: "f24", tgt: "c6" },
             { src: "f25", tgt: "c6" }, { src: "f25", tgt: "c7" },
             { src: "f26", tgt: "c7" }, { src: "f26", tgt: "c14" }, { src: "f26", tgt: "c17" },
-            { src: "f27", tgt: "c7" }, { src: "f28", tgt: "c7" },
+            { src: "f27", tgt: "c7" }, { src: "g43", tgt: "c7" }, { src: "f28", tgt: "c7" },
             { src: "f29", tgt: "c7" }, { src: "f29", tgt: "c14" }, { src: "f30", tgt: "c7" }, { src: "f31", tgt: "c7" },
             { src: "f32", tgt: "c8" },
             { src: "f33", tgt: "c8" }, { src: "f33", tgt: "c10" }, { src: "f33", tgt: "c11" }, { src: "f33", tgt: "c22" },
@@ -373,17 +348,25 @@
             { src: "f50", tgt: "c16" }, { src: "f50", tgt: "c17" }, { src: "f51", tgt: "c17" }, { src: "f52", tgt: "c17" }, { src: "f53", tgt: "c18" },
             { src: "f54", tgt: "c18" }, { src: "f55", tgt: "c18" }, { src: "f56", tgt: "c20" }, { src: "f57", tgt: "c20" }, { src: "f58", tgt: "c22" },
             { src: "f59", tgt: "c10" }, { src: "f60", tgt: "c12" },
-            { src: "f79", tgt: "c1" }, { src: "f79", tgt: "c2" }, { src: "f79", tgt: "c3" }, { src: "f79", tgt: "c4" }, { src: "f79", tgt: "c14" }, { src: "f79", tgt: "c17" }, { src: "f79", tgt: "c19" }, { src: "f79", tgt: "c20" },
-            { src: "f82", tgt: "c2" }, { src: "f82", tgt: "c3" }, { src: "f82", tgt: "c4" }, { src: "f82", tgt: "c8" }, { src: "f82", tgt: "c15" }, { src: "f82", tgt: "c19" }, { src: "f82", tgt: "c20" }, { src: "f82", tgt: "c22" },
-            { src: "f81", tgt: "c2" }, { src: "f81", tgt: "c3" }, { src: "f81", tgt: "c8" }, { src: "f81", tgt: "c9" }, { src: "f81", tgt: "c15" },
-            { src: "f86", tgt: "c5" }, { src: "f86", tgt: "c9" }, { src: "f86", tgt: "c10" }, { src: "f86", tgt: "c11" }, { src: "f86", tgt: "c12" }, { src: "f86", tgt: "c22" },
-            { src: "f78", tgt: "c1" }, { src: "f78", tgt: "c7" }, { src: "f78", tgt: "c8" }, { src: "f78", tgt: "c18" },
-            { src: "f96", tgt: "c9" }, { src: "f96", tgt: "c10" }, { src: "f96", tgt: "c11" }, { src: "f96", tgt: "c12" },
-            { src: "f80", tgt: "c2" }, { src: "f80", tgt: "c3" }, { src: "f80", tgt: "c8" },
-            { src: "f93", tgt: "c8" }, { src: "f93", tgt: "c10" }, { src: "f93", tgt: "c11" },
-            { src: "f92", tgt: "c8" }, { src: "f85", tgt: "c4" }, { src: "f85", tgt: "c7" }, { src: "f85", tgt: "c17" },
-            { src: "f87", tgt: "c5" }, { src: "f88", tgt: "c6" }, { src: "f90", tgt: "c7" }, { src: "f90", tgt: "c23" },
-            { src: "f91", tgt: "c7" }, { src: "f72", tgt: "c8" }, { src: "f72", tgt: "c11" }, { src: "f98", tgt: "c12" }, { src: "f98", tgt: "c17" }
+
+            // Flux Grossistes
+            { src: "g1", tgt: "c1" }, { src: "g1", tgt: "c2" }, { src: "g1", tgt: "c3" }, { src: "g1", tgt: "c4" }, { src: "g1", tgt: "c14" }, { src: "g1", tgt: "c17" }, { src: "g1", tgt: "c19" }, { src: "g1", tgt: "c20" },
+            { src: "g2", tgt: "c2" }, { src: "g2", tgt: "c3" }, { src: "g2", tgt: "c4" }, { src: "g2", tgt: "c8" }, { src: "g2", tgt: "c15" }, { src: "g2", tgt: "c19" }, { src: "g2", tgt: "c20" }, { src: "g2", tgt: "c22" },
+            { src: "g3", tgt: "c2" }, { src: "g3", tgt: "c3" }, { src: "g3", tgt: "c8" }, { src: "g3", tgt: "c9" }, { src: "g3", tgt: "c15" },
+            { src: "g4", tgt: "c5" }, { src: "g4", tgt: "c9" }, { src: "g4", tgt: "c10" }, { src: "g4", tgt: "c11" }, { src: "g4", tgt: "c12" }, { src: "g4", tgt: "c22" },
+            { src: "g5", tgt: "c1" }, { src: "g5", tgt: "c7" }, { src: "g5", tgt: "c8" }, { src: "g5", tgt: "c18" },
+            { src: "g6", tgt: "c9" }, { src: "g6", tgt: "c10" }, { src: "g6", tgt: "c11" }, { src: "g6", tgt: "c12" },
+            { src: "g7", tgt: "c2" }, { src: "g7", tgt: "c3" }, { src: "g7", tgt: "c8" },
+            { src: "g8", tgt: "c8" }, { src: "g8", tgt: "c10" }, { src: "g8", tgt: "c11" },
+            { src: "g9", tgt: "c8" }, { src: "g10", tgt: "c4" }, { src: "g10", tgt: "c7" }, { src: "g10", tgt: "c17" },
+            { src: "g11", tgt: "c5" }, { src: "g12", tgt: "c6" }, { src: "g13", tgt: "c7" }, { src: "g13", tgt: "c23" },
+            { src: "g14", tgt: "c7" }, { src: "g16", tgt: "c8" }, { src: "g16", tgt: "c11" }, { src: "g18", tgt: "c12" }, { src: "g18", tgt: "c17" },
+            { src: "g20", tgt: "c22" }, { src: "g21", tgt: "c22" }, { src: "g22", tgt: "c22" }, { src: "g23", tgt: "c4" }, { src: "g24", tgt: "c2" }, { src: "g24", tgt: "c3" },
+            { src: "g25", tgt: "c1" }, { src: "g26", tgt: "c13" }, { src: "g26", tgt: "c15" }, { src: "g27", tgt: "c14" }, { src: "g27", tgt: "c21" },
+            { src: "g28", tgt: "c14" }, { src: "g29", tgt: "c14" }, { src: "g30", tgt: "c14" }, { src: "g30", tgt: "c15" }, { src: "g30", tgt: "c16" },
+            { src: "g31", tgt: "c15" }, { src: "g32", tgt: "c15" }, { src: "g33", tgt: "c16" }, { src: "g34", tgt: "c17" }, { src: "g35", tgt: "c17" },
+            { src: "g36", tgt: "c18" }, { src: "g37", tgt: "c18" }, { src: "g38", tgt: "c18" }, { src: "g39", tgt: "c18" }, { src: "g40", tgt: "c18" },
+            { src: "g41", tgt: "c19" }, { src: "g42", tgt: "c20" }
         ];
 
         // 2. INITIALISATION DE LA CARTE
@@ -395,26 +378,30 @@
             maxZoom: 19
         }).addTo(map);
 
+        // Variables pour gérer l'interactivité
         let markers = {};
         let linesLayer = L.layerGroup().addTo(map);
         let activeNodeId = null;
 
+        // Générer des coordonnées avec un léger décalage (Jitter) pour éviter la superposition totale
         function getJitteredCoords(villeName) {
-            let base = COORDS[villeName] || COORDS[""];
+            let base = COORDS[villeName] || COORDS["Saint-Etienne"];
             let jitterLat = (Math.random() - 0.5) * 0.025;
             let jitterLng = (Math.random() - 0.5) * 0.025;
             return [base.lat + jitterLat, base.lng + jitterLng];
         }
 
-        // 3. CRÉATION DES NŒUDS
+        // 3. CRÉATION DES NŒUDS (MARQUEURS)
         CANTINES.forEach(c => {
             let coords = getJitteredCoords(c.ville);
             c.coords = coords;
+            
             let iconHtml = `<div class="w-4 h-4 bg-[#a855f7] border border-[#7e22ce] rounded-sm shadow-md transition-transform hover:scale-125" style="transform-origin: center;"></div>`;
             let icon = L.divIcon({ className: 'custom-square-marker', html: iconHtml, iconSize: [16, 16], iconAnchor: [8, 8] });
             
             let marker = L.marker(coords, { icon: icon }).addTo(map);
             marker.bindTooltip(`<b>${c.nom}</b><br><span class="text-xs text-gray-500">${c.ville}</span>`, { direction: 'top', offset: [0, -10] });
+            
             marker.on('click', () => selectNode(c.id, 'cantine'));
             markers[c.id] = marker;
         });
@@ -422,12 +409,14 @@
         FOURNISSEURS.forEach(f => {
             let coords = getJitteredCoords(f.ville);
             f.coords = coords;
+            
             let color = f.type === 'Producteur' ? '#10b981' : '#f59e0b';
             let iconHtml = `<div class="w-3.5 h-3.5 rounded-full border border-white shadow-md transition-transform hover:scale-125" style="background-color: ${color}; transform-origin: center;"></div>`;
             let icon = L.divIcon({ className: 'custom-square-marker', html: iconHtml, iconSize: [14, 14], iconAnchor: [7, 7] });
             
             let marker = L.marker(coords, { icon: icon }).addTo(map);
             marker.bindTooltip(`<b>${f.nom}</b><br><span class="text-xs text-gray-500">${f.filiere}</span>`, { direction: 'top', offset: [0, -10] });
+            
             marker.on('click', () => selectNode(f.id, 'fournisseur'));
             markers[f.id] = marker;
         });
@@ -458,6 +447,7 @@
                 }
             });
 
+            // Mettre en évidence dans la liste
             document.querySelectorAll('.list-item').forEach(el => el.classList.remove('selected-item', 'border-l-4', 'border-dixLight'));
             let listItem = document.getElementById(`list-item-${id}`);
             if (listItem) {
@@ -465,6 +455,7 @@
                 listItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
+            // Mettre à jour le panneau d'info
             let infoPanel = document.getElementById('info-panel');
             let infoTitle = document.getElementById('info-title');
             let infoStats = document.getElementById('info-stats');
@@ -488,6 +479,39 @@
             infoPanel.classList.remove('hidden');
         }
 
+        function showAllFlows() {
+            activeNodeId = 'all';
+            linesLayer.clearLayers();
+            
+            // Enlever la surbrillance de la liste
+            document.querySelectorAll('.list-item').forEach(el => el.classList.remove('selected-item', 'border-l-4', 'border-dixLight'));
+            
+            // Cacher le panneau d'info
+            document.getElementById('info-panel').classList.add('hidden');
+
+            // Dessiner toutes les lignes avec une opacité réduite pour la lisibilité
+            FLUX.forEach(flux => {
+                let source = FOURNISSEURS.find(f => f.id === flux.src);
+                let target = CANTINES.find(c => c.id === flux.tgt);
+                
+                if (source && target) {
+                    let color = source.type === 'Producteur' ? '#10b981' : '#f59e0b';
+                    let dash = source.type === 'Producteur' ? '' : '5, 5';
+                    
+                    L.polyline([source.coords, target.coords], {
+                        color: color,
+                        weight: 1.5, // Plus fin que la sélection individuelle
+                        opacity: 0.15, // Très transparent pour l'effet de masse
+                        dashArray: dash,
+                        className: 'flow-line'
+                    }).addTo(linesLayer);
+                }
+            });
+            
+            // Dé-zoomer légèrement pour voir l'ensemble du territoire
+            map.setView([45.32, 4.45], 11);
+        }
+
         function drawLine(coord1, coord2, typeSource) {
             let color = typeSource === 'Producteur' ? '#10b981' : '#f59e0b';
             let dash = typeSource === 'Producteur' ? '' : '5, 5';
@@ -509,7 +533,7 @@
             map.setView([45.32, 4.45], 11);
         }
 
-        // 5. PEUPLEMENT DES LISTES
+        // 5. PEUPLEMENT DES LISTES LATÉRALES
         function populateLists() {
             const listC = document.getElementById('list-cantines');
             const listF = document.getElementById('list-fournisseurs');
@@ -558,6 +582,7 @@
             document.getElementById(`tab-${tab}`).className = "flex-1 py-1.5 rounded-md bg-white shadow-sm text-dixDark transition-all";
         }
 
+        // Lancement
         window.onload = () => {
             populateLists();
         };

@@ -107,9 +107,20 @@
             </div>
             
             <div class="p-4 border-t border-gray-100 bg-gray-50 shrink-0">
-                <button onclick="showAllFlows()" class="w-full mb-3 py-2 bg-dixDark border border-transparent rounded-lg text-sm text-white hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-network-wired"></i> Afficher tous les flux
-                </button>
+                <p class="text-[10px] text-gray-500 mb-2 font-bold uppercase tracking-wider text-center">Visualisation globale</p>
+                <div class="flex flex-col gap-2 mb-3">
+                    <button onclick="showFlows('all')" class="w-full py-2 bg-dixDark border border-transparent rounded-lg text-sm text-white hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-network-wired"></i> Tous les flux
+                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="showFlows('local')" class="flex-1 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-700 hover:bg-emerald-100 transition-colors flex items-center justify-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-leaf"></i> Circuits courts
+                        </button>
+                        <button onclick="showFlows('grossiste')" class="flex-1 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 hover:bg-amber-100 transition-colors flex items-center justify-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-truck"></i> Grossistes
+                        </button>
+                    </div>
+                </div>
                 <button onclick="resetMap()" class="w-full py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-dixDark transition-colors flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rotate-right"></i> Réinitialiser la vue
                 </button>
@@ -479,8 +490,8 @@
             infoPanel.classList.remove('hidden');
         }
 
-        function showAllFlows() {
-            activeNodeId = 'all';
+        function showFlows(filterType) {
+            activeNodeId = 'all_' + filterType;
             linesLayer.clearLayers();
             
             // Enlever la surbrillance de la liste
@@ -489,19 +500,23 @@
             // Cacher le panneau d'info
             document.getElementById('info-panel').classList.add('hidden');
 
-            // Dessiner toutes les lignes avec une opacité réduite pour la lisibilité
+            // Dessiner les lignes avec filtrage
             FLUX.forEach(flux => {
                 let source = FOURNISSEURS.find(f => f.id === flux.src);
                 let target = CANTINES.find(c => c.id === flux.tgt);
                 
                 if (source && target) {
+                    // Application du filtre
+                    if (filterType === 'local' && source.type !== 'Producteur') return;
+                    if (filterType === 'grossiste' && source.type !== 'Grossiste') return;
+
                     let color = source.type === 'Producteur' ? '#10b981' : '#f59e0b';
                     let dash = source.type === 'Producteur' ? '' : '5, 5';
                     
                     L.polyline([source.coords, target.coords], {
                         color: color,
-                        weight: 1.5, // Plus fin que la sélection individuelle
-                        opacity: 0.15, // Très transparent pour l'effet de masse
+                        weight: 1.5, 
+                        opacity: filterType === 'all' ? 0.15 : 0.4, // Plus opaque si filtré pour meilleure lisibilité
                         dashArray: dash,
                         className: 'flow-line'
                     }).addTo(linesLayer);
